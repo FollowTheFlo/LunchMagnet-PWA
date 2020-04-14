@@ -1,0 +1,133 @@
+{
+  "name": "MobileApp",
+  "version": "0.0.1",
+  "author": "Ionic Framework",
+  "homepage": "https://ionicframework.com/",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "lint-staged": "lint-staged",
+    "formatter": "prettier --parser typescript --single-quote --write \"./**/*.ts\""
+  },
+  "resolutions": {
+    "@babel/preset-env": "7.5.5"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~9.1.0",
+    "@angular/cdk": "~8.2.3",
+    "@angular/common": "~9.1.0",
+    "@angular/core": "~9.1.0",
+    "@angular/elements": "^9.1.0",
+    "@angular/forms": "~9.1.0",
+    "@angular/material": "^8.2.3",
+    "@angular/platform-browser": "~9.1.0",
+    "@angular/platform-browser-dynamic": "~9.1.0",
+    "@angular/router": "~9.1.0",
+    "@capacitor/android": "^1.5.2",
+    "@capacitor/core": "1.5.1",
+    "@ionic-native/core": "^5.0.0",
+    "@ionic-native/facebook": "^5.23.0",
+    "@ionic-native/splash-screen": "^5.0.0",
+    "@ionic-native/status-bar": "^5.0.0",
+    "@ionic-native/stripe": "^5.23.0",
+    "@ionic/angular": "^5.1.0-dev.202003271919.8a161f0",
+    "@ionic/pwa-elements": "^1.5.1",
+    "@ngx-translate/core": "^12.1.2",
+    "@ngx-translate/http-loader": "^4.0.0",
+    "@rdlabo/capacitor-facebook-login": "^1.5.0",
+    "apollo-absinthe-upload-link": "^1.5.0",
+    "apollo-angular": "^1.8.0",
+    "apollo-angular-link-http": "^1.9.0",
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link": "^1.2.13",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-error": "^1.1.12",
+    "apollo-upload-client": "^13.0.0",
+    "chart.js": "^2.9.3",
+    "cordova-android": "8.1.0",
+    "cordova-plugin-facebook4": "^6.4.0",
+    "cordova-plugin-stripe": "^1.5.3",
+    "core-js": "^2.5.4",
+    "graphql": "^14.6.0",
+    "graphql-tag": "^2.10.3",
+    "jwt-decode": "^2.2.0",
+    "ngx-credit-cards": "^1.0.9",
+    "ngx-stripe": "^9.0.1",
+    "rxjs": "~6.5.1",
+    "stripe-angular": "^1.0.2",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.10.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.901.0",
+    "@angular/cli": "~9.1.0",
+    "@angular/compiler": "~9.1.0",
+    "@angular/compiler-cli": "~9.1.0",
+    "@angular/language-service": "~9.1.0",
+    "@capacitor/cli": "1.5.1",
+    "@ionic/angular-toolkit": "^2.1.1",
+    "@kaizenplatform/prettier-config": "^0.1.0",
+    "@types/jasmine": "~3.3.8",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
+    "codelyzer": "^5.2.2",
+    "cordova-plugin-device": "^2.0.3",
+    "cordova-plugin-ionic-keyboard": "^2.2.0",
+    "cordova-plugin-ionic-webview": "^4.1.3",
+    "cordova-plugin-splashscreen": "^5.0.3",
+    "cordova-plugin-statusbar": "^2.4.3",
+    "cordova-plugin-whitelist": "^1.3.4",
+    "jasmine-core": "~3.4.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~4.1.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-jasmine": "~2.0.1",
+    "karma-jasmine-html-reporter": "^1.4.0",
+    "lint-staged": "^10.0.10",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.0.2",
+    "protractor": "~5.4.0",
+    "ts-node": "~7.0.0",
+    "tslint": "~5.15.0",
+    "typescript": "^3.8.3"
+  },
+  "description": "An Ionic project",
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-facebook4": {
+        "APP_ID": "2562754647345789",
+        "APP_NAME": "mtl-prestige-open",
+        "FACEBOOK_HYBRID_APP_EVENTS": "false",
+        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
+      },
+      "cordova-plugin-stripe": {}
+    },
+    "platforms": [
+      "android"
+    ]
+  },
+  "pre-commit": [
+    "lint-staged"
+  ],
+  "lint-staged": {
+    "*.ts": [
+      "prettier --parser typescript --single-quote --write",
+      "git add"
+    ]
+  }
+}

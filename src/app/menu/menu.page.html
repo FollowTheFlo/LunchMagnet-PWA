@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>menu</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- <ion-img 
+  role="button"
+  class="image"
+  (click)="onPickImage()"
+  [src]="selectedImage" 
+  *ngIf="selectedImage && showPreview"></ion-img>
+
+  <ion-button color="primary" (click)="onPickImage()">
+    <ion-icon name="camera" slope="start"></ion-icon>
+       <ion-label>Select image</ion-label> 
+      </ion-button>
+  
+    <input 
+  type="file"
+  accept="image/jpeg"
+  #filePicker 
+  (change)="onFileChosen($event)" 
+/> -->
+<form>
+  <input #myForm type="file" name="file" (change)="imageSelected($event.target.files)">
+</form>
+
+  <ion-card *ngIf="restaurant">
+    <ion-card-header>
+      <ion-card-title>{{ restaurant.name}}</ion-card-title>
+      <ion-card-subtitle>{{ restaurant.address}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <h2 *ngIf="isRestaurantOpened">Restaurant is opened</h2>
+      <h2 *ngIf="!isRestaurantOpened">Restaurant is closed</h2>
+      <ion-button (click)="reload()">Reload</ion-button>
+      <h2>Opening Hours</h2>
+     <div *ngIf="restaurant.openingHours.length > 0">
+      <div *ngFor="let slot of restaurant.openingHours">
+        <p>{{slot.day}}</p>
+        <p>{{slot.openTime}} - {{slot.closeTime}}</p>
+        </div>
+    </div>
+    </ion-card-content>
+  </ion-card>
+
+
+<div *ngIf="menuByCategories.length > 0">
+  <div *ngFor="let menuCategory of menuByCategories">
+    <h1>{{menuCategory.value}} ({{menuCategory.menuItems.length}})</h1>
+   
+      <div *ngIf="menuCategory.menuItems.length > 0">
+      <ion-card *ngFor="let menuItem of menuCategory.menuItems">
+        <ion-card-header>
+          <ion-card-title>{{ menuItem.name}}</ion-card-title>
+          <ion-card-subtitle>{{ menuItem.price}}$CA</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+    
+        <div *ngIf="menuItem.toppings.length > 0">
+          <h1>Options</h1>
+          <div *ngFor="let topping of menuItem.toppings">
+            <p>{{topping.name}}</p>
+            <p>{{topping.price}</p>
+          </div>
+        </div>
+    
+        </ion-card-content>
+      </ion-card>
+      
+    </div>
+  </div>
+</div>
+
+</ion-content>
