@@ -6,6 +6,7 @@ import { MenuItem } from './../models/menuItem.model';
 import { OpeningSlot } from './../models/openingSlot.model';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { IonSlides, IonContent } from '@ionic/angular';
 
 
 interface Category {
@@ -13,9 +14,11 @@ interface Category {
   value: string;
   index: number;
   field1: string;
-  field2: string
+  field2: string;
   menuItems: MenuItem[];
 }
+
+
 
 
 @Component({
@@ -25,6 +28,14 @@ interface Category {
 })
 export class MenuPage implements OnInit {
   @ViewChild('filePicker', { static: false}) filePicker: ElementRef<HTMLInputElement>;
+  //@ViewChild('categorySlides') slideWithNav: IonSlides;
+  @ViewChild('content') content: IonContent;
+
+  slideOpts = {
+    initialSlide: 0,
+    slidesPerView: 2,
+    autoplay: true
+  };
 
   restaurant: Restaurant;
   menuItems: MenuItem[] = [];
@@ -40,6 +51,13 @@ export class MenuPage implements OnInit {
     public  menuService: MenuService,
     private httpClient: HttpClient
     ) { }
+
+    scrollTo(elementId: string) {
+      console.log('elementId',elementId);
+      //elementId = 'Appetizers';
+      const y = document.getElementById(elementId).offsetTop;
+      this.content.scrollToPoint(0, y, 300);
+  }
 
   ngOnInit() {
     console.log('MenuPage ngOnInit');

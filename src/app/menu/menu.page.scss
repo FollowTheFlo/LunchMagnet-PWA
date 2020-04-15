@@ -1,0 +1,45 @@
+.categorySlides {
+    --bullet-background:black;
+    --bullet-background-active: darkred;
+    background-color: green;
+ }
+
+ 
+
+    ion-card {
+      position: relative;
+      text-align: center;
+    }
+
+    .card-title {
+      position: absolute;
+      top: 5%;
+      font-size: 1.0em;
+      width: 100%;
+      font-weight: bold;
+      color: darkgreen;
+    }
+
+    ion-item{
+        color: black;
+       text-align: center;
+       //font-weight: bold;
+       //background-color: white;
+       // --background:black;
+       // --background: rgb(224, 219, 219);
+       --background: white;
+       margin-top: 5px;
+       margin-bottom: 5px;
+       margin-left:5%;
+       margin-right:5%;
+       //  padding-top: 5px;
+       //  padding-bottom: 5px;
+       //--border-color: purple !important;
+       --min-height: 35px;
+       border-color: grey;
+       --border-radius: 1px;
+       // --border-style: 10px;
+       //border-style: solid solid double double;
+       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+       
+     }

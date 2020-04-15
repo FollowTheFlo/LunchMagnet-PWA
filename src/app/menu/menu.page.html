@@ -1,10 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>menu</ion-title>
+    <!-- <img src="/assets/img/miramar.png"> -->
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content #content>
 
   <!-- <ion-img 
   role="button"
@@ -24,12 +25,42 @@
   #filePicker 
   (change)="onFileChosen($event)" 
 /> -->
-<form>
+<!-- <form>
   <input #myForm type="file" name="file" (change)="imageSelected($event.target.files)">
-</form>
+</form> -->
+
+  <!-- <div *ngIf="restaurant" style="width: 100%; text-align: center;">
+    <img src="{{restaurant.mainImageUrl}}">
+  </div> -->
+
+  <div *ngIf="menuByCategories.length > 0">
+  <ion-slides pager=true [options]="slideOpts" #categorySlide class="categorySlide">
+    <ion-slide *ngFor="let menuCategory of menuByCategories">
+      <!-- <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>{{ menuCategory.value}}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <img src="{{menuCategory.field1}}" alt="ion">
+        </ion-card-content>
+      </ion-card> -->
+<div (click)="scrollTo(menuCategory.value)">
+      <ion-card>
+        <img src="{{menuCategory.field1}}"/>
+        <div class="card-title">{{ menuCategory.value}}</div>
+        <!-- <div class="card-subtitle">41 Listings</div> -->
+    </ion-card>
+  </div>
+      
+    </ion-slide>
+  </ion-slides>
+</div>
+
 
   <ion-card *ngIf="restaurant">
+    
     <ion-card-header>
+      <img src="{{restaurant.mainImageUrl}}" alt="ion">
       <ion-card-title>{{ restaurant.name}}</ion-card-title>
       <ion-card-subtitle>{{ restaurant.address}}</ion-card-subtitle>
     </ion-card-header>
@@ -47,8 +78,34 @@
     </ion-card-content>
   </ion-card>
 
+  <div *ngIf="menuByCategories.length > 0">
+    <div *ngFor="let menuCategory of menuByCategories">
+      <div id="{{menuCategory.value}}">
+    <ion-card>
+      <img src="{{menuCategory.field1}}" alt="ion">
+      <ion-card-header>
+        <ion-card-title>{{ menuCategory.value}}</ion-card-title>
+        <ion-card-subtitle>{{ menuCategory.field2}}</ion-card-subtitle>
+        <ion-card-content>
+          <div *ngIf="menuCategory.menuItems.length > 0">
+          <ion-list>
+            <ion-item *ngFor="let menuItem of menuCategory.menuItems">
+              <ion-label>{{ menuItem.name}}</ion-label>
+              <ion-note slot="end" >{{ menuItem.price}}$CA</ion-note>
+            </ion-item>
+          </ion-list>
+        </div>
+        </ion-card-content>
+      </ion-card-header>
 
-<div *ngIf="menuByCategories.length > 0">
+    </ion-card>
+  </div>
+</div>
+  </div>
+
+
+
+<!-- <div *ngIf="menuByCategories.length > 0">
   <div *ngFor="let menuCategory of menuByCategories">
     <h1>{{menuCategory.value}} ({{menuCategory.menuItems.length}})</h1>
    
@@ -73,6 +130,6 @@
       
     </div>
   </div>
-</div>
+</div> -->
 
 </ion-content>

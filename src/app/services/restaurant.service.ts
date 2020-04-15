@@ -4,6 +4,7 @@ import { Restaurant } from './../models/restaurant.model';
 import { OpeningSlot } from './../models/openingSlot.model';
 import { Subject, Subscription, BehaviorSubject, Observable, of, from, throwError } from 'rxjs';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
@@ -35,9 +36,10 @@ export class RestaurantService {
             console.log('in condition', this.restaurant);
             return of(this.restaurant);
         }
-        return this.graphqlService.getRestaurant('5e8f8967be9e6115707e2624')
+        return this.graphqlService.getRestaurant('5e9627c5c516c2794b861961')
         .pipe(
             map(response => response.data.getRestaurant),
+            map(restaurant =>{ return {...restaurant, mainImageUrl: environment.serverDomain + '/images/' + restaurant.mainImageUrl}}),
             tap(data => {
                 this.restaurant = data;
                 console.log('in Tap', this.restaurant);

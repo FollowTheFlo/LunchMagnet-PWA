@@ -8,4 +8,5 @@ export interface Restaurant {
     locationGeo: LocationGeo;
     phoneNumber: string;
     openingHours: OpeningSlot[];
+    mainImageUrl: string;
 }

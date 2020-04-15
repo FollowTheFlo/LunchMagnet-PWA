@@ -3,8 +3,31 @@
 
 /** Ionic CSS Variables **/
 :root {
+
+  --ion-tab-bar-background: darkgreen;
+  --ion-tab-bar-color:white;
+  --ion-tab-bar-color-selected:yellow;
+  --ion-tab-bar-background-selected:purple;
+  --ion-tab-bar-background-focused: yellow;
+  --ion-toolbar-segment-background-checked: blue;
+  --ion-toolbar-segment-indicator-color: green;
+  --ion-toolbar-segment-color-checked: yellow;
+
+  --ion-toolbar-border-color: blue;
+
+  
+  --ion-item-background: white;
+
+  --ion-toolbar-background: darkgreen;
+  --ion-toolbar-color: white;
+ 
+ 
+  --ion-background-color: rgb(224, 219, 219);
+
+  --ion-color-flocolor: darkred;
+
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: darkgreen;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;

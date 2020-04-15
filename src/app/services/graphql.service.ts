@@ -41,6 +41,7 @@ export class GraphqlService {
               openTime
               closeTime
             }
+            mainImageUrl
 
           }
           }
@@ -55,7 +56,9 @@ export class GraphqlService {
             getMenuItems {
             _id
             name
+            name_fr
             description
+            description_fr
             price
             category
             toppings {

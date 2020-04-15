@@ -5,6 +5,7 @@ import { OpeningSlot } from './../models/openingSlot.model';
 import { Subject, Subscription, BehaviorSubject, Observable, of, from, throwError } from 'rxjs';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
@@ -33,7 +34,15 @@ export class MenuService {
     getConfigItems(name: string, sortMethod: string) {
         return this.graphqlService.getConfigItems(name, sortMethod)
         .pipe(
-            map(response => response.data.getConfigItems)
+            map(response => response.data.getConfigItems),
+            map( categories => {
+                console.log('categories', categories);
+                return categories.map(category => {
+                    console.log('category', category);
+                    category.field1 = environment.serverDomain + '/images/' + category.field1;
+                    return category;
+                });
+            })
         );
     }
 
