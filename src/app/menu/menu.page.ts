@@ -7,6 +7,8 @@ import { OpeningSlot } from './../models/openingSlot.model';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { IonSlides, IonContent } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
 
 
 interface Category {
@@ -33,10 +35,10 @@ export class MenuPage implements OnInit {
 
   slideOpts = {
     initialSlide: 0,
-    slidesPerView: 2,
-    autoplay: true
+    slidesPerView: 3,
+    autoplay: false
   };
-
+  userAddress = undefined;
   restaurant: Restaurant;
   menuItems: MenuItem[] = [];
   menuByCategories: Category[] = [];
@@ -46,11 +48,30 @@ export class MenuPage implements OnInit {
   weekDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   selectedImage: string;
 
-  constructor( 
+  constructor(
     private restaurantService: RestaurantService,
     public  menuService: MenuService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private modalCtrl: ModalController
     ) { }
+
+
+    async openSearchAddressModal() {
+      console.log('presentModal');
+      const modal = await this.modalCtrl.create({
+        component: AddressSearchPage,
+        // componentProps: {
+        //   tournamentId: tournamentId,
+        // },
+      });
+      //modal.style.cssText = '--min-height: 120px; --max-height: 300px;';
+      modal.onDidDismiss()
+      .then((data) => {
+        console.log(data); // Here's your selected user!
+        this.userAddress = data.data.address;
+    });
+      return await modal.present();
+    }
 
     scrollTo(elementId: string) {
       console.log('elementId',elementId);
@@ -174,6 +195,10 @@ checkIfOpen() {
       }
       );
 
+  }
+
+  onChangeCollectingMethod(ev: any) {
+    console.log('Segment changed', ev.detail.value);
   }
 
 }

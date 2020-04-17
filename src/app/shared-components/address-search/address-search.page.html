@@ -1,0 +1,20 @@
+
+<ion-content [fullscreen]="true">
+
+  <ion-searchbar animated=true placeholder="search your address" debounce=500 
+   (ionChange)="search($event)" [value]="selectedAddress" showCancelButton="always"
+   (ionClear)= "onSearchCancel()"
+   >
+</ion-searchbar>
+    <ion-list lines="none" *ngIf="addresses.length > 0 ">
+      
+      <ion-item button *ngFor="let address of addresses" (click)="onSelect(address)">           
+        {{ address }}
+      </ion-item>
+    </ion-list>
+
+    <div id="mapId" style="height:500px"></div>
+
+    <ion-button (click)="onDismiss()">Close</ion-button>
+
+</ion-content>

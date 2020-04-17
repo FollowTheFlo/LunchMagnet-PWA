@@ -1,9 +1,9 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>menu</ion-title>
-    <!-- <img src="/assets/img/miramar.png"> -->
+    <img src="/assets/img/miramar.png">
   </ion-toolbar>
-</ion-header>
+</ion-header>  -->
 
 <ion-content #content>
 
@@ -32,18 +32,34 @@
   <!-- <div *ngIf="restaurant" style="width: 100%; text-align: center;">
     <img src="{{restaurant.mainImageUrl}}">
   </div> -->
+  <div class="collectingMethodSegment">
+  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery">
+    <ion-segment-button value="delivery">
+      <ion-label>Delivery</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="pickup">
+      <ion-label>Pick-up</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</div>
 
-  <div *ngIf="menuByCategories.length > 0">
-  <ion-slides pager=true [options]="slideOpts" #categorySlide class="categorySlide">
+<div class="delivery">
+<ion-item>
+  <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
+  <ion-label *ngIf="userAddress !== undefined">{{userAddress}}</ion-label>
+  <ion-buttons slot="end">
+  <ion-button (click)="openSearchAddressModal()">
+    <ion-icon name="search"  ></ion-icon>
+ </ion-button>
+</ion-buttons>
+
+</ion-item>
+</div>
+
+  <div *ngIf="menuByCategories.length > 0" class="catSlides">
+  <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">
     <ion-slide *ngFor="let menuCategory of menuByCategories">
-      <!-- <ion-card>
-        <ion-card-header>
-          <ion-card-subtitle>{{ menuCategory.value}}</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <img src="{{menuCategory.field1}}" alt="ion">
-        </ion-card-content>
-      </ion-card> -->
+
 <div (click)="scrollTo(menuCategory.value)">
       <ion-card>
         <img src="{{menuCategory.field1}}"/>
@@ -57,7 +73,7 @@
 </div>
 
 
-  <ion-card *ngIf="restaurant">
+  <!-- <ion-card *ngIf="restaurant">
     
     <ion-card-header>
       <img src="{{restaurant.mainImageUrl}}" alt="ion">
@@ -76,7 +92,7 @@
         </div>
     </div>
     </ion-card-content>
-  </ion-card>
+  </ion-card> -->
 
   <div *ngIf="menuByCategories.length > 0">
     <div *ngFor="let menuCategory of menuByCategories">
@@ -88,12 +104,17 @@
         <ion-card-subtitle>{{ menuCategory.field2}}</ion-card-subtitle>
         <ion-card-content>
           <div *ngIf="menuCategory.menuItems.length > 0">
-          <ion-list>
+            <div class="itemsList">
+          <ion-list >
+            
             <ion-item *ngFor="let menuItem of menuCategory.menuItems">
               <ion-label>{{ menuItem.name}}</ion-label>
               <ion-note slot="end" >{{ menuItem.price}}$CA</ion-note>
+            
             </ion-item>
+          
           </ion-list>
+        </div>
         </div>
         </ion-card-content>
       </ion-card-header>

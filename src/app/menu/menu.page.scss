@@ -1,23 +1,85 @@
-.categorySlides {
-    --bullet-background:black;
-    --bullet-background-active: darkred;
-    background-color: green;
+
+// .categorySlides {
+//     --bullet-background:black;
+//     --bullet-background-active: darkred;
+//     background-color: green;
+//  }
+
+.collectingMethodSegment {
+margin: 15px;
+}
+
+.collectingMethodSegment ion-segment ion-segment-button{
+  --color-checked: white;
+  --border-color:black;
+  --background-checked: darkgreen;
+  //--background: white;
+
+
+}
+
+.collectingMethodSegment ion-segment {
+  
+  //--background: yellow;
+  //--color-checked: darkgreen;
+
+}
+
+
+ .catSlides ion-card {
+  position: relative;
+  text-align: center;
+  width: 110px !important;
+  height: 110px !important;
+  margin: 0 !important;
+  //border-style: solid;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
+  
  }
 
- 
 
+ .catSlides ion-card img {
+    height: 100%;
+    // filter: contrast(120%);
+    // filter: brightness(80%);
+ }
+
+ .delivery ion-item{
+  box-shadow: none;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  text-align: left;
+  --background: none;
+  border-style: solid;
+  color: darkgreen;
+  border-radius: 5px;
+  //--border-radius: 10px;
+  border-color: darkgreen;
+}
+
+.itemsList ion-item{
+  box-shadow: none;
+  width: 100%;
+  text-align: left;
+}
+.itemsList ion-list{
+  box-shadow: none;
+  width: 100%;
+  text-align: left;
+}
     ion-card {
       position: relative;
       text-align: center;
+
     }
 
     .card-title {
       position: absolute;
-      top: 5%;
-      font-size: 1.0em;
+      top: 60%;
+      font-size: 1.2em;
       width: 100%;
       font-weight: bold;
-      color: darkgreen;
+      color: white;
     }
 
     ion-item{

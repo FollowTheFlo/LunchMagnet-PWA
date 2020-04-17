@@ -4,19 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicModule } from '@ionic/angular';
 
-import { MenuPageRoutingModule } from './menu-routing.module';
+import { AddressSearchPageRoutingModule } from './address-search-routing.module';
 
-import { MenuPage } from './menu.page';
-import { AddressSearchPageModule} from '../shared-components/address-search/address-search.module';
+import { AddressSearchPage } from './address-search.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MenuPageRoutingModule,
-    AddressSearchPageModule
+    AddressSearchPageRoutingModule,
+    
   ],
-  declarations: [MenuPage]
+  declarations: [AddressSearchPage]
 })
-export class MenuPageModule {}
+export class AddressSearchPageModule {}

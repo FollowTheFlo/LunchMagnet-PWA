@@ -1,24 +1,18 @@
-import { Component } from '@angular/core';
-import { GeolocationService, Feature } from './../services/geolocation.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { GeolocationService, Feature } from './../../services/geolocation.service';
 import { Map, tileLayer, marker} from 'leaflet';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-address-search',
+  templateUrl: './address-search.page.html',
+  styleUrls: ['./address-search.page.scss'],
 })
+export class AddressSearchPage implements OnInit, OnDestroy {
 
-
-export class HomePage {
-
-  constructor(private geolocationService: GeolocationService, private httpClient: HttpClient) {}
-
-  
-
-  //map: Map;
   map: L.Map;
   control: L.Routing.Control;
   newMarker: L.Marker;
@@ -31,6 +25,20 @@ export class HomePage {
   customerFeature = undefined;
   mapLoaded = false;
 
+
+  constructor(
+    private geolocationService: GeolocationService,
+    private httpClient: HttpClient,
+    private modalCtrl: ModalController
+    ) { }
+
+  ngOnInit() {
+  }
+
+  ngOnDestroy() {
+
+  }
+
   ionViewDidEnter(){
     if (!this.mapLoaded) {
       this.loadMap();
@@ -38,7 +46,15 @@ export class HomePage {
     }
     
   }
-//http://router.project-osrm.org/route/v1/car/-73.596139,45.518281;-73.5939564,45.5832091?overview=false&alternatives=true&steps=true&hints=;
+
+  onDismiss() {
+    // using the injected ModalController this page
+    // can "dismiss" itself and optionally pass back data
+    this.modalCtrl.dismiss({
+      'address': this.selectedAddress
+    });
+  }
+
   loadMap() {
     this.map = new L.Map("mapId").setView([45.508888, -73.561668], 13);
 
@@ -126,6 +142,7 @@ locatePosition() {
         .search_word(searchTerm)
         .subscribe((features: Feature[]) => {
           this.features = features;
+          console.log("features", this.features);
           this.addresses = features.map(feat => feat.place_name);
         });
       } else {
@@ -188,5 +205,6 @@ locatePosition() {
   onSearchCancel() {
     this.selectionDone = false;
   }
+
 
 }
