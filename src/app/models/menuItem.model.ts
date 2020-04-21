@@ -1,4 +1,4 @@
-import { Topping } from '../models/topping.model';
+import { Option } from '../models/option.model';
 
 export interface MenuItem {
     _id: string;
@@ -6,8 +6,9 @@ export interface MenuItem {
     description: string;
     price: number;
     category: string;
-    toppings: Topping[];
+    options: Option[];
     notes: string;
     isAvailable: boolean;
     mainImageUrl: string;
+    quantity: number;
 }

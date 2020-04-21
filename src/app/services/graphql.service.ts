@@ -11,12 +11,12 @@ import { FetchResult } from 'apollo-link';
 })
 export class GraphqlService {
     constructor(private apollo: Apollo) {}
-  
 
 
 
 
-    
+
+
     resetStore() {
       console.log('apollo resetStore');
       return this.apollo.getClient().resetStore();
@@ -45,7 +45,44 @@ export class GraphqlService {
 
           }
           }
-        
+
+        `} );
+    }
+
+    getOneMenuItem(menuItemId: string): Observable<ApolloQueryResult<any>> {
+      return this.apollo.query<any>({
+        query: gql`
+          query{
+            getMenuItem (
+              menuItemId:"${menuItemId}"
+          ) {
+            _id
+            name
+            name_fr
+            description
+            description_fr
+            price
+            quantity
+            category
+            options {
+              name
+              name_fr
+              required
+              min
+              max
+              exactNumber
+              toppings {
+                name
+                name_fr
+                price
+                quantity
+                default
+                selected
+            }
+            }
+          }
+          }
+
         `} );
     }
 
@@ -60,16 +97,54 @@ export class GraphqlService {
             description
             description_fr
             price
+            quantity
             category
-            toppings {
+            options {
               name
-              price
+              name_fr
+              required
+              min
+              max
+              exactNumber
+              toppings {
+                name
+                name_fr
+                price
+                quantity
+                default
+                selected
+            }
             }
             
 
+
           }
           }
-        
+
+        `} );
+    }
+
+    getMenuCategories(sortMethod: string): Observable<ApolloQueryResult<any>> {
+      return this.apollo.query<any>({
+        query: gql`
+          query{
+            getMenuCategories(
+              sortMethod:"${sortMethod}"
+            ) {
+              _id
+              name
+              name_fr
+              index
+              description
+              description_fr
+              code
+              active
+              imageUrl
+
+
+           }
+          }
+
         `} );
     }
 
@@ -103,7 +178,7 @@ export class GraphqlService {
                     login (
                       email:"${email}"
                       password: "${password}"
-    
+
                     ) {
                       userId
                       token
@@ -114,7 +189,7 @@ export class GraphqlService {
                 `,
         });
       }
-    
+
       signup(
         userName: string,
         email: string,
@@ -133,14 +208,14 @@ export class GraphqlService {
                 name
                 email
                 _id
-    
+
               }
             }
-    
+
           `,
         });
       }
-    
+
       resetPassword(email: string): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
         return this.apollo.mutate<any>({
           mutation: gql`
@@ -182,7 +257,7 @@ export class GraphqlService {
                   `,
         });
       }
-    
+
       payWithCard(amount: number, token: string): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
         return this.apollo.mutate<any>({
           mutation: gql`
@@ -205,7 +280,7 @@ export class GraphqlService {
           mutation {
             uploadFile(
                file: "${file}"
-              ) 
+              )
             }
           `,
         });

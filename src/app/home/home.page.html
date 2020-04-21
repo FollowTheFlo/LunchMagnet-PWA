@@ -1,18 +1,146 @@
+<ion-header>
+  <div class="homeToolbar">
+    <ion-toolbar>
+      <ion-buttons slot="end">
 
-<ion-content [fullscreen]="true">
+        <ion-button >
+          <p *ngIf="currentSlot.isOpen">Open: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}} </p>
+          <p *ngIf="!currentSlot.isOpen">Close</p>
+       
+        </ion-button>
+      </ion-buttons>
+      
+    </ion-toolbar>
+  </div>
+</ion-header>  
 
-          <ion-searchbar animated=true placeholder="search your address" debounce=500 
-           (ionChange)="search($event)" [value]="selectedAddress" showCancelButton="always"
-           (ionClear)= "onSearchCancel()"
-           >
-        </ion-searchbar>
-            <ion-list lines="none" *ngIf="addresses.length > 0 ">
-              
-              <ion-item button *ngFor="let address of addresses" (click)="onSelect(address)">           
-                {{ address }}
-              </ion-item>
-            </ion-list>
+<ion-content >
 
-            <div id="mapId" style="height:500px"></div>
+
+  <div class="collectingMethodSegment">
+  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery">
+    <ion-segment-button value="delivery">
+      <ion-label>Delivery</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="pickup">
+      <ion-label>Pick-up</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+<div class="delivery">
+<ion-item (click)="openSearchAddressModal()">
+  <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
+  <ion-label *ngIf="userAddress !== undefined">{{userAddress}}</ion-label>
+  <ion-buttons slot="end">
+  <ion-button >
+    <ion-icon name="search"  ></ion-icon>
+ </ion-button>
+</ion-buttons>
+
+</ion-item>
+</div>
+
+  <div *ngIf="menuByCategories.length > 0" class="catSlides">
+  <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">
+    <ion-slide *ngFor="let menuCategory of menuByCategories">
+
+<div (click)="scrollTo(menuCategory._id)">
+      <ion-card>
+        <img src="{{menuCategory.imageUrl}}"/>
+        <div class="card-title">{{ menuCategory.name}}</div>
+        <!-- <div class="card-subtitle">41 Listings</div> -->
+    </ion-card>
+  </div>
+      
+    </ion-slide>
+  </ion-slides>
+</div>
+
+
+  <!-- <ion-card *ngIf="restaurant">
+    
+    <ion-card-header>
+      <img src="{{restaurant.mainImageUrl}}" alt="ion">
+      <ion-card-title>{{ restaurant.name}}</ion-card-title>
+      <ion-card-subtitle>{{ restaurant.address}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <h2 *ngIf="isRestaurantOpened">Restaurant is opened</h2>
+      <h2 *ngIf="!isRestaurantOpened">Restaurant is closed</h2>
+      <ion-button (click)="reload()">Reload</ion-button>
+      <h2>Opening Hours</h2>
+     <div *ngIf="restaurant.openingHours.length > 0">
+      <div *ngFor="let slot of restaurant.openingHours">
+        <p>{{slot.day}}</p>
+        <p>{{slot.openTime}} - {{slot.closeTime}}</p>
+        </div>
+    </div>
+    </ion-card-content>
+  </ion-card> -->
+
+  <div *ngIf="menuByCategories.length > 0">
+    <div *ngFor="let menuCategory of menuByCategories">
+      
+        <div class="bigCard">
+    <ion-card >
+      
+        <img id="{{menuCategory._id}}" src="{{menuCategory.imageUrl}}" alt="ion">
+     
+      <ion-card-header>
+        <ion-card-title>{{ menuCategory.name}}</ion-card-title>
+        <ion-card-subtitle>{{ menuCategory.description}}</ion-card-subtitle>
+        <ion-card-content>
+          <div *ngIf="menuCategory.menuItems.length > 0">
+            <div class="itemsList">
+          <!-- <ion-list > -->
+            
+            <ion-item *ngFor="let menuItem of menuCategory.menuItems">
+            
+              <p (click)="onSelectItem(menuItem._id)">{{ menuItem.name}}</p>
+              <ion-note (click)="onSelectItem(menuItem._id)" slot="end" >{{ menuItem.price}}$CA</ion-note>
+            
+            </ion-item>
+          
+          <!-- </ion-list> -->
+        </div>
+        </div>
+        </ion-card-content>
+      </ion-card-header>
+
+    </ion-card>
+  </div>
+  
+</div>
+  </div>
+
+
+
+<!-- <div *ngIf="menuByCategories.length > 0">
+  <div *ngFor="let menuCategory of menuByCategories">
+    <h1>{{menuCategory.value}} ({{menuCategory.menuItems.length}})</h1>
+   
+      <div *ngIf="menuCategory.menuItems.length > 0">
+      <ion-card *ngFor="let menuItem of menuCategory.menuItems">
+        <ion-card-header>
+          <ion-card-title>{{ menuItem.name}}</ion-card-title>
+          <ion-card-subtitle>{{ menuItem.price}}$CA</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+    
+        <div *ngIf="menuItem.toppings.length > 0">
+          <h1>Options</h1>
+          <div *ngFor="let topping of menuItem.toppings">
+            <p>{{topping.name}}</p>
+            <p>{{topping.price}</p>
+          </div>
+        </div>
+    
+        </ion-card-content>
+      </ion-card>
+      
+    </div>
+  </div>
+</div> -->
 
 </ion-content>

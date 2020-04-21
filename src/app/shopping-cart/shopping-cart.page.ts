@@ -1,20 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MenuItem } from 'src/app/models/menuItem.model';
 import { MenuService } from './../services/menu.service';
 import { NavigationService } from './../services/navigation.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-tabs',
-  templateUrl: './tabs.page.html',
-  styleUrls: ['./tabs.page.scss'],
+  selector: 'app-shopping-cart',
+  templateUrl: './shopping-cart.page.html',
+  styleUrls: ['./shopping-cart.page.scss'],
 })
-export class TabsPage implements OnInit, OnDestroy {
+export class ShoppingCartPage implements OnInit, OnDestroy {
 
-  selectedItemsCount = 0;
-  selectedMenuItems: any;
-  labelCode = '';
   private menSub: Subscription;
-  private navSub: Subscription;
+  selectedMenuItems: MenuItem[] = [];
 
   constructor(
     private menuService: MenuService,
@@ -22,15 +20,6 @@ export class TabsPage implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit() {
-    console.log('TabsPage');
-    this.navSub = this.navigationService.getNavListener().subscribe((link) => {
-      console.log('getNavListener', link);
-      this.labelCode = link;
-      // this.translationService.getTranslation(link).subscribe((label) => {
-      //   this.topTitle = label;
-      // });
-    });
-
     this.menSub = this.menuService.selectedMenuItems$
       .subscribe( selectedItems => {
         console.log('Tabs selectedItems', selectedItems);
@@ -42,6 +31,10 @@ export class TabsPage implements OnInit, OnDestroy {
     if (this.menSub) {
       this.menSub.unsubscribe();
     }
+  }
+
+  ionViewDidEnter() {
+    this.navigationService.setNavLink('SHOPPING_CART');
   }
 
 }

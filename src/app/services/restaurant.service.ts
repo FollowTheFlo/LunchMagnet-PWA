@@ -7,12 +7,19 @@ import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 
+export interface CurrentSlot {
+    isOpen: boolean;
+    openHour: Date;
+    closeHour: Date;
+  }
+
 @Injectable({ providedIn: 'root' })
 export class RestaurantService {
 
     private restaurant: Restaurant = undefined;
     openingSlots: OpeningSlot[] = [];
     weekDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 
     constructor(
         public graphqlService: GraphqlService
@@ -39,7 +46,7 @@ export class RestaurantService {
         return this.graphqlService.getRestaurant('5e9627c5c516c2794b861961')
         .pipe(
             map(response => response.data.getRestaurant),
-            map(restaurant =>{ return {...restaurant, mainImageUrl: environment.serverDomain + '/images/' + restaurant.mainImageUrl}}),
+            map(restaurant =>{ return {...restaurant, mainImageUrl: environment.IMAGE_SERVER_DOMAIN + '/images/' + restaurant.mainImageUrl}}),
             tap(data => {
                 this.restaurant = data;
                 console.log('in Tap', this.restaurant);
@@ -50,8 +57,9 @@ export class RestaurantService {
 
 
 
-    checkIfOpen(targetDate?: Date) {
-        //by default use the current time
+    checkIfOpen(targetDate?: Date): CurrentSlot {
+        
+        // by default use the current time
         targetDate = targetDate === undefined ? new Date() : targetDate;
         console.log('checkIfOpen');
         let isOpened = false;
@@ -90,7 +98,12 @@ export class RestaurantService {
         }
     }
         );
-        return isOpened;
+        const currentSlot = {
+            isOpen: isOpened,
+            openHour: openingHour,
+            closeHour: closingHour
+        }
+        return currentSlot;
       
       }
 

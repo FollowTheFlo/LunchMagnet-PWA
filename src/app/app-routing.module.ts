@@ -7,10 +7,17 @@ const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.module').then((m) => m.TabsPageModule),
   },
   { path: 'home', redirectTo: 'tabs/home', pathMatch: 'full' },
+  { path: 'menu', redirectTo: 'tabs/menu', pathMatch: 'full' },
   {
-    path: 'menu',
-    loadChildren: () => import('./menu/menu.module').then( m => m.MenuPageModule)
+    path: 'shopping-cart',
+    loadChildren: () => import('./shopping-cart/shopping-cart.module').then( m => m.ShoppingCartPageModule)
   },
+
+  // { path: 'home', redirectTo: 'tabs/home', pathMatch: 'full' },
+  // {
+  //   path: 'menu',
+  //   loadChildren: () => import('./menu/menu.module').then( m => m.MenuPageModule)
+  // },
 ];
 
 @NgModule({

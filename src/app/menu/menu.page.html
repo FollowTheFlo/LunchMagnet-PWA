@@ -1,11 +1,21 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>menu</ion-title>
-    <img src="/assets/img/miramar.png">
-  </ion-toolbar>
-</ion-header>  -->
+<ion-header>
+  <div class="homeToolbar">
+    <ion-toolbar>
+      <ion-buttons slot="end">
+        <!-- <ion-back-button></ion-back-button>
+        <ion-title>Back Button</ion-title> -->
+        <ion-button >
+          <p *ngIf="currentSlot.isOpen">Open: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}} </p>
+          <p *ngIf="!currentSlot.isOpen">Close: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}}</p>
+            <!-- <ion-icon name="person-circle-outline"  ></ion-icon> -->
+        </ion-button>
+      </ion-buttons>
+      
+    </ion-toolbar>
+  </div>
+</ion-header> 
 
-<ion-content #content>
+<ion-content >
 
   <!-- <ion-img 
   role="button"
@@ -44,11 +54,11 @@
 </div>
 
 <div class="delivery">
-<ion-item>
+<ion-item (click)="openSearchAddressModal()">
   <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
   <ion-label *ngIf="userAddress !== undefined">{{userAddress}}</ion-label>
   <ion-buttons slot="end">
-  <ion-button (click)="openSearchAddressModal()">
+  <ion-button >
     <ion-icon name="search"  ></ion-icon>
  </ion-button>
 </ion-buttons>
@@ -110,7 +120,10 @@
             <ion-item *ngFor="let menuItem of menuCategory.menuItems">
               <ion-label>{{ menuItem.name}}</ion-label>
               <ion-note slot="end" >{{ menuItem.price}}$CA</ion-note>
-            
+              <!-- <ion-buttons slot="end"></ion-buttons>
+              <ion-button >
+                  <ion-icon name="add-circle-outline"  ></ion-icon> 
+              </ion-button> -->
             </ion-item>
           
           </ion-list>

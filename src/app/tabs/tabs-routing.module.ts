@@ -22,7 +22,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../orders//orders.module').then((m) => m.OrdersPageModule),
+            loadChildren: () => import('../orders/orders.module').then((m) => m.OrdersPageModule),
           },
         ],
       },
@@ -34,7 +34,18 @@ const routes: Routes = [
             loadChildren: () => import('../menu/menu.module').then((m) => m.MenuPageModule),
           },
         ],
-      }
+      },
+      {
+        path: 'shopping-cart',
+        children: [
+          {
+            path: '',
+           // loadChildren: () => import('./shopping-cart/shopping-cart.module').then( m => m.ShoppingCartPageModule)
+            loadChildren: () => import('../shopping-cart/shopping-cart.module').then((m) => m.ShoppingCartPageModule),
+          },
+        ],
+      },
+     
     ]
   },
   {

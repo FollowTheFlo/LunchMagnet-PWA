@@ -1,22 +1,40 @@
 
 <ion-tabs>
+  <div class="cartTab" >
+  <ion-toolbar slot="bottom" 
+  *ngIf="selectedMenuItems.length > 0 && labelCode !== 'SHOPPING_CART'" 
+  routerLink="/tabs/shopping-cart">
+    <ion-buttons slot="start">     
+      <ion-button>
+      <ion-icon name="cart-outline" ></ion-icon>
+      <ion-badge *ngIf="selectedMenuItems.length > 0">{{ selectedMenuItems.length }}</ion-badge>
+      
+      
+      </ion-button>
+    </ion-buttons>
+    <ion-label>View Cart</ion-label>
+<!-- 
+    <ion-icon name="cart"></ion-icon>
+    <ion-label>Cart</ion-label> -->
+  </ion-toolbar>
+  </div>
     <ion-tab-bar slot="bottom" >
 
 
       <ion-tab-button tab="home" >
-        <ion-icon name="home"></ion-icon>
+        <ion-icon name="restaurant-outline"></ion-icon>
            <ion-label>Home</ion-label>
       </ion-tab-button>
       
       <ion-tab-button  tab="orders" >
-        <ion-icon name="cart"></ion-icon>
+        <ion-icon name="receipt-outline"></ion-icon>
         <ion-label>Orders</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button  tab="menu" >
+      <!-- <ion-tab-button  tab="menu" >
         <ion-icon name="pizza"></ion-icon>
         <ion-label>Menu</ion-label>
-      </ion-tab-button>
+      </ion-tab-button> -->
 
 
     </ion-tab-bar>

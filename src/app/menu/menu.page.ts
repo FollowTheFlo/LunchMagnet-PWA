@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { RestaurantService } from './../services/restaurant.service';
+import { RestaurantService, CurrentSlot } from './../services/restaurant.service';
 import { MenuService } from './../services/menu.service';
 import { Restaurant } from './../models/restaurant.model';
 import { MenuItem } from './../models/menuItem.model';
@@ -42,7 +42,7 @@ export class MenuPage implements OnInit {
   restaurant: Restaurant;
   menuItems: MenuItem[] = [];
   menuByCategories: Category[] = [];
-  isRestaurantOpened = false;
+  currentSlot: CurrentSlot;
   openingSlots: OpeningSlot[] = [];
   fullMenu: any[] = [];
   weekDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -60,16 +60,16 @@ export class MenuPage implements OnInit {
       console.log('presentModal');
       const modal = await this.modalCtrl.create({
         component: AddressSearchPage,
-        // componentProps: {
-        //   tournamentId: tournamentId,
-        // },
+
       });
-      //modal.style.cssText = '--min-height: 120px; --max-height: 300px;';
+      
       modal.onDidDismiss()
       .then((data) => {
-        console.log(data); // Here's your selected user!
-        this.userAddress = data.data.address;
-    });
+        console.log(data);
+        if ( data.data.action === 'save') {
+          this.userAddress = data.data.address;
+        }
+      });
       return await modal.present();
     }
 
@@ -86,8 +86,8 @@ export class MenuPage implements OnInit {
     .subscribe(restaurant => {
       this.restaurant = restaurant;
       const today = new Date();
-      today.setHours(today.getHours() + 4);
-      this.isRestaurantOpened = this.restaurantService.checkIfOpen(today);
+      //today.setHours(today.getHours() + 4);
+      this.currentSlot = this.restaurantService.checkIfOpen(today);
       
     });
 
@@ -124,7 +124,7 @@ export class MenuPage implements OnInit {
 
     .subscribe(restaurant => {
       this.restaurant = restaurant;
-      this.isRestaurantOpened = this.restaurantService.checkIfOpen();
+      this.currentSlot = this.restaurantService.checkIfOpen();
     });
   }
 
@@ -134,48 +134,6 @@ export class MenuPage implements OnInit {
     // tslint:disable-next-line: radix
     const minute = parseInt(time.split(':')[1]);
     new Date().setHours(hour, minute);
-  }
-
-checkIfOpen() {
-    console.log('checkIfOpen');
-    let isOpened = false;
-    const today = new Date();
-    const openingHour = new Date();
-    const closingHour = new Date();
-    const todayDay = this.weekDays[today.getDay()];
-    console.log('todayDay', todayDay);
-    const todaySlots = this.restaurant.openingHours.filter(t => t.day === todayDay);
-    console.log('todaySlots', todaySlots);
-    todaySlots.map( openingSlot =>
-
-    
-    // const openingSlot: OpeningSlot = this.openingSlots.find(t => {
-    //   console.log('t', t);
-    //   return t.day === todayDay;
-    // } );
-    {
-      openingHour.setHours(
-      +openingSlot.openTime.split(':')[0],
-      +openingSlot.openTime.split(':')[1]
-    );
-
-      closingHour.setHours(
-      +openingSlot.closeTime.split(':')[0],
-      +openingSlot.closeTime.split(':')[1]
-      );
-
-      console.log('today', today);
-      console.log('openingHour', openingHour);
-      console.log('closingHour', closingHour);
-
-      if (today >= openingHour && today <= closingHour) {
-       console.log('in condition');
-       isOpened = true;
-    }
-}
-    );
-    return isOpened;
-  
   }
 
 

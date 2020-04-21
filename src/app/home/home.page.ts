@@ -1,192 +1,214 @@
-import { Component } from '@angular/core';
-import { GeolocationService, Feature } from './../services/geolocation.service';
-import { Map, tileLayer, marker} from 'leaflet';
-import * as L from 'leaflet';
-import 'leaflet-routing-machine';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { RestaurantService, CurrentSlot } from './../services/restaurant.service';
+import { MenuService } from './../services/menu.service';
+import { NavigationService } from './../services/navigation.service';
+import { Restaurant } from './../models/restaurant.model';
+import { MenuItem } from './../models/menuItem.model';
+import { MenuCategory } from './../models/menuCategory.model';
+import { OpeningSlot } from './../models/openingSlot.model';
+import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { IonSlides, IonContent, AngularDelegate } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
+import { MenuItemPage } from './../shared-components/menu-item/menu-item.page';
+
+
+interface MenuByCategory {
+  _id: string;
+  name: string;
+  name_fr: string;
+  description: string;
+  description_fr: string;
+  price: number;
+  code: string;
+  index: number;
+  notes: string;
+  active: boolean;
+  imageUrl: string;
+  menuItems: MenuItem[];
+}
+
+// interface CurrentSlot {
+//   isOpen: boolean;
+//   openHour: Date;
+//   closeHour: Date;
+// }
+
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
+export class HomePage implements OnInit {
+  @ViewChild('filePicker', { static: false}) filePicker: ElementRef<HTMLInputElement>;
+  //@ViewChild('categorySlides') slideWithNav: IonSlides;
+  @ViewChild('content') content: IonContent;
+
+  slideOpts = {
+    initialSlide: 0,
+    slidesPerView: 3,
+    autoplay: false
+  };
+  userAddress = undefined;
+  restaurant: Restaurant;
+  menuItems: MenuItem[] = [];
+  menuByCategories: MenuByCategory[] = [];
+  currentSlot: CurrentSlot = {
+    isOpen: false,
+    openHour: new Date(),
+    closeHour: new Date()
+  };
+  openingSlots: OpeningSlot[] = [];
+  fullMenu: any[] = [];
+  weekDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  selectedImage: string;
+
+  constructor(
+    private restaurantService: RestaurantService,
+    private  menuService: MenuService,
+    private httpClient: HttpClient,
+    private modalCtrl: ModalController,
+    private navigationService: NavigationService
+    ) { }
 
 
-export class HomePage {
+    async openSearchAddressModal() {
+      console.log('presentModal');
+      const modal = await this.modalCtrl.create({
+        component: AddressSearchPage,
 
-  constructor(private geolocationService: GeolocationService, private httpClient: HttpClient) {}
+      });
 
-  
-
-  //map: Map;
-  map: L.Map;
-  control: L.Routing.Control;
-  newMarker: L.Marker;
-  address: string[];
-
-  addresses: string[] = [];
-  selectedAddress = null;
-  selectionDone = false;
-  features: Feature[] = [];
-  customerFeature = undefined;
-  mapLoaded = false;
-
-  ionViewDidEnter(){
-    if (!this.mapLoaded) {
-      this.loadMap();
-      this.mapLoaded = true;
+      modal.onDidDismiss()
+      .then((data) => {
+        console.log(data);
+        if ( data.data.action === 'save') {
+          this.userAddress = data.data.address;
+        }
+      });
+      return await modal.present();
     }
-    
-  }
-//http://router.project-osrm.org/route/v1/car/-73.596139,45.518281;-73.5939564,45.5832091?overview=false&alternatives=true&steps=true&hints=;
-  loadMap() {
-    this.map = new L.Map("mapId").setView([45.508888, -73.561668], 13);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-
-
-}
-
-drawRoad(lat: number, lng: number) {
-
-  if ( this.control !== undefined) {
-    this.map.removeControl(this.control);
+    scrollTo(elementId: string) {
+      console.log('elementId', elementId);
+      //elementId = 'Appetizers';
+      //element.scrollIntoView({behavior: 'smooth'});
+      const elmnt = document.getElementById(elementId);
+      elmnt.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+      //const y = document.getElementById(elementId).offsetTop;
+     // this.content.scrollToPoint(0, y, 300);
   }
 
-  this.control = L.Routing.control({
-    router: L.Routing.osrmv1({
-        serviceUrl: `http://router.project-osrm.org/route/v1/`
-    }),
-    showAlternatives: false,
-    lineOptions: {styles: [{color: '#242c81', weight: 7}]},
-    fitSelectedRoutes: false,
-    altLineOptions: {styles: [{color: '#ed6852', weight: 7}]},
-    show: false,
-    routeWhileDragging: true,
-    waypoints: [
-        L.latLng(lat, lng),
-        L.latLng(45.5832091, -73.5939564)
-    ]
-  }).addTo(this.map);
-
-  console.log(' this.control',  this.control);
-}
-
-getDistance(lat: number, lng: number) {
-
-  console.log('getDistance');
-
-  const headers = new HttpHeaders();
-  headers.append('Host', 'router.project-osrm.org');
-
-  const httpOptions1 = {
-  headers: headers
-};
-
-
-
-  this.httpClient.get(
-   // `http://router.project-osrm.org/route/v1/car/-73.596139,45.518281;-73.5939564,45.5832091?overview=false&alternatives=true&steps=true&hints=;`,
-    //`http://router.project-osrm.org/table/v1/car/${lat},${lng};45.5832091,-73.5939564`,
-    //'http://router.project-osrm.org/table/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219?sources=0',
-    'http://router.project-osrm.org/table/v1/driving/-73.596139,45.518281;-73.5939564,45.5832091?sources=0',
-   httpOptions1
-  )
-  .subscribe( response => {
-    console.log('distance', response);
+  ionViewDidEnter() {
+    this.navigationService.setNavLink('HOME');
   }
 
-  )
-  
-  
-}
+  ngOnInit() {
+    console.log('MenuPage ngOnInit');
 
-locatePosition() {
-  this.map.locate({ setView: true }).on("locationfound", (e: any) => {
-    this.newMarker = marker([e.latitude, e.longitude], {
-      draggable: true
-    }).addTo(this.map);
-    this.newMarker.bindPopup("You are located here!").openPopup();
-    //this.getAddress(e.latitude, e.longitude); // This line is added
- 
-    this.newMarker.on("dragend", () => {
-      const position = this.newMarker.getLatLng();
-      //this.getAddress(position.lat, position.lng);// This line is added
-     
+
+    this.restaurantService.fetchRestaurant()
+    .subscribe(restaurant => {
+      this.restaurant = restaurant;
+      const today = new Date();
+      //today.setHours(today.getHours() + 4);
+      this.currentSlot = this.restaurantService.checkIfOpen(today);
+
     });
-  });
-}
 
-  search(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
-    if (searchTerm && searchTerm.length > 0 && !this.selectionDone) {
-      this.geolocationService
-        .search_word(searchTerm)
-        .subscribe((features: Feature[]) => {
-          this.features = features;
-          this.addresses = features.map(feat => feat.place_name);
+    this.menuService.fetchMenuItems()
+    .subscribe( menuItems => {
+      this.menuItems = menuItems;
+    
+          //sortMethod eith 'index' or 'name'
+      this.menuService.fetchMenuCategories('index')
+        .subscribe(categories => {
+          this.menuByCategories = categories;
+          // console.log('this.menuCategories1', thBy);
+          // thBy.sort((a: Category, b: Category) => {
+          //   return (a.index > b.index) ? 1 : -1;
+          // });
+          console.log('this.menuItems', this.menuItems);
+
+          // in each category, add item list
+          this.menuByCategories.forEach(menuCategory => {
+            menuCategory.menuItems = this.menuItems.filter(mItems => mItems.category === menuCategory._id ) ;
+
+          });
+          console.log('this.menuCategories3', this.menuByCategories);
         });
-      } else {
-        this.addresses = [];
-      }
-  }
 
-  onSelect(address: string) {
-    console.log('address', address);
-    console.log('features', this.features);
-
-  
-    //this.newMarker.clearlayers();
-
-
-    this.selectionDone = true;
-    //get the address withing feature list to get coordinates
-    const feature = this.features.find(f => f.place_name === address);
-
-    this.customerFeature = feature;
-    console.log('customerFeature',this.customerFeature);
-    console.log('lng',this.customerFeature.geometry.coordinates[0]);
-    const lng= this.customerFeature.geometry.coordinates[0];
-    const lat= this.customerFeature.geometry.coordinates[1];
-
-    
-    
-    
-
-    this.addresses = [];
-    
-    this.selectedAddress = address;
-
-    if (this.newMarker !== undefined) {
-      console.log('in condition');
-      //this.newMarker.removeFrom(this.map);
-      const newLatLng = new L.LatLng(this.customerFeature.geometry.coordinates[1], this.customerFeature.geometry.coordinates[0]);
-      this.newMarker.setLatLng(newLatLng);
-      this.map = this.map.removeLayer(this.newMarker);
-    } else {
-      console.log('NOT in condition');
-      this.newMarker = L.marker([this.customerFeature.geometry.coordinates[1], this.customerFeature.geometry.coordinates[0]], {
-        draggable: true
-      }).addTo(this.map);
-    }
-
-    
-   
-
-
-    this.newMarker.bindPopup("Delivery Address").openPopup();
-    this.drawRoad(lat, lng);
-
-    this.geolocationService.getDistance(lat, lng)
-    .subscribe( response => {
-      console.log('response', response);
     });
+
+
+
   }
 
-  onSearchCancel() {
-    this.selectionDone = false;
+  // reload() {
+  //   this.restaurantService.fetchRestaurant()
+  //   // .pipe(
+  //   //   tap( r => this.checkIfOpen())
+  //   // )
+
+  //   .subscribe(restaurant => {
+  //     this.restaurant = restaurant;
+  //     this.currentSlot = this.restaurantService.checkIfOpen();
+  //   });
+  // }
+
+  async onSelectItem(itemId: string) {
+    console.log('onSelectItem', itemId);
+    console.log('presentModal');
+    const modal = await this.modalCtrl.create({
+        component: MenuItemPage,
+        componentProps: {
+          menuItemId: itemId,
+        },
+
+      });
+    modal.style.cssText = '--min-height: 120px; --max-height: 500px;';
+ 
+    // modal.onDidDismiss()
+    //   .then((data) => {
+    //     console.log(data);
+    //     if ( data.data.action === 'save') {
+    //       this.userAddress = data.data.address;
+    //     }
+    //   });
+    return await modal.present();
+  }
+
+  convertHoursToDate(time: string) {
+    // tslint:disable-next-line: radix
+    const hour = parseInt(time.split(':')[0]);
+    // tslint:disable-next-line: radix
+    const minute = parseInt(time.split(':')[1]);
+    new Date().setHours(hour, minute);
+  }
+
+
+  imageSelected(files: FileList) {
+    console.log('imageSelected', files);
+    if(!files || files.length === 0) {
+      console.log('no file selected');
+      return false;
+    }
+    this.menuService.uploadImage(files)
+    .subscribe((val) => {
+
+      console.log(val);
+      },
+      error => {
+          console.log(error);
+      }
+      );
+
+  }
+
+  onChangeCollectingMethod(ev: any) {
+    console.log('Segment changed', ev.detail.value);
   }
 
 }

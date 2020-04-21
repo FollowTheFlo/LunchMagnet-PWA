@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicModule } from '@ionic/angular';
 
-import { AddressSearchPageRoutingModule } from './address-search-routing.module';
+//import { AddressSearchPageRoutingModule } from './address-search-routing.module';
 
 import { AddressSearchPage } from './address-search.page';
 
@@ -13,7 +13,7 @@ import { AddressSearchPage } from './address-search.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    AddressSearchPageRoutingModule,
+   
     
   ],
   declarations: [AddressSearchPage]

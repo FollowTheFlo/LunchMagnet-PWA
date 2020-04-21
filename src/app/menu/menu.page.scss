@@ -4,6 +4,11 @@
 //     --bullet-background-active: darkred;
 //     background-color: green;
 //  }
+.homeToolbar p {
+  border-style: solid;
+  border-width: 1px;
+  padding: 4px;
+}
 
 .collectingMethodSegment {
 margin: 15px;
@@ -12,7 +17,7 @@ margin: 15px;
 .collectingMethodSegment ion-segment ion-segment-button{
   --color-checked: white;
   --border-color:black;
-  --background-checked: darkgreen;
+  --background-checked: var(--ion-color-primary);
   //--background: white;
 
 
@@ -51,10 +56,11 @@ margin: 15px;
   text-align: left;
   --background: none;
   border-style: solid;
-  color: darkgreen;
+  //color: darkgreen;
+  color: var(--ion-color-primary);
   border-radius: 5px;
   //--border-radius: 10px;
-  border-color: darkgreen;
+  border-color: var(--ion-color-primary);
 }
 
 .itemsList ion-item{
@@ -105,3 +111,4 @@ margin: 15px;
        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
        
      }
+

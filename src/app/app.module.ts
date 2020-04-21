@@ -11,13 +11,13 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GraphQLModule } from './modules/graphql.module';
-//import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-   
+    CommonModule,
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
