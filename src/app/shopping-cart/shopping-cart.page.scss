@@ -1,0 +1,29 @@
+ion-card-title {
+    font-size: 25px;
+}
+
+.bigPrice ion-item {
+    font-size: 35px;
+    --background: black;
+    color: yellow;
+}
+
+.bigPrice ion-item ion-note{
+    font-size: 35px;
+    --background: black;
+    color: yellow;
+}
+
+ion-chip {
+    --background: lightgray;
+    --color: black;
+}
+
+.selectedChip {
+    --background: green;
+    --color: white;
+}
+
+.chip {
+    --color: black;
+}

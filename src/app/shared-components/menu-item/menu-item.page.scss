@@ -7,3 +7,45 @@ ion-card ion-card-content {
     text-align: center;
     font-size:30px;
 }
+
+.toast {
+   text-align: center;
+  
+}
+
+.itemStyle {
+    text-align: center;
+}
+
+.optionStyle {
+    width: 100%; 
+    text-align: center;
+}
+
+.priceStyle {
+    font-size: 20px;
+}
+
+ion-card-title {
+    width: 100%; 
+    text-align: center;
+}
+
+ion-card-subtitle {
+    font-size: 20px;
+}
+
+ion-item-divider {
+    margin-top: 20px;
+    --color: white;
+    --background: var(--ion-color-secondary);
+}
+
+ion-item-divider ion-label {
+    text-align: center;
+}
+
+ion-card ion-card-content {
+    text-align: center;
+    align-content: center;
+}

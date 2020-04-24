@@ -98,21 +98,21 @@ export class MenuPage implements OnInit {
     });
 
     //sortMethod eith 'index' or 'value'
-    this.menuService.getConfigItems('MENU_CATEGORY', 'index')
-    .subscribe(categories => {
-      this.menuByCategories = categories;
-      // console.log('this.menuCategories1', thBy);
-      // thBy.sort((a: Category, b: Category) => {
-      //   return (a.index > b.index) ? 1 : -1;
-      // });
-      console.log('this.menuItems', this.menuItems);
+    // this.menuService.getConfigItems('MENU_CATEGORY', 'index')
+    // .subscribe(categories => {
+    //   this.menuByCategories = categories;
+    //   // console.log('this.menuCategories1', thBy);
+    //   // thBy.sort((a: Category, b: Category) => {
+    //   //   return (a.index > b.index) ? 1 : -1;
+    //   // });
+    //   console.log('this.menuItems', this.menuItems);
 
-      this.menuByCategories.forEach(menuCategory => {
-        menuCategory.menuItems = this.menuItems.filter(menuItems => menuItems.category === menuCategory.value ) ;
+    //   this.menuByCategories.forEach(menuCategory => {
+    //     menuCategory.menuItems = this.menuItems.filter(menuItems => menuItems.category === menuCategory.value ) ;
        
-      });
-      console.log('this.menuCategories3', this.menuByCategories);
-    });
+    //   });
+    //   console.log('this.menuCategories3', this.menuByCategories);
+    // });
    
   }
 

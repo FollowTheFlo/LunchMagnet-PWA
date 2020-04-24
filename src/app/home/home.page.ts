@@ -8,7 +8,7 @@ import { MenuCategory } from './../models/menuCategory.model';
 import { OpeningSlot } from './../models/openingSlot.model';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { IonSlides, IonContent, AngularDelegate } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
 import { MenuItemPage } from './../shared-components/menu-item/menu-item.page';
@@ -42,9 +42,9 @@ interface MenuByCategory {
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  @ViewChild('filePicker', { static: false}) filePicker: ElementRef<HTMLInputElement>;
+  //@ViewChild('filePicker', { static: false}) filePicker: ElementRef<HTMLInputElement>;
   //@ViewChild('categorySlides') slideWithNav: IonSlides;
-  @ViewChild('content') content: IonContent;
+  //@ViewChild('content') content: IonContent;
 
   slideOpts = {
     initialSlide: 0,
@@ -70,7 +70,8 @@ export class HomePage implements OnInit {
     private  menuService: MenuService,
     private httpClient: HttpClient,
     private modalCtrl: ModalController,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private loadingCtrl: LoadingController,
     ) { }
 
 
@@ -118,27 +119,39 @@ export class HomePage implements OnInit {
 
     });
 
-    this.menuService.fetchMenuItems()
-    .subscribe( menuItems => {
-      this.menuItems = menuItems;
-    
-          //sortMethod eith 'index' or 'name'
-      this.menuService.fetchMenuCategories('index')
-        .subscribe(categories => {
-          this.menuByCategories = categories;
-          // console.log('this.menuCategories1', thBy);
-          // thBy.sort((a: Category, b: Category) => {
-          //   return (a.index > b.index) ? 1 : -1;
-          // });
-          console.log('this.menuItems', this.menuItems);
+    this.loadingCtrl.create({ keyboardClose: true, message: 'Loading Menu...' }).then((loadingEl) => {
+      loadingEl.present();
 
-          // in each category, add item list
-          this.menuByCategories.forEach(menuCategory => {
-            menuCategory.menuItems = this.menuItems.filter(mItems => mItems.category === menuCategory._id ) ;
+      this.menuService.fetchMenuItems()
+      .subscribe( menuItems => {
+        this.menuItems = menuItems;
+      
+            //sortMethod eith 'index' or 'name'
+        this.menuService.fetchMenuCategories('index')
+          .subscribe(categories => {
+            this.menuByCategories = categories;
+            // console.log('this.menuCategories1', thBy);
+            // thBy.sort((a: Category, b: Category) => {
+            //   return (a.index > b.index) ? 1 : -1;
+            // });
+            console.log('this.menuItems', this.menuItems);
 
+            // in each category, add item list
+            this.menuByCategories.forEach(menuCategory => {
+              this.menuItems.forEach(mItem => {
+                  if ( mItem.category === menuCategory._id ) {
+                    mItem.categoryName = menuCategory.name;
+                    mItem.categoryName_fr = menuCategory.name_fr;
+                  }
+              }) ;
+              menuCategory.menuItems = this.menuItems.filter(mItem => mItem.category === menuCategory._id ) ;
+              
+            });
+            loadingEl.dismiss();
+            console.log('this.menuCategories3', this.menuByCategories);
           });
-          console.log('this.menuCategories3', this.menuByCategories);
-        });
+
+      });
 
     });
 
@@ -165,10 +178,11 @@ export class HomePage implements OnInit {
         component: MenuItemPage,
         componentProps: {
           menuItemId: itemId,
+          action: 'add'
         },
 
       });
-    modal.style.cssText = '--min-height: 120px; --max-height: 500px;';
+    //modal.style.cssText = '--min-height: 120px; --max-height: 500px;';
  
     // modal.onDidDismiss()
     //   .then((data) => {

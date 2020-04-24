@@ -32,15 +32,21 @@ export class MenuService {
     }
 
     addSelectedMenuItem(menuItem: MenuItem) {
-        console.log( 'MenuService addSelectedMenuItem')
+        console.log( 'MenuService addSelectedMenuItem');
         this.selectedMenuItems.push(menuItem);
-        this._selectedMenuItems.next(this.selectedMenuItems);
+        this._selectedMenuItems.next([...this.selectedMenuItems]);
         
     }
 
-    removeSelectedMenuItem(menuItem: MenuItem) {
-        this.selectedMenuItems.filter(item => item._id !== menuItem._id);
-        this._selectedMenuItems.next(this.selectedMenuItems);
+    editSelectedMenuItem(itemIndex: number, menuItem: MenuItem) {
+        console.log( 'MenuService addSelectedMenuItem');
+        this.selectedMenuItems[itemIndex] = menuItem;
+        this._selectedMenuItems.next([...this.selectedMenuItems]);
+    }
+
+    removeSelectedMenuItem(itemIndex: number) {
+        this.selectedMenuItems.splice(itemIndex, 1);
+        this._selectedMenuItems.next([...this.selectedMenuItems]);
     }
 
     fetchMenuItems() {
@@ -74,43 +80,61 @@ export class MenuService {
         );
     }
 
+    getOneSelectedItem(itemIndex: number) { 
+        console.log('getOneSelectedItem', itemIndex);
+        return from(
+            new Promise<MenuItem>( (resolve, reject) => {
+                const menuItem = this.selectedMenuItems[itemIndex];
+                if (menuItem !== undefined) {
+                    console.log('resolve', menuItem);
+                    resolve(JSON.parse(JSON.stringify(menuItem)));
+                } else {
+                    reject('selectedItem not found locally');
+                }
+             }
+
+            )
+        );
+    }
+
     getOneMenuItem(menuItemId) {
         console.log('getOneMenuItem', menuItemId);
-        // return from(
-        //     new Promise<MenuItem>( (resolve, reject) => {
-        //         const menuItem = this.menuItems.find(item => item._id === menuItemId );
-        //         if (menuItem !== undefined) {
-        //             console.log('resolve', menuItem);
-        //             resolve(menuItem);
-        //         } else {
-        //             reject('menuItem not found locally');
-        //         }
-        //      }
+        return from(
+            new Promise<MenuItem>( (resolve, reject) => {
+                const menuItem = this.menuItems.find(item => item._id === menuItemId );
+                if (menuItem !== undefined) {
+                    console.log('resolve', menuItem);
+                    resolve( JSON.parse(JSON.stringify(menuItem)));
+                } else {
+                    reject('menuItem not found locally');
+                }
+             }
 
-        //     )
+            )
+        );
+
+        // return this.graphqlService.getOneMenuItem(menuItemId).pipe(
+        //     take(1),
+        //     map(response => response.data.getMenuItem)
         // );
-
-        return this.graphqlService.getOneMenuItem(menuItemId).pipe(
-            map(response => response.data.getMenuItem)
-        );
         
         
     }
 
-    getConfigItems(name: string, sortMethod: string) {
-        return this.graphqlService.getConfigItems(name, sortMethod)
-        .pipe(
-            map(response => response.data.getConfigItems),
-            map( categories => {
-                console.log('categories', categories);
-                return categories.map(category => {
-                    console.log('category', category);
-                    category.field1 = environment.IMAGE_SERVER_DOMAIN + '/images/' + category.field1;
-                    return category;
-                });
-            })
-        );
-    }
+    // getConfigItems(name: string, sortMethod: string) {
+    //     return this.graphqlService.getConfigItems(name, sortMethod)
+    //     .pipe(
+    //         map(response => response.data.getConfigItems),
+    //         map( categories => {
+    //             console.log('categories', categories);
+    //             return categories.map(category => {
+    //                 console.log('category', category);
+    //                 category.field1 = environment.IMAGE_SERVER_DOMAIN + '/images/' + category.field1;
+    //                 return category;
+    //             });
+    //         })
+    //     );
+    // }
 
     getMenuCategories(sortMethod: string) {
 

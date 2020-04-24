@@ -40,7 +40,6 @@
 
 </ion-item>
 </div>
-
   <div *ngIf="menuByCategories.length > 0" class="catSlides">
   <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">
     <ion-slide *ngFor="let menuCategory of menuByCategories">
@@ -95,10 +94,10 @@
             <div class="itemsList">
           <!-- <ion-list > -->
             
-            <ion-item *ngFor="let menuItem of menuCategory.menuItems">
+            <ion-item *ngFor="let menuItem of menuCategory.menuItems" (click)="onSelectItem(menuItem._id)">
             
-              <p (click)="onSelectItem(menuItem._id)">{{ menuItem.name}}</p>
-              <ion-note (click)="onSelectItem(menuItem._id)" slot="end" >{{ menuItem.price}}$CA</ion-note>
+              <p>{{ menuItem.name}}</p>
+              <ion-note slot="end" >{{ menuItem.price}}$CA</ion-note>
             
             </ion-item>
           

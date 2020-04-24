@@ -1,21 +1,30 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{menuItem.name}}</ion-title>
+    <ion-title *ngIf="isLoading === false">{{menuItem.categoryName}}/{{menuItem.name}}</ion-title>
+        <ion-buttons>
+    <ion-button fill="clear" color="light" (click)="closeModal()">
+      <ion-icon name="close-circle"></ion-icon>
+    </ion-button>
+    </ion-buttons>
   </ion-toolbar>
+  
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-spinner *ngIf="isLoading === true"></ion-spinner>
+  <ion-card *ngIf="isLoading === false">
     <ion-card-header>
       <ion-card-title>
-        {{menuItem.name}}
+        {{menuItem.categoryName}}/{{menuItem.name}}
       </ion-card-title>
-      <ion-card-subtitle>
+      <ion-card-subtitle *ngIf="menuItem.description">
         {{menuItem.description}}
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      {{totalPrice}}$CA
+      <div class="itemStyle">
+        <div class="priceStyle"> {{menuItem.totalPrice}}$CA</div>
+    
      <div class=itemCount>
        <ion-item>
           <ion-icon  name="remove-circle-outline" (click)="onCounterRemove()"></ion-icon>
@@ -23,21 +32,40 @@
           <ion-icon  name="add-circle-outline" (click)="onCounterAdd()"></ion-icon>
         </ion-item>
       </div>
-      <div *ngIf="menuItem.options.length > 0"> 
+      <div *ngIf="menuItem.options !== undefined || menuItem.options.length > 0"> 
         <div *ngFor="let option of menuItem.options">
-          <p>{{option.name}}</p>
+          <!-- <p>{{option.name}}</p> -->
+          <ion-item-divider>
+           
+              <div class="optionStyle"> {{option.name}} </div>
+ 
+          </ion-item-divider>
+          
+          <div class="optionStyle" *ngIf="option.exactNumber > 0 && option.exactNumber - option.selectionCount"> Please select {{option.exactNumber}} options</div>
+          <div class="optionStyle" *ngIf="option.exactNumber > 0 && option.exactNumber - option.selectionCount"> {{option.exactNumber - option.selectionCount }} choice(s) left</div>
+
           <ion-list *ngIf="menuItem.options.length > 0">
             <ion-item *ngFor="let topping of option.toppings">
-              <ion-label>{{topping.name}} - {{topping.price}}$CA</ion-label>
+              <ion-label *ngIf="topping.price > 0">{{topping.name}} - {{topping.price}}$CA</ion-label>
+              <ion-label *ngIf="topping.price === 0">{{topping.name}} - free</ion-label>
               <ion-checkbox #checkbox slot="end" (ionChange)="onBoxChanged(checkbox, topping, option)" [checked]="topping.selected"></ion-checkbox>
             </ion-item>
           </ion-list>
         </div>
       </div>  
-      <ion-button *ngIf="menuItem.options.length > 0" 
+      <ion-button *ngIf="menuItem.quantity > 0 && action === 'add' "
         expand="full" (click)="addToCart()">
         Add to Cart
       </ion-button>
+      <ion-button *ngIf="menuItem.quantity > 0 && action === 'edit' "
+        expand="full" (click)="editSelectedItem()">
+        Save
+      </ion-button>
+      <ion-button *ngIf="menuItem.quantity === 0 && action === 'edit' "
+        expand="full" (click)="removeSelectedItem()">
+        Remove
+      </ion-button>
+    </div>
     </ion-card-content>
   </ion-card>
   

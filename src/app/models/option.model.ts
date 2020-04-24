@@ -12,4 +12,5 @@ export interface Option {
     active: boolean;
     toppings: Topping[];
     menuType: string;
+    selectionCount: number;
 }

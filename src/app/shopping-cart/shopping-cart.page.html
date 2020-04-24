@@ -6,16 +6,123 @@
 
 <ion-content>
 
-  <ion-item-group>
-    <ion-item *ngFor="let selectedItem of selectedMenuItems">
-      <ion-buttons>
+  <ion-card *ngFor="let selectedItem of selectedMenuItems;let itemIndex = index">
+    <ion-card-header>
+      <ion-card-title>
+        {{ selectedItem.quantity }} x {{selectedItem.categoryName}}/{{ selectedItem.name }}
+      </ion-card-title>
+      <ion-card-subtitle>
+        Total Price: {{ selectedItem.totalPrice }}$CA
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content *ngIf="selectedItem.options !== undefined" >
+      
+      <div *ngIf="selectedItem.options && selectedItem.options.length > 0">
+        <h2>{{ selectedItem.price }}$CA</h2>
+
+        <div *ngFor="let option of selectedItem.options ">
+          <h2>{{option.name}}:</h2>
+          <div *ngFor="let topping of option.toppings">
+            <div *ngIf="topping.selected === true"> 
+              
+            <ion-note  
+            *ngIf="topping.price > 0"
+              slot="end" >{{ topping.name}} - {{ topping.price}}$CA
+            </ion-note>
+            <ion-note  
+            *ngIf="topping.price === 0"
+              slot="end" >{{ topping.name}} - Free
+            </ion-note>
+
+          </div> 
+          </div>
+        </div>
+
+      </div>
+      <ion-button color="dark" horizontal="start" fill="outline" (click)="onEditSelectedItem(itemIndex)">Edit</ion-button>
+      <ion-button color="dark" horizontal="end" fill="outline" (click)="onRemoveSelectedItem(itemIndex)" >Remove</ion-button>
+     
+    </ion-card-content>
+  </ion-card>
+
+  
+    <ion-item>
+      
+      SubTotal: 
+      <ion-note slot="end" >{{subTotal}}$CA</ion-note>
+    </ion-item>
+    <ion-item>
+      Tips:
+        <div *ngIf="tipsList.length > 0">
+          <ion-chip  
+            *ngFor="let tip of tipsList"
+            (click)="onAddTips(tip)" 
+            
+            [ngClass]="{'selectedChip':(tip.selected === true), 'chip': (tip.selected === false)}"
+          >
+          <ion-label> {{tip.intValue}}% </ion-label>
+          </ion-chip>
+     
+        </div>
+      </ion-item> 
+        <ion-item *ngIf="selectedTips">
+              <ion-label>Tips Amount</ion-label>
+                                    
+              <ion-note  
+                    
+                slot="end" >{{ selectedTips.floatValue }}$CA
+              </ion-note>
+        </ion-item>
+
+    <ion-item *ngFor="let tax of taxList ">
+      
+       
+              <!-- <div *ngFor="let tax of taxList "> -->
+       
+        <ion-label>Tax {{tax.value}}({{tax.floatValue}}%)</ion-label>
+                     
+          <ion-note  
+          *ngIf="tax.floatValue > 0"
+            slot="end" >{{ tax.intValue }}$CA
+          </ion-note>
+
+      <!-- </div> -->
+    </ion-item>
+    <!-- <ion-item>
+      
+      Tips:15% 
+      <ion-note slot="end" >{{ subTotal * 0.15 }}</ion-note>
+    </ion-item> -->
+    
+
+
+
+
+  
+    <div class="bigPrice">
+      <ion-item>
+      Total 
+        <ion-note slot="end" >{{ grandTotal }}$CA</ion-note>
+      </ion-item>
+    </div>
+  <ion-button expand="block" fill="solid">Checkout</ion-button>
+
+    <!-- <ion-item *ngFor="let selectedItem of selectedMenuItems">
+     
         <ion-button slot="end">
             <ion-icon name="close-circle"  ></ion-icon>
         </ion-button>
         <ion-label>
-        {{ selectedItem.name }}
+        {{ selectedItem.quantity }} x {{ selectedItem.name }}
         </ion-label>
-      </ion-buttons>
-    </ion-item>
-  </ion-item-group>
+        <div *ngIf="selectedItem.options[0].toppings.length > 0">
+        <div *ngFor="let topping of selectedItem.options[0].toppings">
+          <div *ngIf="topping.selected === true"> 
+            <p >{{ topping.name}}</p>
+           <ion-note  slot="end" >{{ topping.price}}$CA</ion-note>
+         </div> 
+        </div>
+      </div>
+    </ion-item> -->
+ 
 </ion-content>

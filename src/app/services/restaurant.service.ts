@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GraphqlService } from './graphql.service';
 import { Restaurant } from './../models/restaurant.model';
+import { ConfigItem } from './../models/configItem.model';
 import { OpeningSlot } from './../models/openingSlot.model';
 import { Subject, Subscription, BehaviorSubject, Observable, of, from, throwError } from 'rxjs';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
@@ -34,7 +35,7 @@ export class RestaurantService {
     //     }
 
     //     return {...this.restaurant};
-        
+
     // }
 
     fetchRestaurant() {
@@ -52,13 +53,13 @@ export class RestaurantService {
                 console.log('in Tap', this.restaurant);
             })
         );
-        
+
     }
 
 
 
     checkIfOpen(targetDate?: Date): CurrentSlot {
-        
+
         // by default use the current time
         targetDate = targetDate === undefined ? new Date() : targetDate;
         console.log('checkIfOpen');
@@ -71,8 +72,8 @@ export class RestaurantService {
         const todaySlots = this.restaurant.openingHours.filter(t => t.day === todayDay);
         console.log('todaySlots', todaySlots);
         todaySlots.map( openingSlot =>
-    
-        
+
+
         // const openingSlot: OpeningSlot = this.openingSlots.find(t => {
         //   console.log('t', t);
         //   return t.day === todayDay;
@@ -82,16 +83,16 @@ export class RestaurantService {
           +openingSlot.openTime.split(':')[0],
           +openingSlot.openTime.split(':')[1]
         );
-    
+
           closingHour.setHours(
           +openingSlot.closeTime.split(':')[0],
           +openingSlot.closeTime.split(':')[1]
           );
-    
+
           console.log('today', targetDate);
           console.log('openingHour', openingHour);
           console.log('closingHour', closingHour);
-    
+
           if (targetDate >= openingHour && targetDate <= closingHour) {
            console.log('in condition isOpened =  true');
            isOpened = true;
@@ -104,7 +105,40 @@ export class RestaurantService {
             closeHour: closingHour
         }
         return currentSlot;
-      
+
       }
+
+      getTipsList(): Observable<ConfigItem[]> {
+          return this.getConfigItems('TIPS', 'index');
+        //   .pipe(
+        //       // set the field1 to false as we will use it as Selected boolean
+        //       map( tips => tips.map(t => {
+        //           t.field1 = 'false';
+        //           return t;
+        //         }))
+        //   );
+      }
+
+      getTaxList() {
+        return this.getConfigItems('TAX', 'index');
+      }
+
+      getCollectMethodsList() {
+        return this.getConfigItems('COLLECT_METHOD', 'index');
+      }
+
+      getPaymentMethodsList() {
+        return this.getConfigItems('PAYMENT_METHOD', 'index');
+      }
+
+
+      getConfigItems(name: string, sortMethod: string): Observable<ConfigItem[]> {
+        return this.graphqlService.getConfigItems(name, sortMethod)
+        .pipe(
+          take(1),
+           map(response => response.data.getConfigItems)
+        );
+    }
+
 
 }

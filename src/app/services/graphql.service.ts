@@ -149,20 +149,27 @@ export class GraphqlService {
     }
 
 
-    getConfigItems(code: string, sortMethod: string): Observable<ApolloQueryResult<any>> {
+    getConfigItems(name: string, sortMethod: string): Observable<ApolloQueryResult<any>> {
       return this.apollo.query<any>({
         query: gql`
           query{
             getConfigItems(
-              name:"${code}"
+              name:"${name}"
               sortMethod:"${sortMethod}"
             ){
             _id
             name
+            code
             value
+            value_fr
+            intValue
+            floatValue
             index
+            active
+            selected
             field1
             field2
+            field3
            }
           }
         `} );
