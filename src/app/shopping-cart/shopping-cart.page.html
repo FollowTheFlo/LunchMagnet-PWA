@@ -1,11 +1,12 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Shopping-cart</ion-title>
+    <ion-title>{{headerTitle}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <div *ngIf="!checkoutStep">
   <ion-card *ngFor="let selectedItem of selectedMenuItems;let itemIndex = index">
     <ion-card-header>
       <ion-card-title>
@@ -51,6 +52,61 @@
       SubTotal: 
       <ion-note slot="end" >{{subTotal}}$CA</ion-note>
     </ion-item>
+    <ion-button expand="block" fill="solid" (click)="onCheckoutStep()">Checkout</ion-button>
+  </div>
+
+
+
+
+
+
+
+  <div *ngIf="checkoutStep">
+    <div *ngIf="seeSubTotalDetails">
+      <ion-item 
+      *ngFor="let selectedItem of selectedMenuItems;let itemIndex = index"     
+      >
+        {{ selectedItem.quantity }} x {{selectedItem.categoryName}}/{{ selectedItem.name }} (includes options)
+        <ion-note slot="end" >{{selectedItem.totalPrice}}$CA</ion-note>
+      </ion-item>
+    </div>
+
+    <ion-item>
+      <div *ngIf="!seeSubTotalDetails" (click)="onSeeSubTotalDetails()">SubTotal: (See details)</div>
+      <div *ngIf="seeSubTotalDetails" (click)="onSeeSubTotalDetails()">SubTotal: (Hide details)</div>
+      <ion-note slot="end" >{{subTotal}}$CA</ion-note>
+    </ion-item>
+
+
+    <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery" [(ngModel)]="this.currentUser.collectionMethod">
+      <ion-segment-button value="delivery">
+        <ion-label>Delivery</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pickup">
+        <ion-label>Pick-up</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div *ngIf="selectedCollectionMethod === 'delivery'">
+      <ion-item >
+        Address: {{ currentUser.address }}
+        <!-- <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
+        <ion-label *ngIf="userAddress !== undefined">{{userAddress}}</ion-label> -->
+        <ion-buttons slot="end">
+        <ion-button >
+          <ion-icon name="search"  ></ion-icon>
+       </ion-button>
+      </ion-buttons>
+      </ion-item>
+    </div>
+
+    <div *ngIf="selectedCollectionMethod === 'pickup'">
+      <ion-item >
+   Pickup Timetable
+     
+      </ion-item>
+    </div>
+
     <ion-item>
       Tips:
         <div *ngIf="tipsList.length > 0">
@@ -70,34 +126,22 @@
                                     
               <ion-note  
                     
-                slot="end" >{{ selectedTips.floatValue }}$CA
+                slot="end" >{{ selectedTips.amount }}$CA
               </ion-note>
         </ion-item>
 
     <ion-item *ngFor="let tax of taxList ">
       
-       
-              <!-- <div *ngFor="let tax of taxList "> -->
+      
        
         <ion-label>Tax {{tax.value}}({{tax.floatValue}}%)</ion-label>
                      
           <ion-note  
           *ngIf="tax.floatValue > 0"
-            slot="end" >{{ tax.intValue }}$CA
+            slot="end" >{{ tax.amount }}$CA
           </ion-note>
 
-      <!-- </div> -->
     </ion-item>
-    <!-- <ion-item>
-      
-      Tips:15% 
-      <ion-note slot="end" >{{ subTotal * 0.15 }}</ion-note>
-    </ion-item> -->
-    
-
-
-
-
   
     <div class="bigPrice">
       <ion-item>
@@ -105,7 +149,9 @@
         <ion-note slot="end" >{{ grandTotal }}$CA</ion-note>
       </ion-item>
     </div>
-  <ion-button expand="block" fill="solid">Checkout</ion-button>
+    <ion-button expand="block" fill="solid" (click)="onCheckoutStep()">Back to Shopping Cart</ion-button>
+    </div>
+ 
 
     <!-- <ion-item *ngFor="let selectedItem of selectedMenuItems">
      

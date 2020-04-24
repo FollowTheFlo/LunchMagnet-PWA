@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'shopping-cart',
     loadChildren: () => import('./shopping-cart/shopping-cart.module').then( m => m.ShoppingCartPageModule)
   },
+  {
+    path: 'orders',
+    loadChildren: () => import('./orders/orders.module').then( m => m.OrdersPageModule)
+  },
 
   // { path: 'home', redirectTo: 'tabs/home', pathMatch: 'full' },
   // {

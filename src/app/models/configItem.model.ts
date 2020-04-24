@@ -9,6 +9,7 @@ export interface ConfigItem {
     index: number;
     active: boolean;
     selected: boolean;
+    amount: number;
     field1: string;
     field2: string;
     field3: string;

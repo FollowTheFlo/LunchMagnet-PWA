@@ -119,15 +119,15 @@ export class RestaurantService {
         //   );
       }
 
-      getTaxList() {
+      getTaxList(): Observable<ConfigItem[]> {
         return this.getConfigItems('TAX', 'index');
       }
 
-      getCollectMethodsList() {
+      getCollectMethodsList(): Observable<ConfigItem[]> {
         return this.getConfigItems('COLLECT_METHOD', 'index');
       }
 
-      getPaymentMethodsList() {
+      getPaymentMethodsList(): Observable<ConfigItem[]> {
         return this.getConfigItems('PAYMENT_METHOD', 'index');
       }
 

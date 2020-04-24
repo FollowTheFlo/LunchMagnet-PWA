@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RestaurantService, CurrentSlot } from './../services/restaurant.service';
 import { MenuService } from './../services/menu.service';
+import { UserService } from './../services/user.service';
 import { NavigationService } from './../services/navigation.service';
 import { Restaurant } from './../models/restaurant.model';
 import { MenuItem } from './../models/menuItem.model';
+import { User } from './../models/user.model';
 import { MenuCategory } from './../models/menuCategory.model';
 import { OpeningSlot } from './../models/openingSlot.model';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
@@ -52,6 +54,7 @@ export class HomePage implements OnInit {
     autoplay: false
   };
   userAddress = undefined;
+  currentUser: User;
   restaurant: Restaurant;
   menuItems: MenuItem[] = [];
   menuByCategories: MenuByCategory[] = [];
@@ -68,6 +71,7 @@ export class HomePage implements OnInit {
   constructor(
     private restaurantService: RestaurantService,
     private  menuService: MenuService,
+    private  userService: UserService,
     private httpClient: HttpClient,
     private modalCtrl: ModalController,
     private navigationService: NavigationService,
@@ -87,6 +91,8 @@ export class HomePage implements OnInit {
         console.log(data);
         if ( data.data.action === 'save') {
           this.userAddress = data.data.address;
+          this.currentUser.address = data.data.address;
+          this.userService.updateUser({...this.currentUser});
         }
       });
       return await modal.present();
@@ -109,6 +115,8 @@ export class HomePage implements OnInit {
   ngOnInit() {
     console.log('MenuPage ngOnInit');
 
+    this.userService.user$
+    .subscribe(user => this.currentUser = user );
 
     this.restaurantService.fetchRestaurant()
     .subscribe(restaurant => {
@@ -223,6 +231,8 @@ export class HomePage implements OnInit {
 
   onChangeCollectingMethod(ev: any) {
     console.log('Segment changed', ev.detail.value);
+    this.currentUser.collectionMethod = ev.detail.value;
+    this.userService.updateUser({...this.currentUser});
   }
 
 }

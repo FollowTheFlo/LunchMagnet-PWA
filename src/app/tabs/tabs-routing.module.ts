@@ -27,6 +27,15 @@ const routes: Routes = [
         ],
       },
       {
+        path: 'order',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../order/order.module').then((m) => m.OrderPageModule),
+          },
+        ],
+      },
+      {
         path: 'menu',
         children: [
           {

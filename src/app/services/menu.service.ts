@@ -49,6 +49,11 @@ export class MenuService {
         this._selectedMenuItems.next([...this.selectedMenuItems]);
     }
 
+    clearSelectedMenuItems() {
+        this.selectedMenuItems = [];
+        this._selectedMenuItems.next([]);
+    }
+
     fetchMenuItems() {
         console.log('fetchMenuItems');
         return this.graphqlService.getMenuItems().pipe(
