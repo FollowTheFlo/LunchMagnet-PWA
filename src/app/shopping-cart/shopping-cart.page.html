@@ -78,16 +78,16 @@
     </ion-item>
 
 
-    <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery" [(ngModel)]="this.currentUser.collectionMethod">
-      <ion-segment-button value="delivery">
+    <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="DELIVERY" [(ngModel)]="this.currentUser.collectionMethod">
+      <ion-segment-button value="DELIVERY">
         <ion-label>Delivery</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="pickup">
+      <ion-segment-button value="PICKUP">
         <ion-label>Pick-up</ion-label>
       </ion-segment-button>
     </ion-segment>
 
-    <div *ngIf="selectedCollectionMethod === 'delivery'">
+    <div *ngIf="currentUser.collectionMethod === 'DELIVERY'">
       <ion-item >
         Address: {{ currentUser.address }}
         <!-- <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
@@ -100,7 +100,7 @@
       </ion-item>
     </div>
 
-    <div *ngIf="selectedCollectionMethod === 'pickup'">
+    <div *ngIf="selectedCollectionMethod === 'PICKUP'">
       <ion-item >
    Pickup Timetable
      
@@ -141,6 +141,24 @@
             slot="end" >{{ tax.amount }}$CA
           </ion-note>
 
+    </ion-item>
+
+    <ion-item>
+      Payment Method
+      <ion-select 
+      [(ngModel)]="selectedPaymentMethod"  
+      name="payment"
+      value="payment"
+      (ionChange)="onSelectPaymentMethod(selectedPaymentMethod)"
+      placeholder="Payment Method"
+      interface="action-sheet"
+      >
+    <div *ngFor="let payment of paymentMethodList" >
+      <ion-select-option  [value]="payment" *ngIf="payment.field1 === currentUser.collectionMethod">
+        {{payment.value}}
+      </ion-select-option>
+    </div>
+      </ion-select>
     </ion-item>
   
     <div class="bigPrice">

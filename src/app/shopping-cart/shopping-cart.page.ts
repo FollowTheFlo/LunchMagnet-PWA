@@ -32,6 +32,8 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   private menSub: Subscription;
   selectedMenuItems: MenuItem[] = [];
   selectedTips: ConfigItem;
+  paymentMethodList: ConfigItem[] = [];
+  selectedPaymentMethod: ConfigItem;
   order: Order = {
     _id: '',
     customer: null,
@@ -42,7 +44,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     subTotalPrice: 0,
     status: 'INIT',
     totalPrice: 0,
-    paymentMethod: '',
+    paymentMethod: 'Wesh',
     collectionMethod: '',
     history: null
   };
@@ -61,7 +63,10 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.userService.user$
-    .subscribe(user => this.currentUser = user );
+    .subscribe(user => {
+      console.log('user$', user);
+      this.currentUser = user;
+    });
 
     this.menSub = this.menuService.selectedMenuItems$
       .subscribe( selectedItems => {
@@ -96,6 +101,18 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
         this.taxList = taxList;
         this.grandTotal = this.getGrandTotal_UpdateTipsTaxes();
       });
+
+    this.restaurantService.getPaymentMethodsList()
+    .subscribe( paymentMethods => {
+      console.log('getPaymentMethodsList', paymentMethods);
+      this.paymentMethodList = paymentMethods;
+
+      this.paymentMethodList.forEach(pm => {
+        if (pm.selected) {
+          this.selectedPaymentMethod = pm;
+        }
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -205,8 +222,15 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
 
   onChangeCollectingMethod(ev: any) {
     console.log('Segment changed', ev.detail.value);
-    this.selectedCollectionMethod = ev.detail.value;
+    this.currentUser.collectionMethod = ev.detail.value;
     this.userService.updateUser({...this.currentUser});
+    this.order.paymentMethod = 'No Selection';
+  }
+
+  onSelectPaymentMethod(paymentMethod: ConfigItem) {
+    console.log('paymentMethod', paymentMethod);
+    this.order.paymentMethod = paymentMethod.value;
+    
   }
 
 onCheckout() {
