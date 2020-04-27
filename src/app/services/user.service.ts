@@ -10,7 +10,7 @@ export class UserService {
         username: '',
         email: '',
         password: '',
-        collectionMethod: 'delivery',
+        collectionMethod: 'DELIVERY',
         address: ''
 
     };
