@@ -10,7 +10,8 @@ export const environment = {
   IMAGE_SERVER_DOMAIN: 'https://lunchmagnet-images.s3.ca-central-1.amazonaws.com',
   mapbox: {
     accessToken: 'pk.eyJ1IjoiZmxldGVuZHJlIiwiYSI6ImNrMm1yazc5YTBreW8zYm05YW1rajhyNmUifQ.cjgG6XNX--iACz0-5sp1Jg'
-  }
+  },
+  socketServer: 'http://localhost:3000'
 };
 
 /*

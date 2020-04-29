@@ -5,5 +5,33 @@
 </ion-header>
 
 <ion-content>
+<h1>Orders</h1>
 
+  <div *ngIf="orders.length > 0">
+    <ion-card *ngFor="let order of orders;let orderIndex = index">
+      <ion-card-header>
+        <ion-card-title>
+          {{ order._id}} 
+        </ion-card-title>
+        <ion-card-subtitle>
+          <h1>Status: {{order.status}}</h1>
+          Total Price: {{ order.totalPrice }}$CA
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content *ngIf="order.selectedItems.length > 0" >
+        
+        
+          <h2>SubTotalPrice: {{ order.subTotalPrice }}$CA</h2>
+          {{order.selectedItems.length}} items:
+          <div *ngFor="let item of order.selectedItems ">
+            <h2>{{item.quantity}} x {{item.name}}</h2>
+            <p>{{item.totalPrice}}$CA</p>
+            <p>{{item.optionsText}}</p>
+          </div>
+  
+       
+      </ion-card-content>
+    </ion-card>
+      
+</div>
 </ion-content>

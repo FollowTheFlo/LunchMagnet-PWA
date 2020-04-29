@@ -11,7 +11,7 @@ import { OpeningSlot } from './../models/openingSlot.model';
 import { take, map, tap, delay, switchMap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
 import { MenuItemPage } from './../shared-components/menu-item/menu-item.page';
 
@@ -53,7 +53,6 @@ export class HomePage implements OnInit {
     slidesPerView: 3,
     autoplay: false
   };
-  userAddress = undefined;
   currentUser: User;
   restaurant: Restaurant;
   menuItems: MenuItem[] = [];
@@ -90,7 +89,6 @@ export class HomePage implements OnInit {
       .then((data) => {
         console.log(data);
         if ( data.data.action === 'save') {
-          this.userAddress = data.data.address;
           this.currentUser.address = data.data.address;
           this.userService.updateUser({...this.currentUser});
         }
@@ -234,5 +232,29 @@ export class HomePage implements OnInit {
     this.currentUser.collectionMethod = ev.detail.value;
     this.userService.updateUser({...this.currentUser});
   }
+
+  onClickRestaurantAddress() {
+    console.log('onClickRestaurantAddress', this.restaurant);
+    //?q="${this.restaurant.address}"
+    //window.open(`geo:${this.restaurant.locationGeo.lat},${this.restaurant.locationGeo.lng}`,
+    window.open(`geo:0,0?q=${this.restaurant.address}`,
+    `_system`);
+  }
+
+  async onOpenMap() {
+    console.log('onOpenMap', this.restaurant);
+    console.log('presentModal');
+    const modal = await this.modalCtrl.create({
+        component: AddressSearchPage,
+        componentProps: {
+          action: "SHOW",
+          lat: this.restaurant.locationGeo.lat,
+          lng: this.restaurant.locationGeo.lng,
+          address: this.restaurant.address
+        },
+
+      });
+   await modal.present();
+    }
 
 }

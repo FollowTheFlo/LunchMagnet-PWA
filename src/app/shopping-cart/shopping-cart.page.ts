@@ -8,10 +8,13 @@ import { UserService } from './../services/user.service';
 import { OrderService } from './../services/order.service';
 import { RestaurantService } from './../services/restaurant.service';
 import { NavigationService } from './../services/navigation.service';
+import { SocketService } from './../services/socket.service';
 import { ModalController } from '@ionic/angular';
 import { MenuItemPage } from './../shared-components/menu-item/menu-item.page';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { Restaurant } from '../models/restaurant.model';
+import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -31,23 +34,11 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   taxList: ConfigItem[] = [];
   private menSub: Subscription;
   selectedMenuItems: MenuItem[] = [];
+  restaurant: Restaurant;
   selectedTips: ConfigItem;
   paymentMethodList: ConfigItem[] = [];
   selectedPaymentMethod: ConfigItem;
-  order: Order = {
-    _id: '',
-    customer: null,
-    selectedMenuItems: null,
-    rawPrice: 0,
-    tips: null,
-    taxes: null,
-    subTotalPrice: 0,
-    status: 'INIT',
-    totalPrice: 0,
-    paymentMethod: 'Wesh',
-    collectionMethod: '',
-    history: null
-  };
+  
 
 
   constructor(
@@ -56,11 +47,15 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     private restaurantService: RestaurantService,
     private  userService: UserService,
     private navigationService: NavigationService,
+    private socketService: SocketService,
     private modalCtrl: ModalController,
     private router: Router
     ) { }
 
   ngOnInit() {
+
+    this.socketService.getMessages()
+    .subscribe(message => console.log('from socket', message));
 
     this.userService.user$
     .subscribe(user => {
@@ -112,6 +107,11 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
           this.selectedPaymentMethod = pm;
         }
       });
+    });
+
+    this.restaurantService.fetchRestaurant()
+    .subscribe(restaurant => {
+      this.restaurant = restaurant;
     });
   }
 
@@ -212,7 +212,8 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
 
   onCheckoutStep() {
     this.checkoutStep = !this.checkoutStep;
-    this.headerTitle = 'Checkout';
+    
+    this.headerTitle = this.checkoutStep === true ? 'Checkout' : 'Shopping Cart';
     //this.navigationService.setNavLink('Checkout');
   }
 
@@ -224,30 +225,100 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     console.log('Segment changed', ev.detail.value);
     this.currentUser.collectionMethod = ev.detail.value;
     this.userService.updateUser({...this.currentUser});
-    this.order.paymentMethod = 'No Selection';
+   // this.paymentMethod = 'No Selection';
   }
 
   onSelectPaymentMethod(paymentMethod: ConfigItem) {
     console.log('paymentMethod', paymentMethod);
-    this.order.paymentMethod = paymentMethod.value;
+   // this.order.paymentMethod = paymentMethod.value;
     
   }
 
+  async onOpenMap() {
+    console.log('onOpenMap', this.restaurant);
+    console.log('presentModal');
+    const modal = await this.modalCtrl.create({
+        component: AddressSearchPage,
+        componentProps: {
+          action: "SHOW",
+          lat: this.restaurant.locationGeo.lat,
+          lng: this.restaurant.locationGeo.lng,
+          address: this.restaurant.address
+        },
+
+      });
+   await modal.present();
+    }
+
+    async openSearchAddressModal() {
+      console.log('presentModal');
+      const modal = await this.modalCtrl.create({
+        component: AddressSearchPage,
+
+      });
+
+      modal.onDidDismiss()
+      .then((data) => {
+        console.log(data);
+        if ( data.data.action === 'save') {
+          this.currentUser.address = data.data.address;
+          this.userService.updateUser({...this.currentUser});
+        }
+      });
+      return await modal.present();
+    }
+
 onCheckout() {
+
+  const order: Order = {
+    _id: '',
+    customer: null,
+    selectedMenuItems: null,
+    rawPrice: 0,
+    tips: null,
+    taxes: null,
+    subTotalPrice: 0,
+    status: 'INIT',
+    totalPrice: 0,
+    paymentMethod: 'Wesh',
+    collectionMethod: '',
+    history: null,
+    selectedMenuItemsString: '',
+    selectedItems: null
+  };
   
-  this.order.selectedMenuItems = JSON.parse(JSON.stringify(this.selectedMenuItems));
-  this.order.tips = JSON.parse(JSON.stringify(this.selectedTips));
-  this.order.taxes = JSON.parse(JSON.stringify(this.taxList));
-  this.order.totalPrice = this.grandTotal;
-  this.order.subTotalPrice = this.subTotal;
-  this.order.status = 'ITEMS SELECTED';
+  order.selectedMenuItems = JSON.parse(JSON.stringify(this.selectedMenuItems));
+  order.tips = JSON.parse(JSON.stringify(this.selectedTips));
+  order.taxes = JSON.parse(JSON.stringify(this.taxList));
+  order.totalPrice = this.grandTotal;
+  order.subTotalPrice = this.subTotal;
+  order.collectionMethod = this.currentUser.collectionMethod;
+  order.paymentMethod = this.selectedPaymentMethod.code;
+  order.status = 'ITEMS SELECTED';
+  order.customer = {...this.currentUser};
   //this.order.history = [null];
-  this.order.history = [{action: 'ITEMS SELECTED', date: new Date()}];
-  console.log('onCheckout()', this.order);
-  this.orderService.CurrentOrder = this.order;
-  this.menuService.clearSelectedMenuItems();
+
+  console.log('onCheckout()', order);
+  //this.orderService.CurrentOrder = this.order;
+  //this.menuService.clearSelectedMenuItems();
+  this.orderService.createOrder(order)
+  .subscribe( orderData => {
+    console.log('Order created succesfully', orderData);
+  },
+  error => {
+    console.log(error);
+  }
+  );
   console.log('flo');
-  this.router.navigate(['tabs/order']);
+  //this.router.navigate(['tabs/order']);
 }
+
+onConfirmOrder() {
+  console.log('onConfirmOrder');
+  this.socketService.sendMessage('Order has been sent');
+
+  
+}
+
 
 }

@@ -31,7 +31,6 @@ export class MenuItemPage implements OnInit {
     public toastCtrl: ToastController
   ) {
     this.action = navParams.get('action');
-
     this.menuItemId = navParams.get('menuItemId');
     this.itemIndex = navParams.get('itemIndex');
   }

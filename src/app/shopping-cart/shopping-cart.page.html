@@ -87,25 +87,34 @@
       </ion-segment-button>
     </ion-segment>
 
-    <div *ngIf="currentUser.collectionMethod === 'DELIVERY'">
-      <ion-item >
-        Address: {{ currentUser.address }}
-        <!-- <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
-        <ion-label *ngIf="userAddress !== undefined">{{userAddress}}</ion-label> -->
-        <ion-buttons slot="end">
+    
+    <div class="delivery" 
+    *ngIf="currentUser.collectionMethod === 'DELIVERY'"
+    >
+  <ion-item (click)="openSearchAddressModal()">
+    <ion-label *ngIf="currentUser.address === '' ">Search your Address</ion-label>
+    <ion-label *ngIf="currentUser.address !== '' ">{{currentUser.address}}</ion-label>
+    <ion-buttons slot="end">
+    <ion-button >
+      <ion-icon name="search"  ></ion-icon>
+   </ion-button>
+  </ion-buttons>
+  
+  </ion-item>
+  </div>
+  <div *ngIf="currentUser.collectionMethod === 'PICKUP'"
+  class="delivery"
+  >
+    <ion-item (click)= "onOpenMap()">
+      <ion-label >Find {{ restaurant.name}} Restaurant</ion-label>
+      <ion-buttons slot="end">
         <ion-button >
-          <ion-icon name="search"  ></ion-icon>
+          <ion-icon name="navigate-circle-outline"  ></ion-icon>
        </ion-button>
       </ion-buttons>
-      </ion-item>
-    </div>
-
-    <div *ngIf="selectedCollectionMethod === 'PICKUP'">
-      <ion-item >
-   Pickup Timetable
-     
-      </ion-item>
-    </div>
+   
+    </ion-item>
+  </div>
 
     <ion-item>
       Tips:
@@ -168,25 +177,7 @@
       </ion-item>
     </div>
     <ion-button expand="block" fill="solid" (click)="onCheckoutStep()">Back to Shopping Cart</ion-button>
+    <ion-button expand="block" fill="solid" (click)="onCheckout()">Confirm Order</ion-button>
     </div>
- 
 
-    <!-- <ion-item *ngFor="let selectedItem of selectedMenuItems">
-     
-        <ion-button slot="end">
-            <ion-icon name="close-circle"  ></ion-icon>
-        </ion-button>
-        <ion-label>
-        {{ selectedItem.quantity }} x {{ selectedItem.name }}
-        </ion-label>
-        <div *ngIf="selectedItem.options[0].toppings.length > 0">
-        <div *ngFor="let topping of selectedItem.options[0].toppings">
-          <div *ngIf="topping.selected === true"> 
-            <p >{{ topping.name}}</p>
-           <ion-note  slot="end" >{{ topping.price}}$CA</ion-note>
-         </div> 
-        </div>
-      </div>
-    </ion-item> -->
- 
 </ion-content>

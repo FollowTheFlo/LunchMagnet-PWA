@@ -5,6 +5,8 @@ import gql from 'graphql-tag';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from 'apollo-client';
 import { FetchResult } from 'apollo-link';
+import { MenuItem } from '../models/menuItem.model';
+import { Order } from '../models/order.model';
 
 @Injectable({
   providedIn: 'root',
@@ -146,6 +148,118 @@ export class GraphqlService {
           }
 
         `} );
+    }
+
+    getOrder(orderId: string): Observable<ApolloQueryResult<any>> {
+      return this.apollo.query<any>({
+      query: gql`
+      query{
+      getOrder(
+        orderId:"${orderId}"
+        )
+      {
+        _id
+        rawPrice
+        status
+        paymentMethod
+        tipsPercentage
+        totalPrice
+        selectedItems {
+          price
+          optionsText
+          optionsText_fr
+          menuItemId
+          quantity
+          notes
+          totalPrice
+      
+         }
+  
+      }
+   }
+      `} );
+    }
+
+    getOrders(userId: string): Observable<ApolloQueryResult<any>> {
+      return this.apollo.query<any>({
+      query: gql`
+      query{
+      getOrders(
+        userId:"${userId}"
+        )
+      {
+        _id
+        rawPrice
+        status
+        paymentMethod
+        tipsPercentage
+        totalPrice
+        selectedItems {
+          price
+          optionsText
+          optionsText_fr
+          menuItemId
+          quantity
+          notes
+          totalPrice
+      
+         }
+  
+      }
+   }
+      `} );
+    }
+
+    createOrder(order: Order): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+
+      console.log('Graphql createOrder', order);
+      // clean the index, concatenate the item objects to get a string [{key:"vakue",key:"value"}{}{}]
+      let itemsCleanList = '';
+      order.selectedItems.forEach( item => {
+        itemsCleanList += JSON.stringify(item);
+      });
+
+      itemsCleanList = '[' + itemsCleanList.replace(/"([^"]+)":/g, "$1:") + ']';
+     
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          createOrder(orderInput: {
+            restaurant:"5e9627c5c516c2794b861961"
+            customer:"${order.customer._id}"
+            collectionMethod:"${order.collectionMethod}"
+            selectedItems:${itemsCleanList}
+            selectedItemsString:"${order.selectedMenuItemsString}"
+            status:"${order.status}"
+            paymentMethod:"${order.paymentMethod}"
+            rawPrice:${order.rawPrice}
+            totalPrice:${order.totalPrice}
+            subTotalPrice:${order.subTotalPrice}
+            tipsPercentage:${order.tips.intValue}
+
+          })
+          {
+            _id
+            rawPrice
+            status
+            paymentMethod
+            tipsPercentage
+            totalPrice
+            subTotalPrice
+            selectedItems {
+              name
+              name_fr
+              price
+              optionsText
+              optionsText_fr
+              menuItemId
+              quantity
+              totalPrice
+              }
+          }
+        }
+
+        `});
     }
 
 

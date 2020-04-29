@@ -62,6 +62,7 @@
     "leaflet-routing-machine": "^3.2.12",
     "lrm-mapbox": "^1.0.4",
     "ngx-credit-cards": "^1.0.9",
+    "ngx-socket-io": "^3.0.1",
     "ngx-stripe": "^9.0.1",
     "rxjs": "~6.5.1",
     "stripe-angular": "^1.0.2",

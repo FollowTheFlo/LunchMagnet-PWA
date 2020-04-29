@@ -4,7 +4,8 @@
       <ion-buttons slot="end">
 
         <ion-button >
-          <p *ngIf="currentSlot.isOpen">Open: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}} </p>
+          <p *ngIf="currentSlot.isOpen">Now open </p>
+          <!-- <p *ngIf="currentSlot.isOpen">Open: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}} </p> -->
           <p *ngIf="!currentSlot.isOpen">Close</p>
        
         </ion-button>
@@ -18,20 +19,22 @@
 
 
   <div class="collectingMethodSegment">
-  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery">
-    <ion-segment-button value="delivery">
+  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery" [(ngModel)]="this.currentUser.collectionMethod">
+    <ion-segment-button value="DELIVERY">
       <ion-label>Delivery</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="pickup">
+    <ion-segment-button value="PICKUP">
       <ion-label>Pick-up</ion-label>
     </ion-segment-button>
   </ion-segment>
 </div>
 
-<div class="delivery">
+<div class="delivery" 
+  *ngIf="currentUser.collectionMethod === 'DELIVERY'"
+  >
 <ion-item (click)="openSearchAddressModal()">
-  <ion-label *ngIf="userAddress === undefined">Search your Address</ion-label>
-  <ion-label *ngIf="userAddress !== undefined">{{userAddress}}</ion-label>
+  <ion-label *ngIf="currentUser.address === '' ">Search your Address</ion-label>
+  <ion-label *ngIf="currentUser.address !== '' ">{{currentUser.address}}</ion-label>
   <ion-buttons slot="end">
   <ion-button >
     <ion-icon name="search"  ></ion-icon>
@@ -39,6 +42,19 @@
 </ion-buttons>
 
 </ion-item>
+</div>
+<div *ngIf="currentUser.collectionMethod === 'PICKUP'"
+class="delivery"
+>
+  <ion-item (click)= "onOpenMap()">
+    <ion-label >Find {{ restaurant.name}} Restaurant</ion-label>
+    <ion-buttons slot="end">
+      <ion-button >
+        <ion-icon name="navigate-circle-outline"  ></ion-icon>
+     </ion-button>
+    </ion-buttons>
+ 
+  </ion-item>
 </div>
   <div *ngIf="menuByCategories.length > 0" class="catSlides">
   <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">

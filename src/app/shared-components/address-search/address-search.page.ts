@@ -4,7 +4,7 @@ import { Map, tileLayer, marker} from 'leaflet';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,15 +25,27 @@ export class AddressSearchPage implements OnInit, OnDestroy {
   features: Feature[] = [];
   customerFeature = undefined;
   mapLoaded = false;
+  inputLat = 0;
+  inputLng = 0;
+  inputAddress = '';
+  inputAction = '';
+
 
 
   constructor(
     private geolocationService: GeolocationService,
     private httpClient: HttpClient,
-    private modalCtrl: ModalController
-    ) { }
+    private modalCtrl: ModalController,
+    private navParams: NavParams
+    ) { 
+      this.inputAction = navParams.get('action');
+      this.inputLat = navParams.get('lat');
+      this.inputLng = navParams.get('lng');
+      this.inputAddress = navParams.get('address');
+    }
 
   ngOnInit() {
+  
   }
 
   ngOnDestroy() {
@@ -44,6 +56,12 @@ export class AddressSearchPage implements OnInit, OnDestroy {
     if (!this.mapLoaded) {
       this.loadMap();
       this.mapLoaded = true;
+    }
+
+    console.log('ionViewDidEnter', this.inputAction );
+    // display Restaurant location address
+    if (this.inputAction === 'SHOW') {
+      this.displayLatLngText(this.inputLat,this.inputLng, this.inputAddress);
     }
 
   }
@@ -136,6 +154,33 @@ locatePosition() {
       }
   }
 
+  displayLatLngText(lat: number, lng: number, text: string) {
+
+    if (this.newMarker !== undefined) {
+      console.log('in condition');
+      // this.newMarker.removeFrom(this.map);
+      const newLatLng = new L.LatLng(lat, lng);
+      this.newMarker.setLatLng(newLatLng);
+      //this.map = this.map.removeLayer(this.newMarker);
+    } else {
+      console.log('NOT in condition');
+      this.newMarker = L.marker([lat, lng], {
+        draggable: true
+      }).addTo(this.map);
+    }
+
+    this.newMarker.bindPopup(text).openPopup();
+    
+  }
+
+  onOpenGoogleMap() {
+    console.log('onOpenGoogleMap');
+    //?q="${this.restaurant.address}"
+    //window.open(`geo:${this.restaurant.locationGeo.lat},${this.restaurant.locationGeo.lng}`,
+    window.open(`geo:0,0?q=${this.inputAddress}`,
+    `_system`);
+  }
+
   onSelectAddress(address: string) {
     console.log('address', address);
     console.log('features', this.features);
@@ -180,7 +225,7 @@ locatePosition() {
 
 
     this.newMarker.bindPopup(this.selectedAddress).openPopup();
-    this.drawRoad(lat, lng);
+    //this.drawRoad(lat, lng);
 
     this.geolocationService.getDistance(lat, lng)
     .subscribe( response => {
