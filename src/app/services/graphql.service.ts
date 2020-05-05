@@ -163,8 +163,14 @@ export class GraphqlService {
         status
         paymentMethod
         tipsPercentage
+        subTotalPrice
+        finished
         totalPrice
+        collectionMethod
+        createdAt
+        updatedAt
         selectedItems {
+          name
           price
           optionsText
           optionsText_fr
@@ -173,6 +179,30 @@ export class GraphqlService {
           notes
           totalPrice
       
+         }
+         deliveryAddress
+         deliveryLocationGeo {
+          lat
+          lng
+         }
+         steps {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
          }
   
       }
@@ -187,14 +217,20 @@ export class GraphqlService {
       getOrders(
         userId:"${userId}"
         )
-      {
+        {
         _id
         rawPrice
         status
         paymentMethod
         tipsPercentage
+        subTotalPrice
+        finished
         totalPrice
+        collectionMethod
+        createdAt
+        updatedAt
         selectedItems {
+          name
           price
           optionsText
           optionsText_fr
@@ -203,6 +239,11 @@ export class GraphqlService {
           notes
           totalPrice
       
+         }
+         deliveryAddress
+         deliveryLocationGeo {
+           lat
+           lng
          }
   
       }
@@ -219,12 +260,23 @@ export class GraphqlService {
         itemsCleanList += JSON.stringify(item);
       });
 
+      let cleanDeliveryLocationGeo = '{lat:'+ order.deliveryLocationGeo.lat + ',lng:'+order.deliveryLocationGeo.lng+'}';
+      //cleanDeliveryLocationGeo.replace(/"([^"]+)":/g, "$1:");
+
+     
+
+      console.log('order deliverLocation', order.deliveryLocationGeo);
+      console.log('order clean', cleanDeliveryLocationGeo);
+
       itemsCleanList = '[' + itemsCleanList.replace(/"([^"]+)":/g, "$1:") + ']';
+
+      console.log('itemsCleanList', itemsCleanList);
      
       return this.apollo.mutate<any>({
         mutation: gql`
         mutation {
           createOrder(orderInput: {
+            deliveryLocationGeo:${cleanDeliveryLocationGeo}
             restaurant:"5e9627c5c516c2794b861961"
             customer:"${order.customer._id}"
             collectionMethod:"${order.collectionMethod}"
@@ -236,6 +288,8 @@ export class GraphqlService {
             totalPrice:${order.totalPrice}
             subTotalPrice:${order.subTotalPrice}
             tipsPercentage:${order.tips.intValue}
+            deliveryAddress:"${order.deliveryAddress}"
+           
 
           })
           {
@@ -246,6 +300,9 @@ export class GraphqlService {
             tipsPercentage
             totalPrice
             subTotalPrice
+            collectionMethod
+            createdAt
+            updatedAt
             selectedItems {
               name
               name_fr
@@ -289,9 +346,33 @@ export class GraphqlService {
         `} );
     }
 
+    getUser(email: string): Observable<ApolloQueryResult<any>> {
+      console.log('apollo getUser ');
+        // tslint:disable-next-line: no-unused-expression
+      return this.apollo.query<any>({
+          query: gql`
+                  query {
+                    getUser (
+                      email:"${email}"
+                    ) {
+                      name
+                      _id
+                      role
+                      deliveryAddress
+                      collectionMethod
+                      deliveryLocationGeo {
+                        lat
+                        lng
+                      }
+                    }
+                  },
+                `,
+        });
+    }
+
 
     login(email: string, password: string): Observable<ApolloQueryResult<any>> {
-        console.log('apollo getplayers: ');
+        console.log('apollo login: ');
         // tslint:disable-next-line: no-unused-expression
         return this.apollo.query<any>({
           query: gql`

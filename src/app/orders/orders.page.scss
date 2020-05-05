@@ -11,3 +11,36 @@ ion-chip {
 .chip {
     --color: black;
 }
+
+// ion-card {
+//     --background: red;
+//     --color: white;
+// }
+
+ion-card ion-card-content {
+    border-bottom: 5px solid black;
+    background: rgb(99, 95, 95);
+    color: white;
+  }
+
+ion-card ion-card-content {
+    text-align: left;
+}
+
+ion-card {
+    text-align: center;
+}
+
+ion-card ion-card-header ion-card-title {
+    font-size: 20px;
+}
+
+.styleKO {
+    color: red;
+    // text-align: center;
+}
+
+.styleOK {
+color: green;
+// text-align: center;
+}

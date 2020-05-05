@@ -37,9 +37,17 @@ export class OrderService {
                     this.orders = orders;
                     this._orders.next([...this.orders]);
                 })
-                
+
             )
-            
+
+        }
+
+        getOneOrder(orderId: string) {
+            console.log('getOneOrder');
+            return this.graphqlService.getOrder(orderId).pipe(
+                map(response => response.data.getOrder)
+            );
+
         }
 
         createOrder(order: Order) {
@@ -48,9 +56,9 @@ export class OrderService {
             return this.graphqlService.createOrder(order)
             .pipe(
                  map(response => response.data.createOrder),
-                 tap( order => {
-                    this.orders.push(order);
-                    console.log('Tap Order', order);
+                 tap( orderResponse => {
+                    this.orders.unshift(orderResponse);
+                    console.log('Tap Order', orderResponse);
                     this._orders.next([...this.orders]);
                  })
             );
@@ -75,8 +83,8 @@ export class OrderService {
             const dbItems: SelectedItemDB[] = order.selectedMenuItems.map( item => {
                 const dbItem: SelectedItemDB = {
                     menuItemId: item._id,
-                    name: item.categoryName + item.name,
-                    name_fr: item.categoryName_fr + item.name_fr,
+                    name: item.categoryName + ' ' + item.name,
+                    name_fr: item.categoryName_fr + ' ' + item.name_fr,
                     price: item.price,
                     totalPrice: item.totalPrice,
                     quantity: item.quantity,
@@ -102,10 +110,21 @@ export class OrderService {
                         }
                     });
                 });
-        if(local === 'fr') {
+            if(local === 'fr') {
             return optionsText_fr;
         }
-        return optionsText;
-          
+            return optionsText;
+
+        }
+
+        buildTaxesText(item: MenuItem, local?: string) {
+            let optionsText = '';
+            let optionsText_fr = '';
+
+            if(local === 'fr') {
+            return optionsText_fr;
+        }
+            return optionsText;
+
         }
 }

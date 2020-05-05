@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Staff Orders</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="orders.length > 0">
+    <div  *ngFor="let order of orders;let orderIndex = index" >
+  <!-- <ion-item color="danger">
+    Received since: {{ order.delay | date:'H:mm:ss':'+0000'}} hours
+  </ion-item>
+  <ion-item color="danger">
+    Status: {{order.status}}
+  </ion-item> -->
+
+  
+    <ion-card>
+      
+      <ion-card-header>
+        <!-- <ion-card-title (click)="order.showDetails = !order.showDetails"> -->
+        <ion-card-title (click)="onClickOrder(order._id)">
+          
+          <!-- <div *ngIf="order.delay">Received since: {{ order.delay | date:'HH:mm:ss':'+0000'}} </div> -->
+          <div >Order#{{order._id}}</div>
+          <div *ngIf="order.delay"> Received since {{ order.delay | date:'H:mm:ss':'+0000'}} </div>
+          <div>{{order.collectionMethod}}</div>
+          <div *ngIf="order.steps && order.steps.length > 0">
+            hi {{order.steps.length}}
+         
+          </div>     
+          <div>Time target: ASAP</div>
+   
+        </ion-card-title>
+        <!-- <ion-card-subtitle *ngIf="order.showDetails">
+          <div>Status: {{order.status}}</div>
+          <div *ngIf="!order.finished">On progress</div>
+          <div *ngIf="order.finished">Completed</div>
+          <div>Total Price: {{ order.totalPrice }}$CA</div>
+          <div>Created at: {{  order.createdAt | date:'shortTime' }}</div>
+
+        </ion-card-subtitle> -->
+      </ion-card-header>
+      <!-- <ion-card-content *ngIf="order.showDetails && order.selectedItems.length > 0">
+        
+        
+          <h2>SubTotalPrice: {{ order.subTotalPrice }}$CA</h2>
+          {{order.selectedItems.length}} items:
+          <div *ngFor="let item of order.selectedItems ">
+            <h2>{{item.quantity}} x {{item.name}}</h2>
+            <p>{{item.totalPrice}}$CA</p>
+            <p>{{item.optionsText}}</p>
+          </div>
+  
+       
+      </ion-card-content> -->
+    </ion-card>
+  </div>
+      
+</div>
+</ion-content>

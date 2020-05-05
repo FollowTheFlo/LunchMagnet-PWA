@@ -31,10 +31,16 @@
         <ion-label>Orders</ion-label>
       </ion-tab-button>
 
-      <!-- <ion-tab-button  tab="menu" >
-        <ion-icon name="pizza"></ion-icon>
-        <ion-label>Menu</ion-label>
-      </ion-tab-button> -->
+      <ion-tab-button  tab="staff-orders" >
+        <ion-icon name="people-outline"></ion-icon>
+        <ion-badge *ngIf="orders.length > 0" color="danger">{{ orders.length }}</ion-badge>
+        <ion-label>Staff</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button  tab="driver-orders" >
+        <ion-icon name="car-sport-outline"></ion-icon>
+        <ion-label>Driver</ion-label>
+      </ion-tab-button>
 
 
     </ion-tab-bar>

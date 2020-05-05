@@ -18,15 +18,18 @@ margin: 15px;
   --color-checked: white;
   --border-color:black;
   --background-checked: var(--ion-color-primary);
-  //--background: white;
+  --background: black;
+  --color-checked: black;
+  --color:white;
 
 
 }
 
 .collectingMethodSegment ion-segment {
   
-  --background: yellow;
+  --background: black;
   --color-checked: darkgreen;
+  --color: black;
 
 }
 

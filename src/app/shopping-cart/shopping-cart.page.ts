@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { Restaurant } from '../models/restaurant.model';
 import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -49,7 +50,8 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     private navigationService: NavigationService,
     private socketService: SocketService,
     private modalCtrl: ModalController,
-    private router: Router
+    private router: Router,
+    private loadingCtrl: LoadingController,
     ) { }
 
   ngOnInit() {
@@ -261,7 +263,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
       .then((data) => {
         console.log(data);
         if ( data.data.action === 'save') {
-          this.currentUser.address = data.data.address;
+          this.currentUser.deliveryAddress = data.data.address;
           this.userService.updateUser({...this.currentUser});
         }
       });
@@ -270,6 +272,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
 
 onCheckout() {
 
+  //initiate empty order then filling it
   const order: Order = {
     _id: '',
     customer: null,
@@ -280,11 +283,19 @@ onCheckout() {
     subTotalPrice: 0,
     status: 'INIT',
     totalPrice: 0,
-    paymentMethod: 'Wesh',
+    paymentMethod: '',
     collectionMethod: '',
     history: null,
     selectedMenuItemsString: '',
-    selectedItems: null
+    selectedItems: null,
+    tipsString: '',
+    taxesString: '',
+    finished: false,
+    createdAt: '',
+    updatedAt: '',
+    deliveryAddress: '',
+    deliveryLocationGeo: { lat: 0, lng: 0},
+    steps: null
   };
   
   order.selectedMenuItems = JSON.parse(JSON.stringify(this.selectedMenuItems));
@@ -296,21 +307,35 @@ onCheckout() {
   order.paymentMethod = this.selectedPaymentMethod.code;
   order.status = 'ITEMS SELECTED';
   order.customer = {...this.currentUser};
+  order.deliveryAddress = this.currentUser.deliveryAddress;
+  order.deliveryLocationGeo = this.currentUser.deliveryLocationGeo;
   //this.order.history = [null];
 
   console.log('onCheckout()', order);
   //this.orderService.CurrentOrder = this.order;
   //this.menuService.clearSelectedMenuItems();
-  this.orderService.createOrder(order)
-  .subscribe( orderData => {
-    console.log('Order created succesfully', orderData);
-  },
-  error => {
-    console.log(error);
-  }
-  );
+
+  this.loadingCtrl.create({ keyboardClose: true, message: 'Creating the order...' }).then((loadingEl) => {
+    loadingEl.present();
+
+    this.orderService.createOrder(order)
+    .subscribe( orderData => {
+      console.log('Order created succesfully', orderData);
+
+      // clear the Cart as the order has been succesfully created
+      this.menuService.clearSelectedMenuItems();
+      loadingEl.dismiss();
+      this.router.navigate(['tabs/orders']);
+    },
+    error => {
+      console.log(error);
+      loadingEl.dismiss();
+    }
+    );
+
+});
   console.log('flo');
-  //this.router.navigate(['tabs/order']);
+  
 }
 
 onConfirmOrder() {

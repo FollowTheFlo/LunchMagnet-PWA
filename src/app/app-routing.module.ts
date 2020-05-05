@@ -16,6 +16,15 @@ const routes: Routes = [
     path: 'orders',
     loadChildren: () => import('./orders/orders.module').then( m => m.OrdersPageModule)
   },
+  {
+    path: 'staff-orders',
+    loadChildren: () => import('./staff/staff-orders/staff-orders.module').then( m => m.StaffOrdersPageModule)
+  },
+  {
+    path: 'driver-orders',
+    loadChildren: () => import('./driver/driver-orders/driver-orders.module').then( m => m.DriverOrdersPageModule)
+  },
+
 
   // { path: 'home', redirectTo: 'tabs/home', pathMatch: 'full' },
   // {

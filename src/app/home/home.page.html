@@ -19,7 +19,7 @@
 
 
   <div class="collectingMethodSegment">
-  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="delivery" [(ngModel)]="this.currentUser.collectionMethod">
+  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="this.currentUser.collectionMethod" [(ngModel)]="this.currentUser.collectionMethod">
     <ion-segment-button value="DELIVERY">
       <ion-label>Delivery</ion-label>
     </ion-segment-button>
@@ -33,8 +33,8 @@
   *ngIf="currentUser.collectionMethod === 'DELIVERY'"
   >
 <ion-item (click)="openSearchAddressModal()">
-  <ion-label *ngIf="currentUser.address === '' ">Search your Address</ion-label>
-  <ion-label *ngIf="currentUser.address !== '' ">{{currentUser.address}}</ion-label>
+  <ion-label *ngIf="currentUser.deliveryAddress === '' ">Search your Address</ion-label>
+  <ion-label *ngIf="currentUser.deliveryAddress !== '' ">{{currentUser.deliveryAddress}}</ion-label>
   <ion-buttons slot="end">
   <ion-button >
     <ion-icon name="search"  ></ion-icon>

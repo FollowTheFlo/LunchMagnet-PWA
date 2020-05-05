@@ -1,20 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>orders</ion-title>
+    <ion-title>My Orders</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-<h1>Orders</h1>
 
   <div *ngIf="orders.length > 0">
-    <ion-card *ngFor="let order of orders;let orderIndex = index">
+    <ion-card 
+      *ngFor="let order of orders;let orderIndex = index"    
+      >
+      
       <ion-card-header>
         <ion-card-title>
-          {{ order._id}} 
+          <div
+          [ngClass]="{'styleKO':(order.finished === false), 'styleOK': (order.finished === true)}"
+          >{{order.status}}</div>
+          <!-- <div *ngIf="order.delay">Delay: {{ order.delay | date:'hh:mm:ss'}}</div> -->
+          <div>Collection: {{ order.collectionMethod}}</div>
+          <!-- <div>Time target: ASAP</div> -->
         </ion-card-title>
         <ion-card-subtitle>
-          <h1>Status: {{order.status}}</h1>
+          <div>Submitted at: {{  order.createdAt | date:'shortTime' }}</div>
+          <!-- <div *ngIf="!order.finished">On process</div>
+          <div *ngIf="order.finished">Completed</div> -->
           Total Price: {{ order.totalPrice }}$CA
         </ion-card-subtitle>
       </ion-card-header>

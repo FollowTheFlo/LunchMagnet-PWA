@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Order Details</ion-title>
+
+    <ion-button fill="clear" color="light" (click)="closeModal()">
+      <ion-icon name="close-circle"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="order">
+  <ion-item-divider>
+    <div style="width: 100%; text-align: center;">
+      Completed {{currentIndex}} / {{order.steps.length}}
+    </div>
+  </ion-item-divider>
+  <!-- <ion-item-divider>
+    <div style="width: 100%; text-align: center;">
+      Current Step: {{currentStep.targetTeam}} needs to  {{currentStep.name}}
+    </div>
+  </ion-item-divider> -->
+  
+  
+<div class="stepsSlides">
+  <ion-slides class="stepsSlides" [options]="slideOpts" pager="true">
+    <ion-slide *ngFor="let step of order.steps; let stepIndex = index">
+      <div [ngClass]="{'styleComplete':(step.completed === true), 'styleInProgress': (step.inProgress === true), 'styleCanceled': (step.canceled === true)}">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <div>{{stepIndex + 1}}</div>
+              {{step.name}}
+            </ion-card-title>
+            <ion-card-subtitle>
+          
+              <div *ngIf="!step.inProgress && !step.completed">Not Started</div>
+              <div *ngIf="step.inProgress">In progress</div>
+              <div *ngIf="step.completed">Completed</div>
+              Assigned to: {{step.targetTeam}}
+            </ion-card-subtitle>
+              <ion-button size="small">Complete</ion-button>
+              <ion-button size="small">Cancel</ion-button>
+         </ion-card-header>
+          
+        </ion-card>
+       </div>
+    </ion-slide>
+  
+    </ion-slides>
+  </div>
+
+    <div class="menuDetails">
+    <ion-card >
+
+  
+    <ion-card-header>
+      <ion-card-title>
+        
+     
+        <div>Order#{{order._id}}</div>
+     
+        <div>{{order.collectionMethod}}</div>
+        <div>{{order.paymentMethod}}</div>
+              
+        <div>Time target: ASAP</div>
+      </ion-card-title>
+      <ion-card-subtitle >
+        <!-- <div>Status: {{order.status}}</div> -->
+        <div>Total Price: {{ order.totalPrice }}$CA</div>
+        <div>Created at: {{  order.createdAt | date:'shortTime' }}</div>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content *ngIf="order.selectedItems.length > 0">
+      
+      
+        <h2>SubTotalPrice: {{ order.subTotalPrice }}$CA</h2>
+        {{order.selectedItems.length}} items:
+        <div *ngFor="let item of order.selectedItems ">
+          <h2>{{item.quantity}} x {{item.name}}</h2>
+          <p>{{item.totalPrice}}$CA</p>
+          <p>{{item.optionsText}}</p>
+        </div>
+     
+    </ion-card-content>
+  </ion-card>
+</div>
+</ion-content>

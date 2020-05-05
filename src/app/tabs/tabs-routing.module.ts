@@ -49,8 +49,25 @@ const routes: Routes = [
         children: [
           {
             path: '',
-           // loadChildren: () => import('./shopping-cart/shopping-cart.module').then( m => m.ShoppingCartPageModule)
             loadChildren: () => import('../shopping-cart/shopping-cart.module').then((m) => m.ShoppingCartPageModule),
+          },
+        ],
+      },
+      {
+        path: 'staff-orders',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../staff/staff-orders/staff-orders.module').then((m) => m.StaffOrdersPageModule),
+          },
+        ],
+      },
+      {
+        path: 'driver-orders',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../driver/driver-orders/driver-orders.module').then((m) => m.DriverOrdersPageModule),
           },
         ],
       },

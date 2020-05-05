@@ -89,7 +89,7 @@ export class HomePage implements OnInit {
       .then((data) => {
         console.log(data);
         if ( data.data.action === 'save') {
-          this.currentUser.address = data.data.address;
+          this.currentUser.deliveryAddress = data.data.address;
           this.userService.updateUser({...this.currentUser});
         }
       });
@@ -164,18 +164,6 @@ export class HomePage implements OnInit {
 
 
   }
-
-  // reload() {
-  //   this.restaurantService.fetchRestaurant()
-  //   // .pipe(
-  //   //   tap( r => this.checkIfOpen())
-  //   // )
-
-  //   .subscribe(restaurant => {
-  //     this.restaurant = restaurant;
-  //     this.currentSlot = this.restaurantService.checkIfOpen();
-  //   });
-  // }
 
   async onSelectItem(itemId: string) {
     console.log('onSelectItem', itemId);

@@ -14,6 +14,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GraphQLModule } from './modules/graphql.module';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 const config: SocketIoConfig = { url: environment.socketServer, options: {} };
 
@@ -29,7 +30,8 @@ const config: SocketIoConfig = { url: environment.socketServer, options: {} };
     GraphQLModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     StatusBar,

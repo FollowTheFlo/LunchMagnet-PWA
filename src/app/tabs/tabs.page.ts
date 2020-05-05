@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuService } from './../services/menu.service';
+import { OrderService } from './../services/order.service';
+import { User } from './../models/user.model';
+import { UserService } from './../services/user.service';
 import { NavigationService } from './../services/navigation.service';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tabs',
@@ -12,13 +16,17 @@ export class TabsPage implements OnInit, OnDestroy {
 
   selectedItemsCount = 0;
   selectedMenuItems: any;
+  orders: any = [];
   labelCode = '';
+  user: User;
   private menSub: Subscription;
   private navSub: Subscription;
 
   constructor(
     private menuService: MenuService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private userService: UserService,
+    private orderService: OrderService
     ) { }
 
   ngOnInit() {
@@ -36,6 +44,21 @@ export class TabsPage implements OnInit, OnDestroy {
         console.log('Tabs selectedItems', selectedItems);
         this.selectedMenuItems = selectedItems;
       });
+
+    this.userService.fetchUser('florent.letendre@gmail.com')
+      .subscribe(user => {
+        this.user = user;
+      });
+
+    // request list from server then setup the listener.
+    // listener will be fired when fetching, so update DOM only in listener
+    this.orderService.fetchOrders('').pipe(
+      switchMap(data =>  this.orderService.orders$)
+    )
+    .subscribe(orders => {
+      console.log('Tabs in orders$');
+      this.orders = orders;
+    });
   }
 
   ngOnDestroy() {
