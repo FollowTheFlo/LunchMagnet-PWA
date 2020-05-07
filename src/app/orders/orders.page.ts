@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfigItem } from './../models/configItem.model';
 import { Order } from './../models/order.model';
 import { RestaurantService } from './../services/restaurant.service';
@@ -7,6 +7,7 @@ import { UserService } from './../services/user.service';
 import { User } from '../models/user.model';
 import { Subject, Subscription, Observable, BehaviorSubject, of, from, throwError, interval } from 'rxjs';
 import { map, tap, timeInterval, switchMap } from 'rxjs/operators';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-orders',
@@ -14,11 +15,17 @@ import { map, tap, timeInterval, switchMap } from 'rxjs/operators';
   styleUrls: ['./orders.page.scss'],
 })
 export class OrdersPage implements OnInit {
-
+  @ViewChild('stepsSlides', { static: false }) stepsSlides: IonSlides;
+  slideOpts = {
+    initialSlide: 0,
+    slidesPerView: 1.2,
+    autoplay: false
+  };
   selectedPaymentMethod: ConfigItem;
   paymentMethodList: ConfigItem[] = [];
   collectMethodList: ConfigItem[] = [];
   orders: Order[] = [];
+  selectedOrder: Order;
   user: User;
   private intervalSub: Subscription;
 
@@ -35,7 +42,7 @@ export class OrdersPage implements OnInit {
     this.userService.user$.pipe(
       switchMap( user => {
         this.user = user;
-        return this.orderService.fetchOrders(this.user._id)
+        return this.orderService.fetchOrders(this.user._id);
       }),
       map( orders => {
         this.orders = orders;
@@ -44,9 +51,27 @@ export class OrdersPage implements OnInit {
     )
     .subscribe();
 
+  }
 
+  doRefresh(event) {
+    console.log('Begin async operation');
 
+    this.orderService.fetchOrders(this.user._id).subscribe( orders => {
+      event.target.complete();
+      this.orders = orders;
+    }    
+    
+    );
+  }
 
+  onClickOrder(order: Order) {
+    
+    console.log('onClickOrder', order);
+    this.selectedOrder = order;
+    if (this.stepsSlides) {
+      this.stepsSlides.update();
+    }
+   
   }
 
   // ionViewDidEnter() {

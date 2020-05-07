@@ -56,8 +56,8 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.socketService.getMessages()
-    .subscribe(message => console.log('from socket', message));
+    //  this.socketService.getMessages('')
+    //  .subscribe(message => console.log('from socket', message));
 
     this.userService.user$
     .subscribe(user => {
@@ -295,7 +295,9 @@ onCheckout() {
     updatedAt: '',
     deliveryAddress: '',
     deliveryLocationGeo: { lat: 0, lng: 0},
-    steps: null
+    steps: null,
+    currentStep: null,
+    currentStepIndex: 0
   };
   
   order.selectedMenuItems = JSON.parse(JSON.stringify(this.selectedMenuItems));
@@ -319,8 +321,8 @@ onCheckout() {
     loadingEl.present();
 
     this.orderService.createOrder(order)
-    .subscribe( orderData => {
-      console.log('Order created succesfully', orderData);
+    .subscribe( response => {
+      console.log('Order created succesfully', response);
 
       // clear the Cart as the order has been succesfully created
       this.menuService.clearSelectedMenuItems();
@@ -340,7 +342,7 @@ onCheckout() {
 
 onConfirmOrder() {
   console.log('onConfirmOrder');
-  this.socketService.sendMessage('Order has been sent');
+  //this.socketService.sendMessage('Order has been sent');
 
   
 }

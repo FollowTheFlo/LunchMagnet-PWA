@@ -7,7 +7,7 @@ import { MenuItem } from '../models/menuItem.model';
 import { SelectedItemDB } from '../models/selectedItemDB.model';
 
 @Injectable({ providedIn: 'root' })
-export class OrderService {
+export class StaffService {
 
     private orders: Order[] = [];
     private _orders = new BehaviorSubject<Order[]>([]);
@@ -21,9 +21,9 @@ export class OrderService {
         }
 
 
-        fetchOrders(userId) {
-            console.log('fetchOrders(userId)');
-            return this.graphqlService.getOrders(userId).pipe(
+        fetchAllOrders() {
+            console.log('fetchOrders()');
+            return this.graphqlService.getOrders('').pipe(
                 map(response => response.data.getOrders),
                 tap( orders => {
                     this.orders = orders;
@@ -33,6 +33,7 @@ export class OrderService {
             );
 
         }
+
 
         fetchOrders_afterReset(userId) {
             // reset the graphql cache to force the request to server

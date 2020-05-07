@@ -11,13 +11,13 @@ export class SocketService {
     constructor(private socket: Socket) {}
     
 
-    public sendMessage(message: string) {
-        this.socket.emit('new-message', message);
+    public sendMessage(eventName: string, data: any) {
+        this.socket.emit(eventName, data);
     }
 
-    public getMessages = () => {
+    public getMessages(eventName: string) {
        return this.socket
-       .fromEvent('ORDER_CREATED');
+       .fromEvent<any>(eventName);
     }
     
 

@@ -81,15 +81,15 @@ export class OrderPage implements OnInit {
     console.log('getGrandTotal1');
 
     this.taxList.forEach(tax => {
-      tax.amount = Math.round(this.subTotal  * tax.floatValue) / 100;
+      tax.amount = Math.floor(this.subTotal  * tax.floatValue) / 100;
     });
     let price = 0;
     // add tips price
     if (this.selectedTips)
     {
-      this.selectedTips.amount = Math.round(this.subTotal * (this.selectedTips.intValue)) / 100;
+      this.selectedTips.amount = Math.floor(this.subTotal * (this.selectedTips.intValue)) / 100;
       console.log('getGrandTotal2', this.selectedTips.intValue);
-      price = Math.round(this.subTotal * (100 + this.selectedTips.intValue)) / 100;
+      price = Math.floor(this.subTotal * (100 + this.selectedTips.intValue)) / 100;
     }
     // add taxes price
     this.taxList.forEach(tax => {
@@ -98,7 +98,7 @@ export class OrderPage implements OnInit {
 
     console.log('selectedTips', this.selectedTips);
 
-    return Math.round(price * 100) / 100;
+    return Math.floor(price * 100) / 100;
     //return this.subTotal / 100;
   }
 
@@ -106,7 +106,7 @@ export class OrderPage implements OnInit {
     console.log('onAddTips', tip);
     this.clearChipSelection();
     this.selectedTips = tip;
-    this.selectedTips.floatValue = Math.round(this.subTotal * (tip.intValue)) / 100;
+    this.selectedTips.floatValue = Math.floor(this.subTotal * (tip.intValue)) / 100;
     tip.selected = true;
     this.grandTotal = this.getGrandTotal_UpdateTipsTaxes();
   }

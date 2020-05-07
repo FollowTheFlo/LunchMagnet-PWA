@@ -17,4 +17,6 @@ export interface Step {
     canceledDate: string;
     canceledBy: string;
     index: number;
+    btnOK: string;
+    btnKO: string;
 }

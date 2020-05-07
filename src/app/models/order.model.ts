@@ -30,4 +30,6 @@ export interface Order {
     deliveryAddress: string;
     deliveryLocationGeo: LocationGeo;
     steps: Step[];
+    currentStep: Step;
+    currentStepIndex: number;
 }

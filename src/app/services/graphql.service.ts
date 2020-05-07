@@ -14,11 +14,6 @@ import { Order } from '../models/order.model';
 export class GraphqlService {
     constructor(private apollo: Apollo) {}
 
-
-
-
-
-
     resetStore() {
       console.log('apollo resetStore');
       return this.apollo.getClient().resetStore();
@@ -117,7 +112,7 @@ export class GraphqlService {
                 selected
             }
             }
-            
+
 
 
           }
@@ -169,6 +164,28 @@ export class GraphqlService {
         collectionMethod
         createdAt
         updatedAt
+        currentStep {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+        }
+        currentStepIndex
         selectedItems {
           name
           price
@@ -178,7 +195,7 @@ export class GraphqlService {
           quantity
           notes
           totalPrice
-      
+
          }
          deliveryAddress
          deliveryLocationGeo {
@@ -203,8 +220,10 @@ export class GraphqlService {
           canceledDate
           canceledBy
           index
+          btnOK
+          btnKO
          }
-  
+
       }
    }
       `} );
@@ -218,7 +237,7 @@ export class GraphqlService {
         userId:"${userId}"
         )
         {
-        _id
+          _id
         rawPrice
         status
         paymentMethod
@@ -229,6 +248,28 @@ export class GraphqlService {
         collectionMethod
         createdAt
         updatedAt
+        currentStep {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+        }
+        currentStepIndex
         selectedItems {
           name
           price
@@ -238,14 +279,35 @@ export class GraphqlService {
           quantity
           notes
           totalPrice
-      
+
          }
          deliveryAddress
          deliveryLocationGeo {
-           lat
-           lng
+          lat
+          lng
          }
-  
+         steps {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+         }
+
       }
    }
       `} );
@@ -263,7 +325,7 @@ export class GraphqlService {
       let cleanDeliveryLocationGeo = '{lat:'+ order.deliveryLocationGeo.lat + ',lng:'+order.deliveryLocationGeo.lng+'}';
       //cleanDeliveryLocationGeo.replace(/"([^"]+)":/g, "$1:");
 
-     
+
 
       console.log('order deliverLocation', order.deliveryLocationGeo);
       console.log('order clean', cleanDeliveryLocationGeo);
@@ -271,7 +333,7 @@ export class GraphqlService {
       itemsCleanList = '[' + itemsCleanList.replace(/"([^"]+)":/g, "$1:") + ']';
 
       console.log('itemsCleanList', itemsCleanList);
-     
+
       return this.apollo.mutate<any>({
         mutation: gql`
         mutation {
@@ -289,30 +351,247 @@ export class GraphqlService {
             subTotalPrice:${order.subTotalPrice}
             tipsPercentage:${order.tips.intValue}
             deliveryAddress:"${order.deliveryAddress}"
-           
+
 
           })
+          {
+            _id
+        rawPrice
+        status
+        paymentMethod
+        tipsPercentage
+        subTotalPrice
+        finished
+        totalPrice
+        collectionMethod
+        createdAt
+        updatedAt
+        currentStep {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+        }
+        currentStepIndex
+        selectedItems {
+          name
+          price
+          optionsText
+          optionsText_fr
+          menuItemId
+          quantity
+          notes
+          totalPrice
+
+         }
+         deliveryAddress
+         deliveryLocationGeo {
+          lat
+          lng
+         }
+         steps {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+         }
+
+          }
+        }
+
+        `});
+    }
+
+    completeOrderStep(orderId: string, index: number): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          completeOrderStep(orderId: "${orderId}",index: ${index})
           {
             _id
             rawPrice
             status
             paymentMethod
             tipsPercentage
-            totalPrice
             subTotalPrice
+            finished
+            totalPrice
             collectionMethod
             createdAt
             updatedAt
-            selectedItems {
+            currentStep {
+              code
               name
               name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+            currentStepIndex
+            selectedItems {
+              name
               price
               optionsText
               optionsText_fr
               menuItemId
               quantity
+              notes
               totalPrice
-              }
+
+            }
+            deliveryAddress
+            deliveryLocationGeo {
+              lat
+              lng
+            }
+            steps {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+
+          }
+        }
+
+        `});
+    }
+
+    cancelOrderStep(orderId: string, index: number): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          cancelOrderStep(orderId: "${orderId}",index: ${index})
+          {
+            _id
+            rawPrice
+            status
+            paymentMethod
+            tipsPercentage
+            subTotalPrice
+            finished
+            totalPrice
+            collectionMethod
+            createdAt
+            updatedAt
+            currentStep {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+            currentStepIndex
+            selectedItems {
+              name
+              price
+              optionsText
+              optionsText_fr
+              menuItemId
+              quantity
+              notes
+              totalPrice
+
+            }
+            deliveryAddress
+            deliveryLocationGeo {
+              lat
+              lng
+            }
+            steps {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+
           }
         }
 

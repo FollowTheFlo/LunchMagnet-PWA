@@ -5,17 +5,56 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- <ion-slides *ngIf="selectedOrder" class="stepsSlides" [options]="slideOpts" pager="true" #stepsSlides >
+    <ion-slide *ngFor="let step of selectedOrder.steps; let stepIndex = index">
+      <div [ngClass]="{'styleComplete':(step.completed === true), 'styleInProgress': (step.inProgress === true), 'styleCanceled': (step.canceled === true)}">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <div>{{stepIndex + 1}}</div>
+              {{step.name}}
+            </ion-card-title>
+            <ion-card-subtitle>
+          
+              <div *ngIf="!step.inProgress && !step.completed">Not Started</div>
+              <div *ngIf="step.inProgress">In progress</div>
+              <div *ngIf="step.inProgress">Started at {{step.startedAt | date:'shortTime'}}</div>
+              <div *ngIf="step.completed">Completed</div>
+              <div *ngIf="step.completed">At {{step.completedDate}} <br> By {{step.completedBy}}</div>
+         
+            </ion-card-subtitle>
+              
+         </ion-card-header>
+          
+        </ion-card>
+       </div>
+    </ion-slide>
+  
+    </ion-slides> -->
 
   <div *ngIf="orders.length > 0">
     <ion-card 
-      *ngFor="let order of orders;let orderIndex = index"    
+      *ngFor="let order of orders;let orderIndex = index"
+      (click)="onClickOrder(order)"
       >
       
       <ion-card-header>
         <ion-card-title>
           <div
           [ngClass]="{'styleKO':(order.finished === false), 'styleOK': (order.finished === true)}"
-          >{{order.status}}</div>
+          >
+          <div *ngIf="order.currentStep.inProgress">Waiting {{order.currentStep.name}}</div>
+
+        </div>
           <!-- <div *ngIf="order.delay">Delay: {{ order.delay | date:'hh:mm:ss'}}</div> -->
           <div>Collection: {{ order.collectionMethod}}</div>
           <!-- <div>Time target: ASAP</div> -->

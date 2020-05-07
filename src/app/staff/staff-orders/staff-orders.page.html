@@ -5,16 +5,20 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  
   <div *ngIf="orders.length > 0">
     <div  *ngFor="let order of orders;let orderIndex = index" >
-  <!-- <ion-item color="danger">
-    Received since: {{ order.delay | date:'H:mm:ss':'+0000'}} hours
-  </ion-item>
-  <ion-item color="danger">
-    Status: {{order.status}}
-  </ion-item> -->
 
-  
+  <div [ngClass]="{'styleComplete':(order.status === 'COMPLETED'), 'styleInProgress': (order.status === 'ON PROGRESS'),
+     'styleNotStarted': (order.status === 'NOT STARTED'), 'styleCanceled': (order.status === 'CANCELED')}">
     <ion-card>
       
       <ion-card-header>
@@ -25,11 +29,19 @@
           <div >Order#{{order._id}}</div>
           <div *ngIf="order.delay"> Received since {{ order.delay | date:'H:mm:ss':'+0000'}} </div>
           <div>{{order.collectionMethod}}</div>
-          <div *ngIf="order.steps && order.steps.length > 0">
-            hi {{order.steps.length}}
-         
-          </div>     
-          <div>Time target: ASAP</div>
+        
+            <div *ngIf="!order.finished">
+              <div>Current Step: {{order.currentStep.name}} ({{order.currentStepIndex + 1}}/{{order.steps.length}})</div>
+               <div>Time target: ASAP</div>
+          </div>
+          <div *ngIf="order.finished && order.status === 'COMPLETED'">
+            COMPLETED at {{order.currentStep.completedDate | date:'H:mm:ss':'+0000'}}
+            <div>by {{order.currentStep.completedBy}}</div>
+          </div>
+          <div *ngIf="order.finished && order.status === 'CANCELED'">
+            CANCELED at {{order.currentStep.canceledDate | date:'H:mm:ss':'+0000'}}
+            <div>by {{order.currentStep.canceledBy}}</div>
+          </div>
    
         </ion-card-title>
         <!-- <ion-card-subtitle *ngIf="order.showDetails">
@@ -55,6 +67,7 @@
        
       </ion-card-content> -->
     </ion-card>
+    </div>
   </div>
       
 </div>

@@ -11,7 +11,7 @@
 <ion-content *ngIf="order">
   <ion-item-divider>
     <div style="width: 100%; text-align: center;">
-      Completed {{currentIndex}} / {{order.steps.length}}
+      Step {{order.currentStepIndex+1}} / {{order.steps.length}}
     </div>
   </ion-item-divider>
   <!-- <ion-item-divider>
@@ -19,10 +19,10 @@
       Current Step: {{currentStep.targetTeam}} needs to  {{currentStep.name}}
     </div>
   </ion-item-divider> -->
+  <ion-spinner *ngIf="!showSlides"></ion-spinner>
   
-  
-<div class="stepsSlides">
-  <ion-slides class="stepsSlides" [options]="slideOpts" pager="true">
+<div class="stepsSlides" *ngIf="showSlides" >
+  <ion-slides class="stepsSlides" [options]="slideOpts" pager="true" #stepsSlides >
     <ion-slide *ngFor="let step of order.steps; let stepIndex = index">
       <div [ngClass]="{'styleComplete':(step.completed === true), 'styleInProgress': (step.inProgress === true), 'styleCanceled': (step.canceled === true)}">
         <ion-card>
@@ -35,12 +35,29 @@
           
               <div *ngIf="!step.inProgress && !step.completed">Not Started</div>
               <div *ngIf="step.inProgress">In progress</div>
+              <div *ngIf="step.inProgress">Started at {{step.startedAt | date:'shortTime'}}</div>
               <div *ngIf="step.completed">Completed</div>
-              Assigned to: {{step.targetTeam}}
+              <div *ngIf="step.completed">At {{step.completedDate}} <br> By {{step.completedBy}}</div>
+              <div *ngIf="!step.completed">Assigned to: {{step.targetTeam}}</div>
             </ion-card-subtitle>
-              <ion-button size="small">Complete</ion-button>
-              <ion-button size="small">Cancel</ion-button>
+              
          </ion-card-header>
+         <ion-card-content>
+           <span class="btnOK">
+            <ion-button size="default"
+              disabled="{{!step.inProgress}}"
+              (click)="onCompleteStep(step,stepIndex)">
+              {{step.btnOK}}
+            </ion-button>
+          </span>
+           <span class="btnKO">
+            <ion-button size="default"
+                disabled="{{!step.inProgress}}"
+                (click)="onCancelStep(step,stepIndex)"
+                >{{step.btnKO}}
+            </ion-button>
+          </span>
+         </ion-card-content>
           
         </ion-card>
        </div>

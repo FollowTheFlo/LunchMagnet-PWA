@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuService } from './../services/menu.service';
-import { OrderService } from './../services/order.service';
+import { StaffService } from './../services/staff.service';
+import { SocketService } from './../services/socket.service';
 import { User } from './../models/user.model';
+import { Order } from './../models/order.model';
 import { UserService } from './../services/user.service';
 import { NavigationService } from './../services/navigation.service';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tabs',
@@ -16,17 +18,19 @@ export class TabsPage implements OnInit, OnDestroy {
 
   selectedItemsCount = 0;
   selectedMenuItems: any;
-  orders: any = [];
+  staffOrders: Order[] = [];
   labelCode = '';
   user: User;
   private menSub: Subscription;
   private navSub: Subscription;
+  private socketStaffOrderSub: Subscription;
 
   constructor(
     private menuService: MenuService,
     private navigationService: NavigationService,
     private userService: UserService,
-    private orderService: OrderService
+    private staffService: StaffService,
+    private socketService: SocketService
     ) { }
 
   ngOnInit() {
@@ -52,18 +56,40 @@ export class TabsPage implements OnInit, OnDestroy {
 
     // request list from server then setup the listener.
     // listener will be fired when fetching, so update DOM only in listener
-    this.orderService.fetchOrders('').pipe(
-      switchMap(data =>  this.orderService.orders$)
+    this.staffService.fetchAllOrders().pipe(
+      switchMap(data =>  this.staffService.orders$),
+      map(staffOrders => staffOrders.filter(o => o.finished === false))
     )
-    .subscribe(orders => {
+    .subscribe(staffOrders => {
       console.log('Tabs in orders$');
-      this.orders = orders;
+      this.staffOrders = staffOrders;
     });
+
+    this.socketStaffOrderSub = this.socketService.getMessages('STAFF_ORDER')
+          .subscribe(socketData => {
+
+            console.log('socket', socketData );
+
+            if (socketData.action === 'UPDATE') {
+                this.staffService.updateOrderLocally(socketData.order as Order);
+            } else
+            if (socketData.action === 'CREATE') {
+              this.staffService.addOrderLocally(socketData.order as Order)
+              .subscribe(result => console.log(result));
+            }
+
+         });
   }
 
   ngOnDestroy() {
     if (this.menSub) {
       this.menSub.unsubscribe();
+    }
+    if (this.navSub) {
+      this.navSub.unsubscribe();
+    }
+    if (this.socketStaffOrderSub) {
+      this.socketStaffOrderSub.unsubscribe();
     }
   }
 

@@ -44,3 +44,51 @@ ion-card ion-card-header ion-card-title {
 color: green;
 // text-align: center;
 }
+
+
+.stepsSlides {
+    --bullet-background:black;
+    --bullet-background-active: black;
+ }
+
+ .styleComplete ion-card ion-card-header {
+     background-color: green;
+     --color: white;
+ }
+ .styleComplete ion-card ion-card-header ion-card-subtitle{
+    background-color: green;
+    color: white;
+}
+
+ .styleInProgress ion-card ion-card-header {
+    background-color: yellow;
+    }
+.styleCanceled ion-card ion-card-header {
+    background-color: red;
+}
+
+.stepsSlides ion-card {
+    position: relative;
+    text-align: center;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0%;
+    //margin: 5% !important;
+    //margin-right: 30px;
+    //border-style: solid;
+    //box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
+    
+   }
+
+ .stepsSlides ion-card ion-card-header  {
+    border-bottom-style: solid;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    height: 110px !important;
+    //border-bottom: black;
+   }
+   
+   .stepsSlides ion-card ion-card-content  {
+       padding-bottom: 5px;
+       padding-top: 5px;
+   }

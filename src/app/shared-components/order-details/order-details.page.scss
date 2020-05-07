@@ -15,25 +15,38 @@ ion-card ion-card-header ion-card-title {
 
 .stepsSlides {
     --bullet-background:black;
-    --bullet-background-active: darkred;
+    --bullet-background-active: black;
  }
 
- .styleComplete ion-card {
+ .styleComplete ion-card ion-card-header {
      background-color: green;
+     --color: white;
  }
- .styleInProgress ion-card {
+ .styleComplete ion-card ion-card-header ion-card-subtitle{
+    background-color: green;
+    color: white;
+}
+
+ .styleInProgress ion-card ion-card-header {
     background-color: yellow;
     }
-.styleCanceled ion-card {
+.styleCanceled ion-card ion-card-header {
     background-color: red;
 }
 
+ion-spinner {
+    text-align: center;
+    margin-top: 10%;
+    margin-bottom: 10%;
+    margin-left: 48%;
+}
 
- .stepsSlides-card {
+ .stepsSlides ion-card {
     position: relative;
     text-align: center;
     width: 100% !important;
     height: 100% !important;
+    border-radius: 0%;
     //margin: 5% !important;
     //margin-right: 30px;
     //border-style: solid;
@@ -41,14 +54,40 @@ ion-card ion-card-header ion-card-title {
     
    }
 
+ .stepsSlides ion-card ion-card-header  {
+    border-bottom-style: solid;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    height: 110px !important;
+    //border-bottom: black;
+   }
+   
+   .stepsSlides ion-card ion-card-content  {
+       padding-bottom: 5px;
+       padding-top: 5px;
+   }
+
+   .stepsSlides ion-card ion-card-content ion-button {
+    // margin-left: 5px;
+    // margin-right: 5px;
+}
+
    .menuDetails ion-card{
     position: relative;
     text-align: center;
   
     height: 50% !important;
 
-
    }
+
+   .btnOK ion-button {
+       --background: green;
+   }
+
+   .btnKO ion-button {
+        --background: red;
+}
+
 
      
 // ion-card {
