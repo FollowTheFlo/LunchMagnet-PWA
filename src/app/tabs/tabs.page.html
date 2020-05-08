@@ -25,12 +25,18 @@
         <ion-icon name="restaurant-outline"></ion-icon>
            <ion-label>Home</ion-label>
       </ion-tab-button>
-      
-      <ion-tab-button  tab="orders" >
-        <ion-icon name="receipt-outline"></ion-icon>
-        <ion-label>Orders</ion-label>
-      </ion-tab-button>
-
+      <!-- <div  [ngClass]="{'styleRed':(userOrders.length >0), 'styleWhite': (userOrders.length === 0)}"> -->
+        <ion-tab-button  tab="orders" >
+          <ion-icon name="receipt-outline"
+          *ngIf="userOrders.length >0"
+          color="danger"
+          ></ion-icon>
+          <ion-icon name="receipt-outline"
+          *ngIf="userOrders.length === 0"
+          ></ion-icon>
+          <ion-label>Orders</ion-label>
+        </ion-tab-button>
+      <!-- </div> -->
       <ion-tab-button  tab="staff-orders" >
         <ion-icon name="people-outline"></ion-icon>
         <ion-badge *ngIf="staffOrders.length > 0" color="danger">{{ staffOrders.length }}</ion-badge>

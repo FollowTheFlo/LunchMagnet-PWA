@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuService } from './../services/menu.service';
 import { StaffService } from './../services/staff.service';
 import { SocketService } from './../services/socket.service';
+import { OrderService } from './../services/order.service';
 import { User } from './../models/user.model';
 import { Order } from './../models/order.model';
 import { UserService } from './../services/user.service';
@@ -19,6 +20,7 @@ export class TabsPage implements OnInit, OnDestroy {
   selectedItemsCount = 0;
   selectedMenuItems: any;
   staffOrders: Order[] = [];
+  userOrders: Order[] = [];
   labelCode = '';
   user: User;
   private menSub: Subscription;
@@ -30,7 +32,8 @@ export class TabsPage implements OnInit, OnDestroy {
     private navigationService: NavigationService,
     private userService: UserService,
     private staffService: StaffService,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private orderService: OrderService
     ) { }
 
   ngOnInit() {
@@ -49,10 +52,21 @@ export class TabsPage implements OnInit, OnDestroy {
         this.selectedMenuItems = selectedItems;
       });
 
-    this.userService.fetchUser('florent.letendre@gmail.com')
-      .subscribe(user => {
+    this.userService.fetchUser('florent.letendre@gmail.com').pipe(
+      switchMap(user => {
         this.user = user;
-      });
+        return this.orderService.fetchOrders(user._id);
+      }),
+      switchMap(data =>  this.orderService.orders$),
+      map(userOrders => userOrders.filter(o => o.finished === false))
+    )
+    .subscribe(userOrders => {
+      console.log('Tabs in UserOrders$',userOrders);
+      this.userOrders = userOrders;
+    });
+      // .subscribe(user => {
+      //   this.user = user;
+      // });
 
     // request list from server then setup the listener.
     // listener will be fired when fetching, so update DOM only in listener
@@ -61,7 +75,7 @@ export class TabsPage implements OnInit, OnDestroy {
       map(staffOrders => staffOrders.filter(o => o.finished === false))
     )
     .subscribe(staffOrders => {
-      console.log('Tabs in orders$');
+      console.log('Tabs in Stafforders$');
       this.staffOrders = staffOrders;
     });
 

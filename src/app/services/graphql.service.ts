@@ -7,6 +7,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { FetchResult } from 'apollo-link';
 import { MenuItem } from '../models/menuItem.model';
 import { Order } from '../models/order.model';
+import { Driver } from '../models/driver.model';
 
 @Injectable({
   providedIn: 'root',
@@ -514,6 +515,84 @@ export class GraphqlService {
 
         `});
     }
+
+    createDriver(userId: string): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          createDriver(userId: "${userId}")
+          {
+            _id
+            status
+            timeToRestaurant
+            locationGeo{
+              lat
+              lng
+            }
+            distanceToRestaurant
+            user
+          }
+
+        }
+        `}
+        );
+        }
+
+        updateDriver(driver: Driver): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+          return this.apollo.mutate<any>({
+            mutation: gql`
+            mutation {
+              updateDriver(driverInput: {
+                _id: "${driver._id}"
+                locationGeo: {
+                  lat: ${driver.locationGeo.lat}
+                  lng: ${driver.locationGeo.lat}
+                 }
+                 locationTime: "${driver.locationTime}"
+                 status: "${driver.status}"
+                 timeToRestaurant: ${driver.timeToRestaurant}
+                 available: ${driver.available}
+                }
+              )
+              {
+                _id
+                status
+                timeToRestaurant
+                locationGeo{
+                  lat
+                  lng
+                }
+                distanceToRestaurant
+                user
+                available
+                locationTime
+              }
+            }
+            `}
+            );
+            }
+      
+        getDriver(userId: string): Observable<ApolloQueryResult<any>> {
+          console.log('apollo getDriver ');
+            // tslint:disable-next-line: no-unused-expression
+          return this.apollo.query<any>({
+              query: gql`
+              query {
+                getDriver(userId: "${userId}"){
+                  status
+                  _id
+                  user
+                  timeToRestaurant
+                  available
+                  locationGeo {
+                    lat
+                    lng
+                  }
+                }
+              }
+
+              `});
+            }
 
     cancelOrderStep(orderId: string, index: number): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
       return this.apollo.mutate<any>({

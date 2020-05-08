@@ -31,3 +31,8 @@ ion-card ion-card-header ion-card-title {
 .styleNotStarted ion-card {
     background-color: white;
 }
+
+.filterStyle ion-item {
+    --background: var(--ion-color-primary);
+    color:white;
+}

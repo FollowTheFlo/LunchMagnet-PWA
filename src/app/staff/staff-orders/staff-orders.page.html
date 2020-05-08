@@ -13,7 +13,15 @@
       refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  
+
+  <div class="filterStyle">
+    <ion-item>      
+      <ion-icon name="funnel-outline" slot="end"></ion-icon>
+      <ion-label  slot="end">By Date</ion-label>
+      <ion-icon name="filter-outline" slot="end"></ion-icon>
+      <ion-label  slot="end">All</ion-label>
+    </ion-item>
+  </div>
   <div *ngIf="orders.length > 0">
     <div  *ngFor="let order of orders;let orderIndex = index" >
 

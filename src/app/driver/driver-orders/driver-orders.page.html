@@ -5,15 +5,20 @@
 </ion-header>
 
 <ion-content>
-
+<div *ngIf="driver">
   <ion-item>
     <ion-label>Available</ion-label>
-    <ion-toggle ></ion-toggle>
+    <ion-toggle checked="{{driver.available}}" (ionChange)="onToggleChange()"></ion-toggle>
   </ion-item>
   <ion-item>
     <ion-label>Status</ion-label>
-    <ion-button slot="end">Waiting Ride</ion-button>
-
+    <ion-button slot="end">{{driver.status}}</ion-button>
   </ion-item>
-
+</div>
+  <ion-fab vertical="center" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="drawCurrentPosition()">
+      <ion-icon name="locate-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <div id="driverMapId" style="height:300px"></div>
 </ion-content>

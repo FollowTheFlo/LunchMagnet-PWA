@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavParams, ModalController, ToastController, IonSlides } from '@ionic/angular';
-import { OrderService } from './../../services/order.service';
+import { StaffService } from './../../services/staff.service';
 import { SocketService } from './../../services/socket.service';
 import { Order } from 'src/app/models/order.model';
 import { Step } from 'src/app/models/step.model';
@@ -22,7 +22,7 @@ export class OrderDetailsPage implements OnInit {
   };
 
   constructor(
-    private orderService: OrderService,
+    private staffService: StaffService,
     private socketService: SocketService,
     private navParams: NavParams,
     private modalCtrl: ModalController,
@@ -36,7 +36,7 @@ export class OrderDetailsPage implements OnInit {
 
     console.log('ngOnInit', this.orderId);
     if (this.orderId) {
-      this.orderService.getOneOrder(this.orderId)
+      this.staffService.getOneOrder(this.orderId)
       .subscribe(order => {
         this.order = order;
       });
@@ -55,7 +55,7 @@ export class OrderDetailsPage implements OnInit {
     console.log('onCompleteStep step', step);
     console.log('onCompleteStep index', index);
  
-    this.orderService.completeOrderStep(this.order._id, index)
+    this.staffService.completeOrderStep(this.order._id, index)
     .subscribe(order => {
       console.log('completeOrderStep Response');
       this.order = order;
@@ -68,7 +68,7 @@ export class OrderDetailsPage implements OnInit {
   onCancelStep(step: Step, index: number) {
     console.log('onCancelStep step', step);
     console.log('onCancelStep index', index);
-    this.orderService.cancelOrderStep(this.order._id, index)
+    this.staffService.cancelOrderStep(this.order._id, index)
     .subscribe(order => {
       this.order = order;
     });

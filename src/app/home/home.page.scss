@@ -16,10 +16,10 @@ margin: 15px;
 
 .collectingMethodSegment ion-segment ion-segment-button{
   --color-checked: white;
-  --border-color:black;
+  --border-color:var(--ion-color-primary);
   --background-checked: var(--ion-color-primary);
-  --background: black;
-  --color-checked: black;
+  --background: var(--ion-color-primary);
+  --color-checked: var(--ion-color-primary);
   --color:white;
 
 
@@ -27,7 +27,7 @@ margin: 15px;
 
 .collectingMethodSegment ion-segment {
   
-  --background: black;
+  --background: var(--ion-color-primary);
   --color-checked: darkgreen;
   --color: black;
 

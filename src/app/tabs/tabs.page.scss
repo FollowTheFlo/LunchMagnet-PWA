@@ -7,13 +7,14 @@
 //     box-shadow: 0 2px 0 0 blue inset;
 // }
 
-ion-tabs ion-tab-bar {
-    --border: pink;
-    //--color: grey;
-}
+// ion-tabs ion-tab-bar {
+//     --border: pink;
+//     //--color: grey;
+// }
 
 .tab-selected {
-    --background: rgb(181, 181, 181); // Or whatever you want to set it to.
+    //--background: rgb(181, 181, 181); // Or whatever you want to set it to.
+    --background: rgba(0, 0, 255, 0.815);
   }
 
 .cartTab ion-toolbar {
@@ -35,3 +36,12 @@ ion-badge {
     font-size: 15px;
     
 }
+
+.styleRed ion-icon {
+    color:red !important;
+}
+
+.styleRed ion-icon {
+    color:white !important;
+}
+

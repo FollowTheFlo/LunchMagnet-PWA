@@ -56,7 +56,7 @@ export class OrdersPage implements OnInit {
   doRefresh(event) {
     console.log('Begin async operation');
 
-    this.orderService.fetchOrders(this.user._id).subscribe( orders => {
+    this.orderService.fetchOrders_afterReset(this.user._id).subscribe( orders => {
       event.target.complete();
       this.orders = orders;
     }    

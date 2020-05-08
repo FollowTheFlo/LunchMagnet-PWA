@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import * as L from 'leaflet';
 
 export interface MapboxOutput {
     attribution: string;
@@ -27,8 +28,10 @@ export interface Coordinates {
   })
   export class GeolocationService {
     //httpClient: any;
+    //map: L.Map;
   
     constructor(private httpClient: HttpClient) { }
+
   
     search_word(query: string) {
       const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
