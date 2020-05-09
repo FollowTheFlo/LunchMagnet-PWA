@@ -13,9 +13,10 @@ export class UserService {
         email: '',
         password: '',
         collectionMethod: 'DELIVERY',
-        deliveryAddress: 'nope',
-        role: 'nothing',
-        deliveryLocationGeo: null
+        deliveryAddress: '',
+        role: 'visitor',
+        deliveryLocationGeo: null,
+        name: 'Visitor'
 
     };
     private _user = new BehaviorSubject<User>(this.user);
@@ -38,8 +39,17 @@ export class UserService {
 
     updateUser(user: User) {
         console.log('updateUser', user);
-        this.user = JSON.parse(JSON.stringify(user));
-        this._user.next(JSON.parse(JSON.stringify(user)));
+        return this.graphqlService.updateUser(JSON.parse(JSON.stringify(user))).pipe(
+            map(response => response.data.updateUser),
+            tap(updatedUser => {
+                console.log('success');
+                this.user = updatedUser;
+                this._user.next(JSON.parse(JSON.stringify(updatedUser)));
+            })
+        );
+
+       // this.user = JSON.parse(JSON.stringify(user));
+       // this._user.next(JSON.parse(JSON.stringify(user)));
     }
 
 }

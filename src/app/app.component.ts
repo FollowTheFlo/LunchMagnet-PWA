@@ -47,10 +47,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.userService.fetchUser('florent.letendre@gmail.com')
-    .subscribe(user => {
-      this.currentUser = user;
-    });
+    // this.userService.fetchUser('florent.letendre@gmail.com')
+    // .subscribe(user => {
+    //   this.currentUser = user;
+    // });
     // this.authSub = this.authService.getAuthStatusListener().subscribe((authData) => {
     //   console.log('MainNavComponent Listener isAuth: ', authData.isAuthenticated);
 

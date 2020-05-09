@@ -29,6 +29,8 @@ export class AddressSearchPage implements OnInit, OnDestroy {
   inputLng = 0;
   inputAddress = '';
   inputAction = '';
+  outputLat = 0;
+  outputLng = 0;
 
 
 
@@ -52,7 +54,7 @@ export class AddressSearchPage implements OnInit, OnDestroy {
 
   }
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     if (!this.mapLoaded) {
       this.loadMap();
       this.mapLoaded = true;
@@ -67,11 +69,14 @@ export class AddressSearchPage implements OnInit, OnDestroy {
   }
 
   onDismiss(value: string) {
+    console.log('onDismiss Lat', this.outputLat);
     // using the injected ModalController this page
     // can "dismiss" itself and optionally pass back data
     if ( value === 'save' ) {
     this.modalCtrl.dismiss({
       address: this.selectedAddress,
+      lat: this.outputLat,
+      lng: this.outputLng,
       action : 'save'
     });
     } else {
@@ -199,8 +204,8 @@ locatePosition() {
     const lng = this.customerFeature.geometry.coordinates[0];
     const lat = this.customerFeature.geometry.coordinates[1];
 
-
-
+    this.outputLat = this.customerFeature.geometry.coordinates[1];
+    this.outputLng = this.customerFeature.geometry.coordinates[0];
 
 
     this.addresses = [];

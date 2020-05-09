@@ -8,6 +8,7 @@ import { FetchResult } from 'apollo-link';
 import { MenuItem } from '../models/menuItem.model';
 import { Order } from '../models/order.model';
 import { Driver } from '../models/driver.model';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -581,7 +582,49 @@ export class GraphqlService {
                 getDriver(userId: "${userId}"){
                   status
                   _id
-                  user
+                  user {
+                    name
+                    _id
+                    role
+                    deliveryAddress
+                    collectionMethod
+                    deliveryLocationGeo {
+                      lat
+                      lng
+                    }
+                  }
+                  timeToRestaurant
+                  available
+                  locationGeo {
+                    lat
+                    lng
+                  }
+                }
+              }
+
+              `});
+            }
+
+        getDrivers(filter: string): Observable<ApolloQueryResult<any>> {
+          console.log('apollo getDrivers ', filter);
+            // tslint:disable-next-line: no-unused-expression
+          return this.apollo.query<any>({
+              query: gql`
+              query {
+                getDrivers(filter: "${filter}"){
+                  status
+                  _id
+                  user {
+                  name
+                    _id
+                    role
+                    deliveryAddress
+                    collectionMethod
+                    deliveryLocationGeo {
+                      lat
+                      lng
+                    }
+                  }
                   timeToRestaurant
                   available
                   locationGeo {
@@ -714,6 +757,7 @@ export class GraphqlService {
                       email:"${email}"
                     ) {
                       name
+                      email
                       _id
                       role
                       deliveryAddress
@@ -727,6 +771,40 @@ export class GraphqlService {
                 `,
         });
     }
+
+    updateUser(user: User): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      console.log('Graphql updateUser', user);
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          updateUser(userInput: {
+            _id: "${user._id}"
+            deliveryLocationGeo: {
+              lat: ${user.deliveryLocationGeo.lat}
+              lng: ${user.deliveryLocationGeo.lat}
+             }
+             name: "${user.name}"
+             email: "${user.email}"
+             deliveryAddress: "${user.deliveryAddress}"
+             collectionMethod: "${user.collectionMethod}"
+            }
+          )
+          {
+            name
+            email
+            _id
+            role
+            deliveryAddress
+            collectionMethod
+            deliveryLocationGeo {
+              lat
+              lng
+            }
+          }
+        }
+        `}
+        );
+        }
 
 
     login(email: string, password: string): Observable<ApolloQueryResult<any>> {

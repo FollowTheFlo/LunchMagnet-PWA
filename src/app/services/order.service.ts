@@ -22,7 +22,7 @@ export class OrderService {
 
 
         fetchOrders(userId) {
-            console.log('fetchOrders(userId)');
+            console.log('fetchOrders(userId)', userId);
             return this.graphqlService.getOrders(userId).pipe(
                 map(response => response.data.getOrders),
                 tap( orders => {

@@ -90,9 +90,15 @@ export class HomePage implements OnInit {
         console.log(data);
         if ( data.data.action === 'save') {
           this.currentUser.deliveryAddress = data.data.address;
-          this.userService.updateUser({...this.currentUser});
+          console.log('data latlng', data.data);
+          this.currentUser.deliveryLocationGeo.lat = data.data.lat;
+          this.currentUser.deliveryLocationGeo.lng = data.data.lng;
+          this.userService.updateUser({...this.currentUser})
+          .subscribe(updatedUser => console.log('back from sub', updatedUser));
         }
-      });
+      },
+      error => console.log(error)
+      );
       return await modal.present();
     }
 

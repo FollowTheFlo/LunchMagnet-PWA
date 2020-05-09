@@ -264,6 +264,8 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
         console.log(data);
         if ( data.data.action === 'save') {
           this.currentUser.deliveryAddress = data.data.address;
+          this.currentUser.deliveryLocationGeo.lat = data.data.lat;
+          this.currentUser.deliveryLocationGeo.lng = data.data.lng;
           this.userService.updateUser({...this.currentUser});
         }
       });

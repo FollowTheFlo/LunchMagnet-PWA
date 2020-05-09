@@ -4,7 +4,12 @@
 /** Ionic CSS Variables **/
 :root {
 
-  --ion-tab-bar-background: darkblue;
+  --ion-tab-bar-background: black;
+  --ion-toolbar-background: black;
+  --ion-color-flocolor: black;
+  --ion-color-primary: black;
+
+
   --ion-tab-bar-border-color: black;
   --ion-tab-bar-color:white;
   --ion-tab-bar-color-selected:yellow;
@@ -19,16 +24,16 @@
   
   --ion-item-background: white;
 
-  --ion-toolbar-background: darkblue;
+  
   --ion-toolbar-color: white;
  
    --ion-background-color: rgb(224, 219, 219);
   //--ion-background-color: yellow;
 
-  --ion-color-flocolor: darkblue;
+  
 
   /** primary **/
-  --ion-color-primary: darkblue;
+  
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
