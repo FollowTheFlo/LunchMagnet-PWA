@@ -6,4 +6,94 @@
 
 <ion-content>
 
+  <ion-radio-group 
+  allow-empty-selection="true"
+  value="florent.letendre@gmail.com" 
+  (ionChange)=onUserSelect($event)>
+    <ion-list-header>
+      <ion-label>Users</ion-label>
+    </ion-list-header>
+<div *ngFor="let user of users">
+  <ion-item lines="full">
+    {{user.name}} - role: {{user.role}}
+    <ion-radio slot="end" value="{{user.email}}"></ion-radio>
+  </ion-item>
+</div>
+</ion-radio-group>
+
+<div *ngIf="currentUserEmail">
+  <ion-button (click)="onClickLogin()">
+Login
+  </ion-button>
+</div>
+<!-- 
+  <form #f="ngForm" (ngSubmit)="onLogin(f)">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+            <ion-list>
+                <ion-item>
+                  <ion-label position="floating">Email</ion-label>
+                  <ion-input type="email"
+                  ngModel
+                  name="email"
+                  required
+                  email
+                  #emailCtrl="ngModel"
+                  ></ion-input>
+                  
+                </ion-item>
+                <ion-item  *ngIf="!emailCtrl.valid && emailCtrl.touched"
+                lines="none"
+                >
+                    <p>Email is invalid</p>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Password</ion-label>
+                  <ion-input 
+                  type="password"
+                  ngModel
+                  name="password"
+                  required
+                  minlength="6"
+                  #passwordCtrl="ngModel"></ion-input>
+                </ion-item>
+                <ion-item  *ngIf="!passwordCtrl.valid && passwordCtrl.touched"
+                lines="none"
+                >
+                    <p>Invalid: minimum 6 characters needed</p>
+                </ion-item>
+              </ion-list>
+        </ion-col>
+  
+      </ion-row>
+  
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+  
+              <ion-button type="submit" color="dark" expand="block" 
+              [disabled]="!f.valid"
+              > 
+              Login
+            </ion-button>
+            <div class="floStyle">
+            No account, please: <a [routerLink]="['/signup']">Signup</a>
+          </div>
+          </ion-col>
+          
+        </ion-row>
+    </ion-grid>
+  </form>
+  
+  <ion-grid>
+  <ion-row>
+    <ion-col>
+    <ion-button   class="fbStyle" expand="block" (click)="onFbLogin()" >
+     Facebook login
+      <ion-icon slot="start" name="logo-facebook" >  
+      </ion-icon>
+     </ion-button>
+  </ion-col>
+   </ion-row>
+  </ion-grid> -->
 </ion-content>
