@@ -1,15 +1,7 @@
 <ion-header>
   <div class="homeToolbar">
     <ion-toolbar>
-      <ion-buttons slot="end">
-
-        <ion-button >
-          <p *ngIf="currentSlot.isOpen">Now open </p>
-          <!-- <p *ngIf="currentSlot.isOpen">Open: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}} </p> -->
-          <p *ngIf="!currentSlot.isOpen">Close</p>
-       
-        </ion-button>
-      </ion-buttons>
+   Home
       
     </ion-toolbar>
   </div>
@@ -18,7 +10,7 @@
 <ion-content >
 
 
-  <div class="collectingMethodSegment">
+<div class="collectingMethodSegment">
   <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="this.currentUser.collectionMethod" [(ngModel)]="this.currentUser.collectionMethod">
     <ion-segment-button value="DELIVERY">
       <ion-label>Delivery</ion-label>
@@ -44,15 +36,15 @@
 </ion-item>
 </div>
 <div *ngIf="currentUser.collectionMethod === 'PICKUP'"
-class="delivery"
+class="pickup"
 >
   <ion-item (click)= "onOpenMap()">
-    <ion-label >Find {{ restaurant.name}} Restaurant</ion-label>
-    <ion-buttons slot="end">
+    <ion-label >{{ restaurant.address}}</ion-label>
+    <!-- <ion-buttons slot="end">
       <ion-button >
         <ion-icon name="navigate-circle-outline"  ></ion-icon>
      </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
  
   </ion-item>
 </div>
@@ -105,12 +97,15 @@ class="delivery"
       <ion-card-header>
         <ion-card-title>{{ menuCategory.name}}</ion-card-title>
         <ion-card-subtitle>{{ menuCategory.description}}</ion-card-subtitle>
+      </ion-card-header>
         <ion-card-content>
           <div *ngIf="menuCategory.menuItems.length > 0">
             <div class="itemsList">
           <!-- <ion-list > -->
             
-            <ion-item *ngFor="let menuItem of menuCategory.menuItems" (click)="onSelectItem(menuItem._id)">
+            <ion-item 
+            lines="full"
+            *ngFor="let menuItem of menuCategory.menuItems" (click)="onSelectItem(menuItem._id)">
             
               <p>{{ menuItem.name}}</p>
               <ion-note slot="end" >{{ menuItem.price}}$CA</ion-note>
@@ -121,7 +116,7 @@ class="delivery"
         </div>
         </div>
         </ion-card-content>
-      </ion-card-header>
+     
 
     </ion-card>
   </div>

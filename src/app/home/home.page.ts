@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RestaurantService, CurrentSlot } from './../services/restaurant.service';
 import { MenuService } from './../services/menu.service';
-import { UserService } from './../services/user.service';
+import { AuthService } from '../services/auth.service';
 import { NavigationService } from './../services/navigation.service';
 import { Restaurant } from './../models/restaurant.model';
 import { MenuItem } from './../models/menuItem.model';
@@ -70,7 +70,7 @@ export class HomePage implements OnInit {
   constructor(
     private restaurantService: RestaurantService,
     private  menuService: MenuService,
-    private  userService: UserService,
+    private  authService: AuthService,
     private httpClient: HttpClient,
     private modalCtrl: ModalController,
     private navigationService: NavigationService,
@@ -93,7 +93,7 @@ export class HomePage implements OnInit {
           console.log('data latlng', data.data);
           this.currentUser.deliveryLocationGeo.lat = data.data.lat;
           this.currentUser.deliveryLocationGeo.lng = data.data.lng;
-          this.userService.updateUser({...this.currentUser})
+          this.authService.updateUser({...this.currentUser})
           .subscribe(updatedUser => console.log('back from sub', updatedUser));
         }
       },
@@ -119,7 +119,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
     console.log('MenuPage ngOnInit');
 
-    this.userService.user$
+    this.authService.user$
     .subscribe(user => this.currentUser = user );
 
     this.restaurantService.fetchRestaurant()
@@ -127,7 +127,7 @@ export class HomePage implements OnInit {
       this.restaurant = restaurant;
       const today = new Date();
       //today.setHours(today.getHours() + 4);
-      this.currentSlot = this.restaurantService.checkIfOpen(today);
+     // this.currentSlot = this.restaurantService.checkIfOpen(today);
 
     });
 
@@ -224,7 +224,7 @@ export class HomePage implements OnInit {
   onChangeCollectingMethod(ev: any) {
     console.log('Segment changed', ev.detail.value);
     this.currentUser.collectionMethod = ev.detail.value;
-    this.userService.updateUser({...this.currentUser});
+    this.authService.updateUser({...this.currentUser});
   }
 
   onClickRestaurantAddress() {

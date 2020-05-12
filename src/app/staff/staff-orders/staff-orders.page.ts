@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StaffService } from './../../services/staff.service';
 import { SocketService } from './../../services/socket.service';
+import { NavigationService } from './../../services/navigation.service';
 import { Order } from './../../models/order.model';
 import { Subject, Subscription, Observable, BehaviorSubject, of, from, throwError, interval } from 'rxjs';
 import { map, tap, timeInterval, switchMap, take } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { OrderDetailsPage } from 'src/app/shared-components/order-details/order-details.page';
+import { DriversPopupPage } from 'src/app/shared-components/drivers-popup/drivers-popup.page';
 import { Step } from 'src/app/models/step.model';
 
 
@@ -28,13 +30,12 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
   orders: ExtendedOrder[] = [];
   private intervalSub: Subscription;
   private ordersSub: Subscription;
-  private socketCreateOrderSub: Subscription;
-  private socketUpdatedOrderSub: Subscription;
+  
 
   constructor(
     private staffService: StaffService,
     private modalCtrl: ModalController,
-    private socketService: SocketService
+    private navigationService: NavigationService,
   ) { }
 
   ngOnInit() {
@@ -89,6 +90,8 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
 
+    this.navigationService.setNavLink('STAFF ORDERS');
+
     console.log('ionViewDidEnter');
     this.intervalSub = interval(10000)
     .subscribe( num => {
@@ -133,36 +136,24 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
     return await modal.present();
   }
 
-  fillExtendedOrders(orders: Order[]){
-    const tempOrders = orders as ExtendedOrder[];
-    tempOrders.forEach(order => {
-      order.showDetails = false;
-      //order.currentStepIndex = order.steps.findIndex(step => step.inProgress === true);
-      //order.currentStep = {...order.steps[order.currentStepIndex]};
-      if (!order.finished) {
-        order.currentStepIndex = order.steps.findIndex(step => step.inProgress === true);
-        order.currentStep = {...order.steps[order.currentStepIndex]};
-    } else {
-      // Order is finsihed, check if completed or canceled
-      if (order.status === 'COMPLETED') {
-        console.log('order.status -> COMPLETED');
-        // if completed, set the last step
-        order.currentStepIndex = order.steps.length - 1;
-        order.currentStep = {...order.steps[order.currentStepIndex]};
-      } else if (order.status === 'CANCELED') {
-        console.log('order.status -> CANCELED');
-        // if Canceld, set the step that was cancel
-        order.currentStepIndex = order.steps.findIndex(step => step.canceled === true);
-        console.log('CANCELED currentStepIndex', order);
-        order.currentStep = {...order.steps[order.currentStepIndex]};
-      } else {
-        console.log('expected order status with value COMPLETED or CANCELED');
-      }
-    }
-    });
-    return tempOrders;
+  async onClickDriversFab() {
+    console.log('onClickDriversFab');
+    console.log('presentModal');
+    const modal = await this.modalCtrl.create({
+        component: DriversPopupPage,
+        componentProps: {
+          filter: 'ALL'
+        },
+
+      });
+
+    modal.onDidDismiss()
+      .then((data) => {
+      });
+    return await modal.present();
   }
 
+ 
   doRefresh(event) {
     console.log('Begin async operation');
 
@@ -174,7 +165,11 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
     .subscribe(orders => {
       console.log('doRefresh');
       event.target.complete();
-      this.orders = this.fillExtendedOrders(orders);
+      this.orders = orders as ExtendedOrder[];
+      this.orders.forEach( order => {
+        order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
+      }
+    );
     });
 
   }

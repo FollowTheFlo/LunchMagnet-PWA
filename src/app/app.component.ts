@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { User } from './models/user.model';
-import { UserService } from './services/user.service';
+import { AuthService } from './services/auth.service';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private splashScreen: SplashScreen,
     private location: Location,
     private statusBar: StatusBar,
-    private userService: UserService
+    private authService: AuthService
   ) {
     this.initializeApp();
     this.backButtonEvent();
@@ -47,23 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.userService.fetchUser('florent.letendre@gmail.com')
-    // .subscribe(user => {
-    //   this.currentUser = user;
-    // });
-    // this.authSub = this.authService.getAuthStatusListener().subscribe((authData) => {
-    //   console.log('MainNavComponent Listener isAuth: ', authData.isAuthenticated);
-
-    //   if (this.authService.getIsAuth() && !authData.isAdmin) {
-    //     this.role = 'user';
-    //   } else if (this.authService.getIsAuth() && authData.isAdmin) {
-    //     this.role = 'admin';
-    //   } else {
-    //     this.role = '';
-    //   }
-    // });
-
-    // this.authService.autoAuthUser();
+ 
   }
 
   ngOnDestroy() {

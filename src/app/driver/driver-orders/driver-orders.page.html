@@ -5,10 +5,14 @@
 </ion-header>
 
 <ion-content>
+  <ion-spinner *ngIf="!driver"></ion-spinner>
 <div *ngIf="driver">
   <ion-item>
     <ion-label>Available</ion-label>
-    <ion-toggle checked="{{driver.available}}" (ionChange)="onToggleChange()"></ion-toggle>
+    <ion-toggle 
+   
+    [(ngModel)]="driver.available"
+    (ionChange)="onToggleChange($event)"></ion-toggle>
   </ion-item>
   <ion-item>
     <ion-label>Status</ion-label>

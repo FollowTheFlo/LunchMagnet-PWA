@@ -14,6 +14,11 @@ ion-card ion-card-header ion-card-title {
     font-size: 15px;
 }
 
+ion-fab ion-fab-button {
+    --background: yellow;
+    --color: black
+}
+
 .styleComplete ion-card {
     background-color: green;
     color: white;
@@ -35,4 +40,6 @@ ion-card ion-card-header ion-card-title {
 .filterStyle ion-item {
     --background: var(--ion-color-primary);
     color:white;
+   // --highlight-height:0;
+    //--border-width: 50px;
 }

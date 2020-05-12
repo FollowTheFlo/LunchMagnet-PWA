@@ -71,6 +71,15 @@ const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'login',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../auth/login/login.module').then((m) => m.LoginPageModule),
+          },
+        ],
+      },
      
     ]
   },

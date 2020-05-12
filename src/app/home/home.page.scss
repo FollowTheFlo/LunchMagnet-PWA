@@ -70,6 +70,26 @@ margin: 15px;
   box-shadow: none;
   width: 100%;
   text-align: left;
+  --padding-start: 0;
+  color: var(--ion-color-primary);
+}
+
+// .itemsList ion-item p {
+
+//   color: var(--ion-color-primary);
+// }
+
+.pickup ion-item ion-label{
+  font-size: 15px;
+  color: black;
+  font-weight: bold ;
+  --background: var(--ion-background-color);
+}
+.pickup ion-item {
+  margin-top: 0px;
+  padding-top: 0px;
+
+  --background: var(--ion-background-color);
 }
 
 .itemsList ion-list{
@@ -109,7 +129,7 @@ ion-card {
     }
 
     ion-item{
-        color: black;
+        color: var(--ion-color-primary);
        text-align: center;
        //font-weight: bold;
        //background-color: white;

@@ -3,12 +3,16 @@ import { MenuService } from './../services/menu.service';
 import { StaffService } from './../services/staff.service';
 import { SocketService } from './../services/socket.service';
 import { OrderService } from './../services/order.service';
+import { RestaurantService, CurrentSlot } from './../services/restaurant.service';
 import { User } from './../models/user.model';
 import { Order } from './../models/order.model';
-import { UserService } from './../services/user.service';
+import { AuthService } from '../services/auth.service';
 import { NavigationService } from './../services/navigation.service';
 import { Subscription } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
+import { AccountPopupPage } from './../shared-components/account-popup/account-popup.page';
+import { PopoverController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-tabs',
@@ -23,6 +27,11 @@ export class TabsPage implements OnInit, OnDestroy {
   userOrders: Order[] = [];
   labelCode = '';
   user: User;
+  currentSlot: CurrentSlot = {
+    isOpen: false,
+    openHour: new Date(),
+    closeHour: new Date()
+  };
   private menSub: Subscription;
   private navSub: Subscription;
   private socketStaffOrderSub: Subscription;
@@ -30,10 +39,12 @@ export class TabsPage implements OnInit, OnDestroy {
   constructor(
     private menuService: MenuService,
     private navigationService: NavigationService,
-    private userService: UserService,
+    private authService: AuthService,
     private staffService: StaffService,
     private socketService: SocketService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private restaurantService: RestaurantService,
+    private popoverCtrl: PopoverController,
     ) { }
 
   ngOnInit() {
@@ -52,17 +63,28 @@ export class TabsPage implements OnInit, OnDestroy {
         this.selectedMenuItems = selectedItems;
       });
 
-    this.userService.fetchUser('florent.letendre@gmail.com').pipe(
+    this.authService.fetchUser('florent.letendre@gmail.com').pipe(
+      switchMap(user => this.authService.user$),
       switchMap(user => {
         this.user = user;
+        console.log('inside fetch', user);
         return this.orderService.fetchOrders(user._id);
       }),
       switchMap(data =>  this.orderService.orders$),
       map(userOrders => userOrders.filter(o => o.finished === false))
     )
     .subscribe(userOrders => {
-      console.log('Tabs in UserOrders$',userOrders);
+      console.log('Tabs in UserOrders$', userOrders);
       this.userOrders = userOrders;
+    });
+
+    this.restaurantService.fetchRestaurant()
+    .subscribe(restaurant => {
+     
+      const today = new Date();
+      //today.setHours(today.getHours() + 4);
+      this.currentSlot = this.restaurantService.checkIfOpen(today);
+
     });
       // .subscribe(user => {
       //   this.user = user;
@@ -105,6 +127,17 @@ export class TabsPage implements OnInit, OnDestroy {
     if (this.socketStaffOrderSub) {
       this.socketStaffOrderSub.unsubscribe();
     }
+  }
+
+  async presentPopover(ev: any) {
+    console.log('presentPopover');
+    const popover = await this.popoverCtrl.create({
+      component: AccountPopupPage,
+      event: ev,
+      translucent: true,
+    });
+    popover.style.cssText = '--min-width: 120px; --max-width: 140px;';
+    return await popover.present();
   }
 
 }

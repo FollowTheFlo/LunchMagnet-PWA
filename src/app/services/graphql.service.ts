@@ -547,7 +547,7 @@ export class GraphqlService {
                 _id: "${driver._id}"
                 locationGeo: {
                   lat: ${driver.locationGeo.lat}
-                  lng: ${driver.locationGeo.lat}
+                  lng: ${driver.locationGeo.lng}
                  }
                  locationTime: "${driver.locationTime}"
                  status: "${driver.status}"
@@ -556,18 +556,20 @@ export class GraphqlService {
                 }
               )
               {
-                _id
                 status
-                timeToRestaurant
-                locationGeo{
-                  lat
-                  lng
-                }
-                distanceToRestaurant
-                user
-                available
-                locationTime
-              }
+                  _id
+                  user {
+                    name
+                    _id
+                    role
+                  }
+                  timeToRestaurant
+                  available
+                  locationGeo {
+                    lat
+                    lng
+                  }
+            }
             }
             `}
             );
@@ -772,6 +774,29 @@ export class GraphqlService {
         });
     }
 
+    getUsers(): Observable<ApolloQueryResult<any>> {
+      console.log('apollo getUsers ');
+        // tslint:disable-next-line: no-unused-expression
+      return this.apollo.query<any>({
+          query: gql`
+                  query {
+                    getUsers {
+                      name
+                      email
+                      _id
+                      role
+                      deliveryAddress
+                      collectionMethod
+                      deliveryLocationGeo {
+                        lat
+                        lng
+                      }
+                    }
+                  },
+                `,
+        });
+    }
+
     updateUser(user: User): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
       console.log('Graphql updateUser', user);
       return this.apollo.mutate<any>({
@@ -781,7 +806,7 @@ export class GraphqlService {
             _id: "${user._id}"
             deliveryLocationGeo: {
               lat: ${user.deliveryLocationGeo.lat}
-              lng: ${user.deliveryLocationGeo.lat}
+              lng: ${user.deliveryLocationGeo.lng}
              }
              name: "${user.name}"
              email: "${user.email}"

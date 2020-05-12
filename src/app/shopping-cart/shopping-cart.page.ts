@@ -4,7 +4,7 @@ import { Order } from 'src/app/models/order.model';
 import { ConfigItem } from './../models/configItem.model';
 import { User } from './../models/user.model';
 import { MenuService } from './../services/menu.service';
-import { UserService } from './../services/user.service';
+import { AuthService } from '../services/auth.service';
 import { OrderService } from './../services/order.service';
 import { RestaurantService } from './../services/restaurant.service';
 import { NavigationService } from './../services/navigation.service';
@@ -46,7 +46,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     private menuService: MenuService,
     private orderService: OrderService,
     private restaurantService: RestaurantService,
-    private  userService: UserService,
+    private  authService: AuthService,
     private navigationService: NavigationService,
     private socketService: SocketService,
     private modalCtrl: ModalController,
@@ -59,7 +59,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     //  this.socketService.getMessages('')
     //  .subscribe(message => console.log('from socket', message));
 
-    this.userService.user$
+    this.authService.user$
     .subscribe(user => {
       console.log('user$', user);
       this.currentUser = user;
@@ -226,7 +226,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   onChangeCollectingMethod(ev: any) {
     console.log('Segment changed', ev.detail.value);
     this.currentUser.collectionMethod = ev.detail.value;
-    this.userService.updateUser({...this.currentUser});
+    this.authService.updateUser({...this.currentUser});
    // this.paymentMethod = 'No Selection';
   }
 
@@ -266,7 +266,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
           this.currentUser.deliveryAddress = data.data.address;
           this.currentUser.deliveryLocationGeo.lat = data.data.lat;
           this.currentUser.deliveryLocationGeo.lng = data.data.lng;
-          this.userService.updateUser({...this.currentUser});
+          this.authService.updateUser({...this.currentUser}).subscribe();
         }
       });
       return await modal.present();

@@ -1,4 +1,29 @@
 
+
+
+  <ion-header>
+    <div class="topToolbar">
+      <ion-toolbar>
+        <ion-buttons slot="start" *ngIf="labelCode === 'HOME'">
+          <ion-button >
+            <p *ngIf="currentSlot.isOpen">Now open </p>
+            <!-- <p *ngIf="currentSlot.isOpen">Open: {{currentSlot.openHour | date:'shortTime'}} - {{currentSlot.closeHour | date:'shortTime'}} </p> -->
+            <p *ngIf="!currentSlot.isOpen">Close</p>
+        
+          </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <!-- <ion-back-button></ion-back-button>
+          <ion-title>Back Button</ion-title> -->
+          <ion-button (click)="presentPopover($event)">
+              <ion-icon name="person-circle-outline"  ></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+      </ion-toolbar>
+    </div>
+  </ion-header>
+
 <ion-tabs>
   <div class="cartTab" >
   <ion-toolbar slot="bottom" 
@@ -26,7 +51,9 @@
            <ion-label>Home</ion-label>
       </ion-tab-button>
       <!-- <div  [ngClass]="{'styleRed':(userOrders.length >0), 'styleWhite': (userOrders.length === 0)}"> -->
-        <ion-tab-button  tab="orders" >
+        <ion-tab-button  tab="orders" 
+         *ngIf="user && user.role !== 'VISITOR'"
+        >
           <ion-icon name="receipt-outline"
           *ngIf="userOrders.length >0"
           color="danger"
@@ -34,16 +61,17 @@
           <ion-icon name="receipt-outline"
           *ngIf="userOrders.length === 0"
           ></ion-icon>
-          <ion-label>Orders</ion-label>
+          <ion-label>My Orders</ion-label>
         </ion-tab-button>
       <!-- </div> -->
-      <ion-tab-button  tab="staff-orders" >
+      <ion-tab-button  tab="staff-orders" 
+        *ngIf="user && (user.role === 'STAFF' || user.role === 'ADMIN')" >
         <ion-icon name="people-outline"></ion-icon>
         <ion-badge *ngIf="staffOrders.length > 0" color="danger">{{ staffOrders.length }}</ion-badge>
         <ion-label>Staff</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button  tab="driver-orders" >
+      <ion-tab-button  tab="driver-orders" *ngIf="user && (user.role === 'DRIVER' || user.role === 'ADMIN')">
         <ion-icon name="car-sport-outline"></ion-icon>
         <ion-label>Driver</ion-label>
       </ion-tab-button>

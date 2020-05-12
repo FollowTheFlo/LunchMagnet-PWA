@@ -5,6 +5,11 @@
 </ion-header>
 
 <ion-content>
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="onClickDriversFab()">
+      <ion-icon name="car-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -15,7 +20,7 @@
   </ion-refresher>
 
   <div class="filterStyle">
-    <ion-item>      
+    <ion-item lines="none">      
       <ion-icon name="funnel-outline" slot="end"></ion-icon>
       <ion-label  slot="end">By Date</ion-label>
       <ion-icon name="filter-outline" slot="end"></ion-icon>

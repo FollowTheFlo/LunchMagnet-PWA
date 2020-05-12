@@ -105,10 +105,6 @@ export class StaffService {
                 })
                 );
 
-
-
-           // this.orders.unshift(order);
-            //this._orders.next([...this.orders]);
         }
 
         updateOrderLocally(updatedOrder: Order) {

@@ -25,7 +25,7 @@ import { Driver } from './../models/driver.model';
     updateDriver(driver: Driver) {
         return this.graphqlService.updateDriver(driver).pipe(
             map(response => response.data.updateDriver),
-            tap(driver => this.driver = driver)
+            tap(driverResponse => this.driver = driverResponse)
         );
     }
 }
