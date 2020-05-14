@@ -230,12 +230,12 @@ locatePosition() {
 
 
     this.newMarker.bindPopup(this.selectedAddress).openPopup();
-    //this.drawRoad(lat, lng);
+    // this.drawRoad(lat, lng);
 
-    this.geolocationService.getDistance(lat, lng)
-    .subscribe( response => {
-      console.log('Time from Restaurant is', response);
-    });
+    // this.geolocationService.getDistance(lat, lng)
+    // .subscribe( response => {
+    //   console.log('Time from Restaurant is', response);
+    // });
   }
 
   onSearchCancel() {

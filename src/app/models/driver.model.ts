@@ -9,5 +9,6 @@ export interface Driver {
     distanceToRestaurant: number;
     timeToRestaurant: number;
     available: boolean;
+    active: boolean;
     status: string;
   }

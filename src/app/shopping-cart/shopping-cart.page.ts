@@ -299,7 +299,8 @@ onCheckout() {
     deliveryLocationGeo: { lat: 0, lng: 0},
     steps: null,
     currentStep: null,
-    currentStepIndex: 0
+    currentStepIndex: 0,
+    driver: null,
   };
   
   order.selectedMenuItems = JSON.parse(JSON.stringify(this.selectedMenuItems));

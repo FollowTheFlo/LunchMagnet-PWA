@@ -13,7 +13,7 @@ import { Step } from 'src/app/models/step.model';
 
 
 interface ExtendedOrder extends Order {
-  delay: number;
+  delay: string;
   showDetails: boolean;
 }
 
@@ -30,7 +30,7 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
   orders: ExtendedOrder[] = [];
   private intervalSub: Subscription;
   private ordersSub: Subscription;
-  
+
 
   constructor(
     private staffService: StaffService,
@@ -95,11 +95,12 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
     console.log('ionViewDidEnter');
     this.intervalSub = interval(10000)
     .subscribe( num => {
-      //console.log('ici 1: ', num);
-      this.orders.forEach( order => {
-        order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
-      }
-    );
+      console.log('ici 1: ',  this.orders);
+      this.orders = this.calculateDelay(new Date(),[...this.orders]);
+    //   this.orders.forEach( order => {
+    //     order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
+    //   }
+    // );
   });
   }
 
@@ -153,25 +154,45 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
     return await modal.present();
   }
 
- 
+
   doRefresh(event) {
     console.log('Begin async operation');
 
     //this.orderService.fetchOrders_afterReset();
 
-    this.staffService.fetchOrders_afterReset('').pipe(
-      take(1)
-    )
+    this.staffService.fetchOrders_afterReset('')
     .subscribe(orders => {
       console.log('doRefresh');
       event.target.complete();
       this.orders = orders as ExtendedOrder[];
-      this.orders.forEach( order => {
-        order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
-      }
-    );
+      this.orders = this.calculateDelay(new Date(), [...this.orders]);
+    //   this.orders.forEach( order => {
+    //     order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
+    //   }
+    // );
     });
 
+  }
+
+  calculateDelay(nowDate: Date, orders: ExtendedOrder[]) {
+    //console.log('calculateDelay1', drivers);
+    orders.forEach(order => {
+      const delayInMseconds = nowDate.getTime() - (new Date(order.createdAt).getTime());
+      //console.log('delayInMseconds', delayInMseconds);
+      const minutes =  Math.floor(delayInMseconds / (1000 * 60) % 60);
+      const hours   = Math.floor(delayInMseconds / (1000 * 60 * 60) % 24 );
+      const jours   = Math.floor(delayInMseconds / (1000 * 60 * 60 * 24));
+
+      if ( jours === 0 && hours === 0) {
+        order.delay = minutes + 'm';
+      } else if (jours === 0) {
+        order.delay =  hours + 'h' + minutes + 'm';
+      } else {
+        order.delay = jours + 'j' + hours + 'h' + minutes + 'm';
+      }
+      
+    });
+    return orders;
   }
 
 

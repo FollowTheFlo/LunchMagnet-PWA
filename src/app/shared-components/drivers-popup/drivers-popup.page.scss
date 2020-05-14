@@ -5,3 +5,15 @@
 #driversMapId {
     height: 400px;
 }
+
+
+::ng-deep.selectStyle .leaflet-popup-content-wrapper {
+    background: yellow;
+}
+::ng-deep.selectStyle .leaflet-popup-tip-container .leaflet-popup-tip {
+    background: yellow;
+}
+
+.driverSelectStyle ion-item {
+    --background: yellow;
+}

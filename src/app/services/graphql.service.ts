@@ -517,6 +517,89 @@ export class GraphqlService {
         `});
     }
 
+    assignDriverToOrder(driverId: string, orderId: string): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          assignDriverToOrder(driverId: "${driverId}", orderId: "${orderId}")
+          {
+            _id
+            rawPrice
+            status
+            paymentMethod
+            tipsPercentage
+            subTotalPrice
+            finished
+            totalPrice
+            collectionMethod
+            createdAt
+            updatedAt
+            currentStep {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+            currentStepIndex
+            selectedItems {
+              name
+              price
+              optionsText
+              optionsText_fr
+              menuItemId
+              quantity
+              notes
+              totalPrice
+
+            }
+            deliveryAddress
+            deliveryLocationGeo {
+              lat
+              lng
+            }
+            steps {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+
+          }
+        }
+
+        `});
+    }
+
     createDriver(userId: string): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
       return this.apollo.mutate<any>({
         mutation: gql`
@@ -550,9 +633,9 @@ export class GraphqlService {
                   lng: ${driver.locationGeo.lng}
                  }
                  locationTime: "${driver.locationTime}"
-                 status: "${driver.status}"
                  timeToRestaurant: ${driver.timeToRestaurant}
-                 available: ${driver.available}
+                 distanceToRestaurant: ${driver.distanceToRestaurant}
+                 active: ${driver.active}
                 }
               )
               {
@@ -564,7 +647,10 @@ export class GraphqlService {
                     role
                   }
                   timeToRestaurant
+                  distanceToRestaurant
+                  locationTime
                   available
+                  active
                   locationGeo {
                     lat
                     lng
@@ -596,7 +682,10 @@ export class GraphqlService {
                     }
                   }
                   timeToRestaurant
+                  distanceToRestaurant
                   available
+                  active
+                  locationTime
                   locationGeo {
                     lat
                     lng
@@ -628,7 +717,11 @@ export class GraphqlService {
                     }
                   }
                   timeToRestaurant
+                  distanceToRestaurant
+                  locationTime
                   available
+                  active
+                  active
                   locationGeo {
                     lat
                     lng

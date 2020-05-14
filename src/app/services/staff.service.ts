@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GraphqlService } from './graphql.service';
 import { Order } from 'src/app/models/order.model';
 import { Subject, Subscription, BehaviorSubject, Observable, of, from, throwError } from 'rxjs';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { map, tap, switchMap, take } from 'rxjs/operators';
 import { MenuItem } from '../models/menuItem.model';
 import { SelectedItemDB } from '../models/selectedItemDB.model';
 
@@ -47,7 +47,8 @@ export class StaffService {
                 tap( orders => {
                     this.orders = orders;
                     this._orders.next(JSON.parse(JSON.stringify(this.orders)));
-                })
+                }),
+                take(1)
             );
 
 

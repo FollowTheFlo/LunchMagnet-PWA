@@ -40,7 +40,7 @@
           
           <!-- <div *ngIf="order.delay">Received since: {{ order.delay | date:'HH:mm:ss':'+0000'}} </div> -->
           <div >Order#{{order._id}}</div>
-          <div *ngIf="order.delay"> Received since {{ order.delay | date:'H:mm:ss':'+0000'}} </div>
+          <div *ngIf="order.delay"> Received since {{ order.delay }}</div>
           <div>{{order.collectionMethod}}</div>
         
             <div *ngIf="!order.finished">

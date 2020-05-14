@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GraphqlService } from './graphql.service';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, switchMap, take } from 'rxjs/operators';
 import { Driver } from 'src/app/models/driver.model';
 import { from, BehaviorSubject } from 'rxjs';
 
@@ -27,6 +27,18 @@ import { from, BehaviorSubject } from 'rxjs';
                 this.drivers = drivers;
                 this._drivers.next(JSON.parse(JSON.stringify(this.drivers)));
             })
+        );
+    }
+
+    fetchDrivers_afterReset(filter: string) {
+        return from(this.graphqlService.resetStore()).pipe(
+            switchMap(res => this.graphqlService.getDrivers(filter)),
+            map(response => response.data.getDrivers),
+            tap(drivers => {
+                this.drivers = drivers;
+                this._drivers.next(JSON.parse(JSON.stringify(this.drivers)));
+            }),
+            take(1)
         );
     }
 

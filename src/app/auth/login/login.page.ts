@@ -27,6 +27,12 @@ export class LoginPage implements OnInit {
   onUserSelect(event) {
     console.log('onUserSelect', event.target.value);
     this.currentUserEmail = event.target.value;
+    this.authService.fetchUser(this.currentUserEmail)
+    .subscribe(u => {
+      console.log('succesfully login');
+    },
+    error => console.log(error)
+    );
   }
 
   onClickLogin() {

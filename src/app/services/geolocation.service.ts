@@ -38,12 +38,12 @@ export interface Coordinates {
       return this.httpClient.get(url + query + '.json?types=address&access_token='
       + environment.mapbox.accessToken)
       .pipe(map((res: MapboxOutput) => {
-          console.log('res',res);
+          console.log('res', res);
           return res.features;
       }));
     }
 
-    getDistance(lat: number, lng: number) {
+    getDistance(latFrom: number, lngFrom: number, latTo: number, lngTo: number) {
       console.log('getDistance');
       const headers = new HttpHeaders();
       headers.append('Host', 'router.project-osrm.org');
@@ -57,8 +57,17 @@ export interface Coordinates {
       return this.httpClient.get(
           //`http://router.project-osrm.org/table/v1/driving/-73.5939564,45.5832091;${lng},${lat}?sources=0`,
           //`https://geoegl.msp.gouv.qc.ca/services/itineraire/route/v1/driving/-73.5939564,45.5832091;${lng},${lat}?sources=0`,
-          `https://api.mapbox.com/directions-matrix/v1/mapbox/driving-traffic/-73.5939564,45.5832091;${lng},${lat}?annotations=duration,distance&sources=0&access_token=${environment.mapbox.accessToken}`,
+          `https://api.mapbox.com/directions-matrix/v1/mapbox/driving-traffic/${lngTo},${latTo};${lngFrom},${latFrom}?annotations=duration,distance&sources=0&access_token=${environment.mapbox.accessToken}`,
           httpOptions1
+        ).pipe(
+          map( response => {
+            console.log('get response', response);
+            const mapBoxResponse = response as any;
+            return {
+              success: mapBoxResponse.code === 'Ok' ? true : false,
+              duration: Math.round(mapBoxResponse.durations[0][1] / 60),
+              distance: Math.round(mapBoxResponse.distances[0][1] / 100) / 10}
+          })
         );
 
         

@@ -8,14 +8,30 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
   <div class="driverStyle">
     <div *ngFor="let driver of drivers; let driverIndex = index">
-      <ion-item>
-        <ion-title>
-          {{ driver.user.name}}
-        </ion-title>
-        <ion-button slot="end">{{driver.status}}</ion-button>
-      </ion-item>
+      <div [ngClass]="{'driverSelectStyle': (driver.isSelected === true)}" >
+        <ion-item (click)="onSelectDriver(driverIndex)" lines='full'>
+          
+            <b>{{ driver.user.name }}</b>
+            <span *ngIf="driver.timeToRestaurant !== 0">
+               -> {{ driver.distanceToRestaurant}}Km({{ driver.timeToRestaurant }}min) 
+            </span>
+            <div *ngIf="driver.delay"> {{driver.delay}} ago</div>
+         
+          <!-- <ion-button *ngIf="driver.active" slot="end">Online</ion-button> -->
+          <ion-button slot="end">{{driver.status}}</ion-button>
+          <!-- <ion-button slot="end">{{driver.status}}</ion-button> -->
+        </ion-item>
+     </div>
     </div>
   </div>
   <div id="driversMapId" ></div>

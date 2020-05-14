@@ -28,4 +28,18 @@ import { Driver } from './../models/driver.model';
             tap(driverResponse => this.driver = driverResponse)
         );
     }
+
+    setDriverAvailability(active: boolean, status: string) {
+        if (active && status === 'ON_WAY_TO_RESTAURANT') {
+            return true;
+        } else if (active && status === 'ON_WAY_TO_CUSTOMER') {
+            return false;
+        } else if (active && status === 'WAITING_NEW_ORDER') {
+            return true;
+        } else if (!active && status === 'OFFLINE') {
+            return false;
+        } else {
+            return false;
+        }
+    }
 }

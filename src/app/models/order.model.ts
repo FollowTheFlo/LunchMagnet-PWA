@@ -6,6 +6,7 @@ import { SelectedItemDB } from '../models/selectedItemDB.model';
 import { ConfigItem } from './../models/configItem.model';
 import { Restaurant } from './restaurant.model';
 import { LocationGeo } from '../models/locationGeo.model';
+import { Driver } from './driver.model';
 
 export interface Order {
     _id: string;
@@ -32,4 +33,5 @@ export interface Order {
     steps: Step[];
     currentStep: Step;
     currentStepIndex: number;
+    driver: Driver;
 }
