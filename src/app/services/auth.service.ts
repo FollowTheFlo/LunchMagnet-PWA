@@ -14,9 +14,10 @@ export class AuthService {
         password: '',
         collectionMethod: 'DELIVERY',
         deliveryAddress: '',
-        role: 'visitor',
+        role: 'VISITOR',
         deliveryLocationGeo: null,
-        name: 'Visitor'
+        name: 'Visitor',
+        view: 'VISITOR'
 
     };
     users: User[] = [];
@@ -64,8 +65,15 @@ export class AuthService {
             })
         );
 
+   
+
        // this.user = JSON.parse(JSON.stringify(user));
        // this._user.next(JSON.parse(JSON.stringify(user)));
+    }
+
+    updateUserLocally(updatedUser: User) {
+        this.user = updatedUser;
+        this._user.next(JSON.parse(JSON.stringify(updatedUser)));
     }
 
 }

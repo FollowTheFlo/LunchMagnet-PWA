@@ -7,25 +7,55 @@
 <ion-content>
   <ion-spinner *ngIf="!driver"></ion-spinner>
 <div *ngIf="driver">
-  <ion-item>
-    <ion-label>Available</ion-label>
-    <ion-toggle 
+
+  <ion-item lines="full">
+    <ion-label>Total Orders</ion-label>
+    <ion-button slot="end" *ngIf="orders">{{orders.length}}</ion-button>
+    <ion-button slot="end" *ngIf="!orders">0</ion-button>
+  </ion-item>
+  <div *ngIf="orders && orders.length > 0">
+    <div  *ngFor="let order of orders;let orderIndex = index" >
+
+  <div [ngClass]="{'styleComplete':(order.status === 'COMPLETED'), 'styleInProgress': (order.status === 'ON PROGRESS'),
+     'styleNotStarted': (order.status === 'NOT STARTED'), 'styleCanceled': (order.status === 'CANCELED')}">
+    <ion-card>
+      
+      <ion-card-header>
+        <!-- <ion-card-title (click)="order.showDetails = !order.showDetails"> -->
+        <ion-card-title >
+          
+          <!-- <div *ngIf="order.delay">Received since: {{ order.delay | date:'HH:mm:ss':'+0000'}} </div> -->
+          <div >Order#{{order._id}}</div>
+           <div>{{order.collectionMethod}}</div>
+        
+            <div *ngIf="!order.finished">
+              <div>Current Step: {{order.currentStep.name}} ({{order.currentStepIndex + 1}}/{{order.steps.length}})</div>
+               <div>Time target: ASAP</div>
+          </div>
+          <div *ngIf="order.status !== 'CANCELED' && order.currentStep.code === 'DRIVER_SELECTION_MANUAL'">
+            <ion-button>Select Driver</ion-button>
+          </div>
+          <div *ngIf="order.finished && order.status === 'COMPLETED'">
+            COMPLETED at {{order.currentStep.completedDate | date:'H:mm:ss':'+0000'}}
+            <div>by {{order.currentStep.completedBy}}</div>
+          </div>
+          <div *ngIf="order.finished && order.status === 'CANCELED'">
+            CANCELED at {{order.currentStep.canceledDate | date:'H:mm:ss':'+0000'}}
+            <div>by {{order.currentStep.canceledBy}}</div>
+          </div>
    
-    [(ngModel)]="driver.active"
-    (ionChange)="onToggleChange($event)"></ion-toggle>
-  </ion-item>
-  <ion-item>
-    <ion-label>Status</ion-label>
-    <ion-button slot="end">{{driver.status}}</ion-button>
-  </ion-item>
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+    </div>
+  </div>
+      
 </div>
-  <ion-fab vertical="center" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="drawCurrentPosition()">
-      <ion-icon name="locate-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-  <div id="driverMapId"></div>
+  
+</div>
+
+
   <ion-button (click)="onRefresh()">
-    refresh
+    Get Orders
   </ion-button>
 </ion-content>

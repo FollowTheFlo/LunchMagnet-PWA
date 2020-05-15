@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Driver Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-spinner *ngIf="!driver"></ion-spinner>
+<div *ngIf="driver">
+  <ion-item lines="full">
+    <ion-label *ngIf="driver.active">Online</ion-label>
+    <ion-label *ngIf="!driver.active">Offline</ion-label>
+    <ion-toggle 
+   
+    [(ngModel)]="driver.active"
+    (ionChange)="onToggleChange($event)"></ion-toggle>
+  </ion-item>
+  <ion-item lines="full">
+    <ion-label>Status</ion-label>
+    <ion-button slot="end">{{driver.status}}</ion-button>
+  </ion-item>
+  <ion-item lines="full">
+    <ion-label>Orders</ion-label>
+    <ion-button slot="end" *ngIf="orders">{{orders.length}} orders assigned</ion-button>
+    <ion-button slot="end" *ngIf="!orders">No orders assigned</ion-button>
+  </ion-item>
+  
+</div>
+  <ion-fab vertical="center" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="drawCurrentPosition()">
+      <ion-icon name="locate-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <div id="driverMapId"></div>
+</ion-content>

@@ -63,11 +63,38 @@ const routes: Routes = [
         ],
       },
       {
+        path: 'staff-drivers',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../staff/staff-drivers/staff-drivers.module').then((m) => m.StaffDriversPageModule),
+          },
+        ],
+      },
+      {
+        path: 'driver-dashboard',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../driver/driver-dashboard/driver-dashboard.module').then((m) => m.DriverDashboardPageModule),
+          },
+        ],
+      },
+      {
         path: 'driver-orders',
         children: [
           {
             path: '',
             loadChildren: () => import('../driver/driver-orders/driver-orders.module').then((m) => m.DriverOrdersPageModule),
+          },
+        ],
+      },
+      {
+        path: 'admin-dashboard',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../admin/admin-dashboard/admin-dashboard.module').then((m) => m.AdminDashboardPageModule),
           },
         ],
       },

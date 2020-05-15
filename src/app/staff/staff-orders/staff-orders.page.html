@@ -5,11 +5,11 @@
 </ion-header>
 
 <ion-content>
-  <ion-fab vertical="top" horizontal="end" slot="fixed">
+  <!-- <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button (click)="onClickDriversFab()">
       <ion-icon name="car-outline"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -47,6 +47,9 @@
               <div>Current Step: {{order.currentStep.name}} ({{order.currentStepIndex + 1}}/{{order.steps.length}})</div>
                <div>Time target: ASAP</div>
           </div>
+          <div *ngIf="order.status !== 'CANCELED' && order.currentStep.code === 'DRIVER_SELECTION_MANUAL'">
+            <ion-button>Select Driver</ion-button>
+          </div>
           <div *ngIf="order.finished && order.status === 'COMPLETED'">
             COMPLETED at {{order.currentStep.completedDate | date:'H:mm:ss':'+0000'}}
             <div>by {{order.currentStep.completedBy}}</div>
@@ -57,28 +60,8 @@
           </div>
    
         </ion-card-title>
-        <!-- <ion-card-subtitle *ngIf="order.showDetails">
-          <div>Status: {{order.status}}</div>
-          <div *ngIf="!order.finished">On progress</div>
-          <div *ngIf="order.finished">Completed</div>
-          <div>Total Price: {{ order.totalPrice }}$CA</div>
-          <div>Created at: {{  order.createdAt | date:'shortTime' }}</div>
-
-        </ion-card-subtitle> -->
       </ion-card-header>
-      <!-- <ion-card-content *ngIf="order.showDetails && order.selectedItems.length > 0">
-        
-        
-          <h2>SubTotalPrice: {{ order.subTotalPrice }}$CA</h2>
-          {{order.selectedItems.length}} items:
-          <div *ngFor="let item of order.selectedItems ">
-            <h2>{{item.quantity}} x {{item.name}}</h2>
-            <p>{{item.totalPrice}}$CA</p>
-            <p>{{item.optionsText}}</p>
-          </div>
-  
-       
-      </ion-card-content> -->
+
     </ion-card>
     </div>
   </div>

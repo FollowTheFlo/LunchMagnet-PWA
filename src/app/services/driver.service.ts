@@ -3,6 +3,7 @@ import { GraphqlService } from './graphql.service';
 import { map, tap } from 'rxjs/operators';
 
 import { Driver } from './../models/driver.model';
+import { Order } from '../models/order.model';
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +11,8 @@ import { Driver } from './../models/driver.model';
   export class DriverService {
   
     driver: Driver;
+    orders: Order[] = [];
+
     constructor(
         private graphqlService: GraphqlService
     ) {}
@@ -41,5 +44,13 @@ import { Driver } from './../models/driver.model';
         } else {
             return false;
         }
+    }
+
+    getDriverOrders(driverId: string) {
+        return this.graphqlService.getDriverOrders(driverId)
+        .pipe(
+            map(response => response.data.getDriverOrders),
+            tap(orders => this.orders = orders)
+        );
     }
 }

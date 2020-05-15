@@ -14,6 +14,7 @@ import { Driver } from 'src/app/models/driver.model';
 //import { User } from 'src/app/models/user.model';
 import { switchMap } from 'rxjs/operators';
 import { Restaurant } from 'src/app/models/restaurant.model';
+import { Order } from 'src/app/models/order.model';
 const { Geolocation } = Plugins;
 
 @Component({
@@ -38,6 +39,7 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
   inputAddress = '';
   inputAction = '';
   driver: Driver;
+  orders: Order[];
 
   popupOptions: L.PopupOptions = {
     className: 'floPopup',
@@ -68,12 +70,15 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
     .subscribe(driver => {
       console.log('ngOnInit driver', driver);
       this.driver = driver;
-
+      this.driverService.getDriverOrders(this.driver._id)
+      .subscribe(orders => this.orders = orders);
 
     });
 
     this.restaurantService.fetchRestaurant()
     .subscribe(restaurant => this.restaurant = restaurant);
+
+    
 
 
     // this.driverService.fetchDriver('5e8f3fd01986990acb872db9')
@@ -89,142 +94,15 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
 
 
 
-  ionViewDidEnter() {
-    if (!this.mapLoaded) {
-      this.loadMap();
-      this.mapLoaded = true;
-      console.log('before condition');
-      if (this.driver && this.driver.locationGeo && this.driver.locationGeo.lat !== 0) {
-        console.log('in condition');
-        if ( this.driverMarker) {
-          this.driverMarker.removeFrom(this.map);
-        }
-        this.driverMarker = marker([this.driver.locationGeo.lat, this.driver.locationGeo.lng], {
-          draggable: true
-        }).addTo(this.map);
-        this.driverMarker.bindPopup('My location', this.popupOptions).openPopup();
-      }
-
-    }
-
-    console.log('ionViewDidEnter', this.inputAction );
-    // display Restaurant location address
-
-
-  }
-
-  loadMap() {
-    this.map = new L.Map('driverMapId').setView([45.508888, -73.561668], 13);
-    L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-
-    this.map.on('click', (e: any) => {
-      console.log('click event ', e.latlng);
-      this.drawMarkerOnMap(e.latlng.lat, e.latlng.lng);
-    });
-}
-
-   getCurrentPosition() {
-
-      return from(Geolocation.getCurrentPosition());
-   }
-
-   drawCurrentPosition() {
-
-    this.getCurrentPosition()
-    .subscribe( coordinates => {
-        this.drawMarkerOnMap(coordinates.coords.latitude, coordinates.coords.longitude);
-
-    });
-
-  }
-
-  drawMarkerOnMap(lat: number, lng: number) {
-
-    if ( this.driverMarker) {
-      this.driverMarker.removeFrom(this.map);
-    }
-
-    console.log('drawMarkerOnMap', lat, lng);
-    this.driverMarker = marker([lat, lng], {
-      draggable: true
-    }).addTo(this.map);
-   // const popup = L.Popup.
-
-    this.driverMarker.bindPopup('My location', this.popupOptions).openPopup();
-    this.driver.locationGeo.lat = lat;
-    this.driver.locationGeo.lng = lng;
-    this.driver.locationTime = new Date().toISOString();
-   
-    // if driver Online, get Distance from Mapbox and update to server
-    if (this.driver.active) {
-      this.geolocationService.getDistance(
-        this.driver.locationGeo.lat,
-        this.driver.locationGeo.lng,
-        this.restaurant.locationGeo.lat,
-        this.restaurant.locationGeo.lng
-        )
-        .subscribe(data => {
-          
-          console.log('data', data);
-          console.log('distances from Restaurant is', data.distance);
-          if (data.success) {
-            console.log('mapBoxData Ok');
-            this.driver.distanceToRestaurant = data.distance;
-            this.driver.timeToRestaurant = data.duration;
-            
-            this.driverService.updateDriver(JSON.parse(JSON.stringify(this.driver)))
-            .subscribe(driver => {
-              console.log('updateDriver', driver);
-            },
-            error =>  console.log('updateDriver Error', error)
-            );
-
-          } else {
-            console.log('not able to get Distance/duration from MapBox');
-
-            this.driverService.updateDriver(JSON.parse(JSON.stringify(this.driver)))
-            .subscribe(driver => {
-              console.log('updateDriver', driver);
-            },
-            error =>  console.log('updateDriver Error', error)
-            );
-          }
-
-        },
-        error => console.log(error)
-        );
-
-    } else {
-      console.log('dont update server as offline');
-    }
-  }
-
-
-  onToggleChange(event) {
-    console.log('onToggleChange()', event);
-
-
-    console.log('onToggleChange() 1 active: ', this.driver.active);
-   // this.driver.status = this.driver.active === false ? 'OFFLINE' : 'WAITING_NEW_ORDER';
-   // this.driver.available = this.driverService.setDriverAvailability(this.driver.active, this.driver.status);
-   // this.driver.locationTime = new Date().toISOString();
-    this.driverService.updateDriver(JSON.parse(JSON.stringify(this.driver)))
-        .subscribe(driver => {
-          console.log('onToggleChange updateDriver', driver);
-          this.driver = driver;
-      },
-        error =>  console.log('updateDriver Error', error)
-      );
-
-}
 
   onRefresh() {
     console.log('onRefresh');
 
-    this.driverMarker.unbindPopup();
-    this.driverMarker.bindPopup('New location', this.popupOptions2).openPopup();
+    this.driverService.getDriverOrders(this.driver._id)
+    .subscribe(orders => {
+      console.log('driver orders', orders);
+      this.orders = orders;
+    });
   }
 
 

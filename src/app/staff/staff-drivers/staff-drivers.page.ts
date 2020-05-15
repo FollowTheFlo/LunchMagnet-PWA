@@ -20,14 +20,14 @@ interface ExtendedDriver extends Driver {
 }
 
 @Component({
-  selector: 'app-drivers-popup',
-  templateUrl: './drivers-popup.page.html',
-  styleUrls: ['./drivers-popup.page.scss'],
+  selector: 'app-staff-drivers',
+  templateUrl: './staff-drivers.page.html',
+  styleUrls: ['./staff-drivers.page.scss'],
 })
 
 
 
-export class DriversPopupPage implements OnInit, OnDestroy {
+export class StaffDriversPage implements OnInit, OnDestroy {
   drivers: ExtendedDriver[] = [];
   restaurant: Restaurant;
   restaurantMarker: L.Marker;
@@ -120,7 +120,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
         } else {
           this.updateDriversMarkers();
         }
-        // this.map.fitBounds(this.drivers.map(d => [d.locationGeo.lat, d.locationGeo.lng]));
+        
       }
   });
 
@@ -143,6 +143,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('onDestroy');
     this.removeMarkers();
     if (this.socketSub) {
       this.socketSub.unsubscribe();
@@ -154,7 +155,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
 
   ionViewDidLeave() {
     console.log('ionViewDidLeave');
-    this.removeMarkers();
+   // this.removeMarkers();
     // if (this.driverMarkers.length > 0) {
     //   this.driverMarkers.forEach(driverMarker => {
     //     driverMarker.removeFrom(this.map);
@@ -175,9 +176,9 @@ export class DriversPopupPage implements OnInit, OnDestroy {
 
   }
 
-  loadMap() {
-    console.log('loadMap');
-    this.map = new L.Map('driversMapId').setView([45.508888, -73.561668], 13);
+  async loadMap() {
+    console.log('loadMap Staff-drivers');
+    this.map = new L.Map('staffDriversMapId').setView([45.508888, -73.561668], 13);
     L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);

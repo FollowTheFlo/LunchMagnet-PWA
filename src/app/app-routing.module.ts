@@ -24,6 +24,15 @@ const routes: Routes = [
     path: 'driver-orders',
     loadChildren: () => import('./driver/driver-orders/driver-orders.module').then( m => m.DriverOrdersPageModule)
   },
+  {
+    path: 'driver-dashboard',
+    loadChildren: () => import('./driver/driver-dashboard/driver-dashboard.module').then( m => m.DriverDashboardPageModule)
+  },
+  {
+    path: 'admin-dashboard',
+    loadChildren: () => import('./admin/admin-dashboard/admin-dashboard.module').then( m => m.AdminDashboardPageModule)
+  },
+
 
 
   // { path: 'home', redirectTo: 'tabs/home', pathMatch: 'full' },

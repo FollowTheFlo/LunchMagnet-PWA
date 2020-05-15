@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Drivers List</ion-title>
+    <ion-button fill="clear" color="light" (click)="closeModal()">
+      <ion-icon name="close-circle"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div class="driverStyle">
+    <div *ngFor="let driver of drivers; let driverIndex = index">
+      <div [ngClass]="{'driverSelectStyle': (driver.isSelected === true)}" >
+        <ion-item (click)="onSelectDriver(driverIndex)" lines='full'>
+          
+            <b>{{ driver.user.name }}</b>
+            <!-- <span *ngIf="driver.timeToRestaurant !== 0">
+               -> {{ driver.distanceToRestaurant}}Km({{ driver.timeToRestaurant }}min) 
+            </span> -->
+            <!-- <div *ngIf="driver.delay"> {{driver.delay}} ago</div> -->
+         
+          <!-- <ion-button *ngIf="driver.active" slot="end">Online</ion-button> -->
+          <ion-button slot="end" 
+            *ngIf="driver.status === 'WAITING_NEW_ORDER'">
+            AVAILABLE</ion-button>
+          <ion-button slot="end" 
+            *ngIf="driver.status === 'ON_WAY_TO_CUSTOMER' || driver.status === 'ON_WAY_TO_RESTAURANT'">
+            BUSY</ion-button>
+            <ion-button slot="end" 
+            *ngIf="driver.status === 'OFFLINE'">
+            OFFLINE</ion-button>
+          <!-- <ion-button slot="end">{{driver.status}}</ion-button> -->
+        </ion-item>
+     
+        <div *ngIf="driver.isSelected">
+          <ion-item>
+            Restaurant : {{ driver.distanceToRestaurant}}Km ({{ driver.timeToRestaurant }}min)
+          </ion-item>
+          <ion-item>
+            Last Signal : {{driver.delay}} ago
+          </ion-item>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="staffDriversMapId" ></div>
+ 
+</ion-content>

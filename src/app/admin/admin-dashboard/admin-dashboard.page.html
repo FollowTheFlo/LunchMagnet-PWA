@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Admin dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class='viewTitle'>
+    <ion-item lines="none">
+      <span class='catTitle'>Switch View</span>
+    </ion-item>
+  </div>
+
+<ion-radio-group 
+  allow-empty-selection="true"
+  value="ADMIN"
+  (ionChange)=onSelectView($event)>
+
+  <ion-item>
+    Admin View
+    <ion-radio slot="end" value="ADMIN"></ion-radio>
+  </ion-item>
+  <ion-item>
+    Staff View
+    <ion-radio slot="end" value="STAFF"></ion-radio>
+  </ion-item>
+  <ion-item>
+    Driver View
+    <ion-radio slot="end" value="DRIVER"></ion-radio>
+  </ion-item>
+  <ion-item>
+    User View
+    <ion-radio slot="end" value="USER"></ion-radio>
+  </ion-item>
+  <ion-item>
+    Visitor View
+    <ion-radio slot="end" value="VISITOR"></ion-radio>
+  </ion-item>
+</ion-radio-group>
+<div class='viewTitle'>
+  <ion-item lines="none">
+    <span class='catTitle'>Config</span>
+  </ion-item>
+</div>
+<div class='viewTitle'>
+  <ion-item lines="none">
+    <span class='catTitle'>Reports</span>
+  </ion-item>
+</div>
+</ion-content>

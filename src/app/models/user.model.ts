@@ -9,5 +9,6 @@ export interface User {
     collectionMethod: string;
     deliveryAddress: string;
     role: string;
+    view: string;
     deliveryLocationGeo: LocationGeo;
   }

@@ -315,6 +315,90 @@ export class GraphqlService {
       `} );
     }
 
+    getDriverOrders(driverId: string): Observable<ApolloQueryResult<any>> {
+      return this.apollo.query<any>({
+      query: gql`
+      query{
+      getDriverOrders(
+        driverId:"${driverId}"
+        )
+        {
+          _id
+        rawPrice
+        status
+        paymentMethod
+        tipsPercentage
+        subTotalPrice
+        finished
+        totalPrice
+        collectionMethod
+        createdAt
+        updatedAt
+        currentStep {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+        }
+        currentStepIndex
+        selectedItems {
+          name
+          price
+          optionsText
+          optionsText_fr
+          menuItemId
+          quantity
+          notes
+          totalPrice
+
+         }
+         deliveryAddress
+         deliveryLocationGeo {
+          lat
+          lng
+         }
+         steps {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+         }
+
+      }
+   }
+      `} );
+    }
+
     createOrder(order: Order): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
 
       console.log('Graphql createOrder', order);
