@@ -29,6 +29,9 @@
          
           <!-- <ion-button *ngIf="driver.active" slot="end">Online</ion-button> -->
           <ion-button slot="end" 
+            *ngIf="driver.inRestaurant">
+            IN RESTAURANT</ion-button>
+          <ion-button slot="end" 
             *ngIf="driver.status === 'WAITING_NEW_ORDER'">
             AVAILABLE</ion-button>
           <ion-button slot="end" 

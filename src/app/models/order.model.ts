@@ -34,4 +34,8 @@ export interface Order {
     currentStep: Step;
     currentStepIndex: number;
     driver: Driver;
+    pendingDriver: Driver;
+    distanceToDestination: number;
+    timeToDestination: number;
+    restaurant: Restaurant;
 }

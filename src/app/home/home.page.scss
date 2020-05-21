@@ -98,6 +98,53 @@ margin: 15px;
   text-align: left;
 }
 
+@media (prefers-color-scheme: dark) {
+  .itemsList ion-item{
+    box-shadow: none;
+    width: 100%;
+    text-align: left;
+    --padding-start: 0;
+    color: white;
+    --background: black;
+    --border-color: white;
+  }
+
+  .itemsList p {
+    
+    color: white;
+  }
+  .itemsList ion-item ion-note {
+    
+    color: white;
+  }
+  .delivery ion-item{
+   
+   
+
+    //color: darkgreen;
+    color: black;
+   
+    //--border-radius: 10px;
+    border-color: black;
+  }
+  .collectingMethodSegment ion-segment ion-segment-button{
+    --color-checked: white;
+    --border-color:black;
+    --background-checked: black;
+    --background: black;
+    --color-checked: black;
+    --color:white;
+  }
+
+  .collectingMethodSegment ion-segment {
+  
+    --background: black;
+    --color-checked: darkgreen;
+    --color: black;
+  
+  }
+}
+
 .bigCard ion-card ion-card-header  {
   font-size:16px;
 }

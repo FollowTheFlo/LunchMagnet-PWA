@@ -7,9 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class SocketService {
 
-   
     constructor(private socket: Socket) {}
-    
 
     public sendMessage(eventName: string, data: any) {
         this.socket.emit(eventName, data);
@@ -19,6 +17,5 @@ export class SocketService {
        return this.socket
        .fromEvent<any>(eventName);
     }
-    
 
 }

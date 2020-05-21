@@ -69,10 +69,11 @@ export class AddressSearchPage implements OnInit, OnDestroy {
   }
 
   onDismiss(value: string) {
-    console.log('onDismiss Lat', this.outputLat);
+    console.log('onDismiss this.selectedAddress', this.selectedAddress);
     // using the injected ModalController this page
     // can "dismiss" itself and optionally pass back data
     if ( value === 'save' ) {
+    this.selectedAddress = this.selectedAddress === null ? '' : this.selectedAddress;
     this.modalCtrl.dismiss({
       address: this.selectedAddress,
       lat: this.outputLat,
@@ -182,8 +183,7 @@ locatePosition() {
     console.log('onOpenGoogleMap');
     //?q="${this.restaurant.address}"
     //window.open(`geo:${this.restaurant.locationGeo.lat},${this.restaurant.locationGeo.lng}`,
-    window.open(`geo:0,0?q=${this.inputAddress}`,
-    `_system`);
+    //window.open(`geo:0,0?q=${this.inputAddress}`,`_system`);
   }
 
   onSelectAddress(address: string) {

@@ -1,19 +1,3 @@
-
-#driverMapId {
-    height: 400px;
-}
-
-::ng-deep.floPopup .leaflet-popup-content-wrapper {
-    background: yellow;
-}
-
-::ng-deep.floPopup2 .leaflet-popup-content-wrapper {
-    background: red;
-}
-::ng-deep.floPopup2 .leaflet-popup-tip-container .leaflet-popup-tip {
-    background: red;
-}
-
 ion-card {
     text-align: center;
     width: 100%;
@@ -58,4 +42,56 @@ ion-fab ion-fab-button {
     color:white;
    // --highlight-height:0;
     //--border-width: 50px;
+}
+
+@media (prefers-color-scheme: dark) {
+    ion-card {
+        text-align: center;
+        width: 100%;
+        border-width: 100%;
+        margin-left: 0%;
+        margin-right: 0%;
+        border-radius: 0%;
+        background-color: yellow;
+        color:black
+    }
+    
+    ion-card ion-card-header ion-card-title {
+        //color:white;
+        font-size: 15px;
+        color: black;
+    }
+    
+    ion-fab ion-fab-button {
+        --background: yellow;
+        --color: black;
+    }
+    
+    .styleComplete ion-card {
+        background-color: green;
+        color: white;
+    }
+    
+     .styleInProgress ion-card {
+        background-color: yellow;
+        color: black;
+        }
+    
+    .styleCanceled ion-card {
+        background-color: red;
+        color: black;
+    }
+    
+    .styleNotStarted ion-card {
+        background-color: white;
+        color: black;
+    }
+    
+    .filterStyle ion-item {
+        --background: var(--ion-color-primary);
+        color:black;
+       // --highlight-height:0;
+        //--border-width: 50px;
+    }
+
 }

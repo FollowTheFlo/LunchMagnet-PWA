@@ -125,25 +125,23 @@ export class StaffOrdersPage implements OnInit, OnDestroy {
     //modal.style.cssText = '--min-height: 120px; --max-height: 500px;';
 
     modal.onDidDismiss()
-      .then((data) => {
-        // this.orderService.fetchOrders('').pipe(
-        //   take(1)
-        // )
-        // .subscribe(orders => {
-        //   console.log('dont refresh orders after modal closing');
-        //  // this.orders = this.fillExtendedOrders(orders);
-        // });
-      });
+    .then( data => {
+      if( data['data']) {
+        console.log('dismiss order', data['data']);
+        const order = data['data'];
+        this.staffService.updateOrderLocally(order);
+    }
+    });
     return await modal.present();
   }
 
-  async onClickDriversFab() {
-    console.log('onClickDriversFab');
+  async onClickDrivers(order: Order) {
+    console.log('onClickDriver order', order);
     console.log('presentModal');
     const modal = await this.modalCtrl.create({
         component: DriversPopupPage,
         componentProps: {
-          filter: 'ALL'
+          order: order
         },
 
       });

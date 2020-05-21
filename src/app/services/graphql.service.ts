@@ -166,6 +166,22 @@ export class GraphqlService {
         collectionMethod
         createdAt
         updatedAt
+        distanceToDestination
+        timeToDestination
+        driver {
+          _id
+          user {
+            _id
+            name
+          }
+        }
+        pendingDriver {
+          _id
+          user {
+            _id
+            name
+          }
+        }
         currentStep {
           code
           name
@@ -240,6 +256,10 @@ export class GraphqlService {
         )
         {
           _id
+        customer {
+          _id
+          name
+        }
         rawPrice
         status
         paymentMethod
@@ -250,6 +270,16 @@ export class GraphqlService {
         collectionMethod
         createdAt
         updatedAt
+        distanceToDestination
+        timeToDestination
+        driver {
+          _id
+          distanceToRestaurant
+          user {
+            _id
+            name
+          }
+        }
         currentStep {
           code
           name
@@ -314,7 +344,7 @@ export class GraphqlService {
    }
       `} );
     }
-
+//filter: ALL, ASSIGN, PENDING
     getDriverOrders(driverId: string): Observable<ApolloQueryResult<any>> {
       return this.apollo.query<any>({
       query: gql`
@@ -334,6 +364,22 @@ export class GraphqlService {
         collectionMethod
         createdAt
         updatedAt
+        distanceToDestination
+        timeToDestination
+        driver {
+          _id
+          user {
+            _id
+            name
+          }
+        }
+        pendingDriver {
+          _id
+          user {
+            _id
+            name
+          }
+        }
         currentStep {
           code
           name
@@ -398,7 +444,6 @@ export class GraphqlService {
    }
       `} );
     }
-
     createOrder(order: Order): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
 
       console.log('Graphql createOrder', order);
@@ -409,10 +454,7 @@ export class GraphqlService {
       });
 
       let cleanDeliveryLocationGeo = '{lat:'+ order.deliveryLocationGeo.lat + ',lng:'+order.deliveryLocationGeo.lng+'}';
-      //cleanDeliveryLocationGeo.replace(/"([^"]+)":/g, "$1:");
-
-
-
+    
       console.log('order deliverLocation', order.deliveryLocationGeo);
       console.log('order clean', cleanDeliveryLocationGeo);
 
@@ -425,7 +467,7 @@ export class GraphqlService {
         mutation {
           createOrder(orderInput: {
             deliveryLocationGeo:${cleanDeliveryLocationGeo}
-            restaurant:"5e9627c5c516c2794b861961"
+            restaurant:"${order.restaurant._id}"
             customer:"${order.customer._id}"
             collectionMethod:"${order.collectionMethod}"
             selectedItems:${itemsCleanList}
@@ -437,7 +479,8 @@ export class GraphqlService {
             subTotalPrice:${order.subTotalPrice}
             tipsPercentage:${order.tips.intValue}
             deliveryAddress:"${order.deliveryAddress}"
-
+            distanceToDestination:${order.distanceToDestination}
+            timeToDestination:${order.timeToDestination}
 
           })
           {
@@ -452,6 +495,8 @@ export class GraphqlService {
         collectionMethod
         createdAt
         updatedAt
+        distanceToDestination
+        timeToDestination
         currentStep {
           code
           name
@@ -518,6 +563,105 @@ export class GraphqlService {
         `});
     }
 
+    askDriverToTakeOrder(driverId: string, orderId: string): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      return this.apollo.mutate<any>({
+        mutation: gql`
+        mutation {
+          askDriverToTakeOrder(driverId: "${driverId}", orderId: "${orderId}")
+          {
+            _id
+            rawPrice
+            status
+            paymentMethod
+            tipsPercentage
+            subTotalPrice
+            finished
+            totalPrice
+            collectionMethod
+            createdAt
+            updatedAt
+            distanceToDestination
+            timeToDestination
+            driver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
+            pendingDriver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
+            currentStep {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+            currentStepIndex
+            selectedItems {
+              name
+              price
+              optionsText
+              optionsText_fr
+              menuItemId
+              quantity
+              notes
+              totalPrice
+
+            }
+            deliveryAddress
+            deliveryLocationGeo {
+              lat
+              lng
+            }
+            steps {
+              code
+              name
+              name_fr
+              startedAt
+              targetTeam
+              assignee
+              inProgress
+              completed
+              completedDate
+              completionAction
+              completionAction_fr
+              completedBy
+              showMap
+              canceled
+              canceledDate
+              canceledBy
+              index
+              btnOK
+              btnKO
+            }
+
+          }
+        }
+
+        `});
+    }
+
     completeOrderStep(orderId: string, index: number): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
       return this.apollo.mutate<any>({
         mutation: gql`
@@ -535,6 +679,22 @@ export class GraphqlService {
             collectionMethod
             createdAt
             updatedAt
+            distanceToDestination
+            timeToDestination
+            driver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
+            pendingDriver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
             currentStep {
               code
               name
@@ -618,6 +778,22 @@ export class GraphqlService {
             collectionMethod
             createdAt
             updatedAt
+            distanceToDestination
+            timeToDestination
+            driver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
+            pendingDriver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
             currentStep {
               code
               name
@@ -720,6 +896,7 @@ export class GraphqlService {
                  timeToRestaurant: ${driver.timeToRestaurant}
                  distanceToRestaurant: ${driver.distanceToRestaurant}
                  active: ${driver.active}
+                 inRestaurant: ${driver.inRestaurant}
                 }
               )
               {
@@ -727,14 +904,14 @@ export class GraphqlService {
                   _id
                   user {
                     name
-                    _id
-                    role
+                    _id                  
                   }
                   timeToRestaurant
                   distanceToRestaurant
                   locationTime
                   available
                   active
+                  inRestaurant
                   locationGeo {
                     lat
                     lng
@@ -757,18 +934,12 @@ export class GraphqlService {
                   user {
                     name
                     _id
-                    role
-                    deliveryAddress
-                    collectionMethod
-                    deliveryLocationGeo {
-                      lat
-                      lng
-                    }
                   }
                   timeToRestaurant
                   distanceToRestaurant
                   available
                   active
+                  inRestaurant
                   locationTime
                   locationGeo {
                     lat
@@ -790,22 +961,15 @@ export class GraphqlService {
                   status
                   _id
                   user {
-                  name
+                   name
                     _id
-                    role
-                    deliveryAddress
-                    collectionMethod
-                    deliveryLocationGeo {
-                      lat
-                      lng
-                    }
                   }
                   timeToRestaurant
                   distanceToRestaurant
                   locationTime
                   available
                   active
-                  active
+                  inRestaurant
                   locationGeo {
                     lat
                     lng
@@ -833,6 +997,22 @@ export class GraphqlService {
             collectionMethod
             createdAt
             updatedAt
+            distanceToDestination
+            timeToDestination
+            driver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
+            pendingDriver {
+              _id
+              user {
+                _id
+                name
+              }
+            }
             currentStep {
               code
               name

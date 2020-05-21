@@ -74,8 +74,11 @@ export class MenuService {
                 console.log('categories', categories);
                 return categories.map(category => {
                     console.log('category', category);
-                    category.imageUrl = environment.IMAGE_SERVER_DOMAIN + '/images/' + category.imageUrl;
-                    return category;
+                    //category.imageUrl = environment.IMAGE_SERVER_DOMAIN + '/images/' + category.imageUrl;
+                    return {...category,
+                        imageUrl: environment.IMAGE_SERVER_DOMAIN + '/images/' + category.imageUrl
+                        
+                        };
                 });
             }),
             tap(menuCategories => {

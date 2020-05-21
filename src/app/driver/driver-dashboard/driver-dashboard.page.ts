@@ -13,8 +13,13 @@ import { of, from } from 'rxjs';
 import { Driver } from 'src/app/models/driver.model';
 // import { User } from 'src/app/models/user.model';
 import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { Restaurant } from 'src/app/models/restaurant.model';
 import { Order } from 'src/app/models/order.model';
+import { ModalController } from '@ionic/angular';
+import { OrderDetailsPage } from 'src/app/shared-components/order-details/order-details.page';
+import { ToastController } from '@ionic/angular';
+
 const { Geolocation } = Plugins;
 
 @Component({
@@ -42,6 +47,10 @@ export class DriverDashboardPage implements OnInit, OnDestroy {
   inputAction = '';
   driver: Driver;
   orders: Order[];
+  selectedOrder: Order = null;
+
+  authSub: Subscription;
+  updateDriverSub: Subscription;
 
   selectedDriverPopupOptions: L.PopupOptions = {
     className: 'selectStyle',
@@ -79,19 +88,25 @@ carSportIcon = L.icon({
     private geolocationService: GeolocationService,
     private driverService: DriverService,
     private authService: AuthService,
-    private restaurantService: RestaurantService
+    private restaurantService: RestaurantService,
+    private modalCtrl: ModalController,
+    public toastCtrl: ToastController
   ) { }
 
   ngOnInit() {
 
     this.authService.user$.pipe(
       switchMap(user =>  {
-
+      console.log('switch user', user);
         return this.driverService.fetchDriver(user._id); }
         )
     )
     .subscribe(driver => {
       console.log('ngOnInit driver', driver);
+      if (!driver) {
+        console.log('no driver associated with this user');
+        return;
+      }
       this.driver = driver;
       this.driverService.getDriverOrders(this.driver._id)
       .subscribe(orders => {
@@ -122,12 +137,17 @@ carSportIcon = L.icon({
   }
 
   ngOnDestroy() {
-
+    if (this.authSub) {
+      this.authSub.unsubscribe();
+    }
   }
 
 
 
   ionViewDidEnter() {
+
+
+
     if (!this.mapLoaded) {
       this.loadMap();
       this.mapLoaded = true;
@@ -163,7 +183,12 @@ carSportIcon = L.icon({
   }
 
   loadMap() {
-    this.map = new L.Map('driverMapId').setView([45.508888, -73.561668], 13);
+    if (this.restaurant) {
+      this.map = new L.Map('driverMapId').setView([this.restaurant.locationGeo.lat, this.restaurant.locationGeo.lng], 13);
+    } else {
+      this.map = new L.Map('driverMapId').setView([45.508888, -73.561668], 13);
+    }
+   
     L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
@@ -224,7 +249,7 @@ carSportIcon = L.icon({
             this.driver.distanceToRestaurant = data.distance;
             this.driver.timeToRestaurant = data.duration;
 
-            this.driverService.updateDriver(JSON.parse(JSON.stringify(this.driver)))
+            this.updateDriverSub = this.driverService.updateDriver(JSON.parse(JSON.stringify(this.driver)))
             .subscribe(driver => {
               console.log('updateDriver', driver);
             },
@@ -270,6 +295,25 @@ carSportIcon = L.icon({
 
 }
 
+onToggleInRestaurantChange(event) {
+  console.log('onToggleInRestaurantChange()', event);
+
+
+  console.log('onToggleInRestaurantChange() 1 inRestaurant: ', this.driver.inRestaurant);
+ // this.driver.status = this.driver.active === false ? 'OFFLINE' : 'WAITING_NEW_ORDER';
+ // this.driver.available = this.driverService.setDriverAvailability(this.driver.active, this.driver.status);
+ // this.driver.locationTime = new Date().toISOString();
+  this.driver.locationGeo = {...this.restaurant.locationGeo};
+  this.driverService.updateDriver(JSON.parse(JSON.stringify(this.driver)))
+      .subscribe(driver => {
+        console.log('onToggleChange updateDriver', driver);
+        this.driver = driver;
+    },
+      error =>  console.log('updateDriver Error', error)
+    );
+
+}
+
   onRefresh() {
     console.log('onRefresh');
 
@@ -290,7 +334,8 @@ carSportIcon = L.icon({
           icon: this.houseIcon,
           draggable: false
         });
-        this.orderMarkers[index].bindPopup(order.deliveryAddress, this.driverPopupOptions).openPopup();
+        this.orderMarkers[index].bindPopup(order.deliveryAddress,
+         this.driverPopupOptions).openPopup();
       }
 
       // this.newMarker.bindPopup("My location").openPopup();
@@ -313,11 +358,7 @@ carSportIcon = L.icon({
      this.restaurant.locationGeo.lng],
     [this.driver.locationGeo.lat, this.driver.locationGeo.lng]
     ]  );
-    // .push()
-  // .concat(l)
-// );
-   // .push([this.restaurant.locationGeo.lat, this.restaurant.locationGeo.lng])
-   // );
+
     console.log('displayDriversOnMap', this.orderMarkers);
     this.orderMarkers.forEach(orderMarker => {
       orderMarker.addTo(this.map);
@@ -326,7 +367,13 @@ carSportIcon = L.icon({
        console.log('click event ', e.target._popup._content);
 
        const selectIndex = this.orders.findIndex(o => o.deliveryAddress === e.target._popup._content);
-      //  if (selectIndex !== -1) {
+
+      
+       this.selectedOrder = this.orders[selectIndex];
+       //this.presentToast("<ion-button (click)=onClickOrder('" + this.selectedOrder._id + "')>Order Details</ion-button>").then(() => console.log('toast launch'));
+    
+       //this.onClickOrder(this.orders[selectIndex]._id);
+       //  if (selectIndex !== -1) {
       //   this.onSelectDriver(selectIndex);
       //  }
 
@@ -359,6 +406,35 @@ drawRestaurantMarker() {
   }
 }
 
+async onClickOrder(orderId: string) {
+  console.log('onClickOrder', orderId);
+  console.log('presentModal');
+  const modal = await this.modalCtrl.create({
+      component: OrderDetailsPage,
+      componentProps: {
+        orderId
+      },
+
+    });
+  //modal.style.cssText = '--min-height: 120px; --max-height: 500px;';
+
+  modal.onDidDismiss()
+    .then((data) => {
+    });
+  return await modal.present();
+}
+
+async presentToast(message: string) {
+  const toast = await this.toastCtrl.create({
+    message,
+    duration: 15000,
+    position: 'bottom',
+    color: 'medium',
+    cssClass: 'toast',
+    animated: true
+  });
+  toast.present();
+}
 
 
 }

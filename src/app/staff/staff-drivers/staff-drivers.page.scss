@@ -17,3 +17,21 @@
 .driverSelectStyle ion-item {
     --background: yellow;
 }
+
+@media (prefers-color-scheme: dark) {
+
+    ::ng-deep.selectStyle .leaflet-popup-content-wrapper {
+        background: yellow;
+        color: black
+    }
+    ::ng-deep.selectStyle .leaflet-popup-tip-container .leaflet-popup-tip {
+        background: yellow;
+        color: black;
+    }
+    
+    .driverSelectStyle ion-item {
+        --background: yellow;
+        color: black;
+    }
+    
+  }

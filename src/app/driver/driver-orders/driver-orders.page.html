@@ -5,6 +5,14 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-spinner *ngIf="!driver"></ion-spinner>
 <div *ngIf="driver">
 
@@ -18,7 +26,7 @@
 
   <div [ngClass]="{'styleComplete':(order.status === 'COMPLETED'), 'styleInProgress': (order.status === 'ON PROGRESS'),
      'styleNotStarted': (order.status === 'NOT STARTED'), 'styleCanceled': (order.status === 'CANCELED')}">
-    <ion-card>
+    <ion-card (click)="onClickOrder(order._id)">
       
       <ion-card-header>
         <!-- <ion-card-title (click)="order.showDetails = !order.showDetails"> -->
@@ -31,9 +39,6 @@
             <div *ngIf="!order.finished">
               <div>Current Step: {{order.currentStep.name}} ({{order.currentStepIndex + 1}}/{{order.steps.length}})</div>
                <div>Time target: ASAP</div>
-          </div>
-          <div *ngIf="order.status !== 'CANCELED' && order.currentStep.code === 'DRIVER_SELECTION_MANUAL'">
-            <ion-button>Select Driver</ion-button>
           </div>
           <div *ngIf="order.finished && order.status === 'COMPLETED'">
             COMPLETED at {{order.currentStep.completedDate | date:'H:mm:ss':'+0000'}}
@@ -54,8 +59,4 @@
   
 </div>
 
-
-  <ion-button (click)="onRefresh()">
-    Get Orders
-  </ion-button>
 </ion-content>

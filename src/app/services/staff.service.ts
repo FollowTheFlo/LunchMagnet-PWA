@@ -123,11 +123,11 @@ export class StaffService {
             return this.graphqlService.completeOrderStep(orderId, index)
             .pipe(
                 map(response => response.data.completeOrderStep),
-                tap(updatedOrder => {
-                    const oIndex = this.orders.findIndex(order => order._id === updatedOrder._id);
-                    this.orders[oIndex] = updatedOrder;
-                    this._orders.next(JSON.parse(JSON.stringify(this.orders)));
-                })
+                // tap(updatedOrder => {
+                //     const oIndex = this.orders.findIndex(order => order._id === updatedOrder._id);
+                //     this.orders[oIndex] = updatedOrder;
+                //     this._orders.next(JSON.parse(JSON.stringify(this.orders)));
+                // })
             );
 
         }
@@ -136,11 +136,11 @@ export class StaffService {
             return this.graphqlService.cancelOrderStep(orderId, index)
             .pipe(
                 map(response => response.data.cancelOrderStep),
-                tap(cancelOrder => {
-                    const oIndex = this.orders.findIndex(order => order._id === cancelOrder._id);
-                    this.orders[oIndex] = cancelOrder;
-                    this._orders.next(JSON.parse(JSON.stringify(this.orders)));
-                })
+                // tap(cancelOrder => {
+                //     const oIndex = this.orders.findIndex(order => order._id === cancelOrder._id);
+                //     this.orders[oIndex] = cancelOrder;
+                //     this._orders.next(JSON.parse(JSON.stringify(this.orders)));
+                // })
             );
         }
 

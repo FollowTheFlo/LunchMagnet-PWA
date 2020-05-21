@@ -11,4 +11,5 @@ export interface Driver {
     available: boolean;
     active: boolean;
     status: string;
+    inRestaurant: boolean;
   }

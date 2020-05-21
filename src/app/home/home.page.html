@@ -24,7 +24,7 @@
 <div class="delivery" 
   *ngIf="currentUser.collectionMethod === 'DELIVERY'"
   >
-<ion-item (click)="openSearchAddressModal()">
+<ion-item (click)="openSearchAddressModal()" lines="none">
   <ion-label *ngIf="currentUser.deliveryAddress === '' ">Search your Address</ion-label>
   <ion-label *ngIf="currentUser.deliveryAddress !== '' ">{{currentUser.deliveryAddress}}</ion-label>
   <ion-buttons slot="end">

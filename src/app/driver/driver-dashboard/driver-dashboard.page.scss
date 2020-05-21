@@ -56,3 +56,24 @@ ion-card ion-card-header ion-card-title {
    // --highlight-height:0;
     //--border-width: 50px;
 }
+
+ion-chip {
+    --background: var(--ion-color-primary);
+    color:white;
+}
+
+.offlineStyle {
+    color: red
+}
+
+.onlineStyle {
+    color: green
+}
+
+ion-toggle {
+    --background: red;
+    --background-checked: green;
+  
+    // --handle-background: red;
+    // --handle-background-checked: green;
+  }

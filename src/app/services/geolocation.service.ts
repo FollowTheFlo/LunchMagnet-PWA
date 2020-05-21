@@ -3,6 +3,8 @@ import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as L from 'leaflet';
+import { Observable } from 'apollo-link';
+import { of } from 'rxjs';
 
 export interface MapboxOutput {
     attribution: string;
@@ -48,7 +50,7 @@ export interface Coordinates {
       const headers = new HttpHeaders();
       headers.append('Host', 'router.project-osrm.org');
 
-      const httpOptions1 = {
+      const httpOptions = {
           headers: headers
        };
 
@@ -58,7 +60,7 @@ export interface Coordinates {
           //`http://router.project-osrm.org/table/v1/driving/-73.5939564,45.5832091;${lng},${lat}?sources=0`,
           //`https://geoegl.msp.gouv.qc.ca/services/itineraire/route/v1/driving/-73.5939564,45.5832091;${lng},${lat}?sources=0`,
           `https://api.mapbox.com/directions-matrix/v1/mapbox/driving-traffic/${lngTo},${latTo};${lngFrom},${latFrom}?annotations=duration,distance&sources=0&access_token=${environment.mapbox.accessToken}`,
-          httpOptions1
+          httpOptions
         ).pipe(
           map( response => {
             console.log('get response', response);

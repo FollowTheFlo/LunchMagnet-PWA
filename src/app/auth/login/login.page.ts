@@ -35,13 +35,13 @@ export class LoginPage implements OnInit {
     );
   }
 
-  onClickLogin() {
-    this.authService.fetchUser(this.currentUserEmail)
-    .subscribe(u => {
-      console.log('succesfully login');
-    },
-    error => console.log(error)
-    );
-  }
+  // onClickLogin() {
+  //   this.authService.fetchUser(this.currentUserEmail)
+  //   .subscribe(u => {
+  //     console.log('succesfully login');
+  //   },
+  //   error => console.log(error)
+  //   );
+  // }
 
 }

@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GeolocationService, Feature } from './../../services/geolocation.service';
 import { StaffDriversService} from './../../services/staff-drivers.service';
+import { StaffService } from './../../services/staff.service';
 import { SocketService} from './../../services/socket.service';
+import { OrderService} from './../../services/order.service';
 import { RestaurantService} from './../../services/restaurant.service';
 import { Map, tileLayer, marker} from 'leaflet';
 import * as L from 'leaflet';
@@ -13,6 +15,7 @@ import { Driver } from 'src/app/models/driver.model';
 import { Subscription } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { Restaurant } from 'src/app/models/restaurant.model';
+import { Order } from 'src/app/models/order.model';
 
 interface ExtendedDriver extends Driver {
   isSelected: boolean;
@@ -32,6 +35,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
   restaurant: Restaurant;
   restaurantMarker: L.Marker;
   map: L.Map;
+  order: Order;
   // control: L.Routing.Control;
 
   driverMarkers: L.Marker[] = [];
@@ -73,73 +77,70 @@ export class DriversPopupPage implements OnInit, OnDestroy {
 
   constructor(
     private staffDriversService: StaffDriversService,
+    private staffService: StaffService,
     private modalCtrl: ModalController,
     private socketService: SocketService,
-    private restaurantService: RestaurantService
-  ) { }
+    private restaurantService: RestaurantService,
+    private orderService: OrderService,
+    private navParams: NavParams
+  ) {
+    this.order = navParams.get('order');
+    console.log('constructor', this.order);
+  }
 
   ngOnInit() {
-
-    this.restaurantService.fetchRestaurant()
-    .subscribe(restaurant => {
-      this.restaurant = restaurant;
-    });
-
-    this.driversSub = this.staffDriversService.fetchDrivers('ALL')
-    .pipe(
-      switchMap(drivers => this.staffDriversService.drivers$)
+    console.log('ngOnInit DriversPopup');
+    const driversSub = this.restaurantService.fetchRestaurant().pipe(
+    switchMap( restaurant => {
+      this.restaurant = restaurant as Restaurant;
+      return this.staffDriversService.fetchDrivers_afterReset('ALL');
+    })
     )
     .subscribe( drivers => {
-      console.log('drivers ', drivers);
+      console.log('DriversPopup Drivers ', drivers);
 
-      const driversCount = this.drivers.length;
+  
       this.drivers = drivers as ExtendedDriver[];
 
       this.drivers = this.calculateDelay(new Date(), [...this.drivers]);
       // file the isSelected property to false as initial state, no driver selected
       // if one was previously selected, set true at slected Index
       this.drivers.forEach((driver, index) => {
-        if ( index === this.selectedDriverIndex ) {
-          driver.isSelected = true;
-        } else {
-          driver.isSelected = false;
-        }
+        driver.isSelected = index === this.selectedDriverIndex ? true : false;
       });
 
-      const countChanged = driversCount !== this.drivers.length ? true : false;
-      console.log('countChanged', countChanged);
-      // this.drivers = drivers.filter(driver => driver.locationGeo.lat !== 0 );
+       // this.drivers = drivers.filter(driver => driver.locationGeo.lat !== 0 );
 
 
       if (this.map) {
         // if there are added or removed drivers, add all markers to map again
         // otherwise just update their coordinates
-        if (countChanged) {
+        // if (countChanged) {
           this.fillDriverMarkers();
           this.displayDriversOnMap();
-        } else {
-          this.updateDriversMarkers();
-        }
+        // } else {
+        //   this.updateDriversMarkers();
+        // }
         // this.map.fitBounds(this.drivers.map(d => [d.locationGeo.lat, d.locationGeo.lng]));
       }
   });
 
-    this.socketSub = this.socketService.getMessages('STAFF_DRIVERS')
-  .subscribe(socketData => {
+//     this.socketSub = this.socketService.getMessages('STAFF_DRIVERS')
+//   .subscribe(socketData => {
 
-    console.log('socket', socketData );
+//     console.log('socket', socketData );
 
-    if (socketData.action === 'UPDATE') {
-        // this.staffService.updateOrderLocally(socketData.order as Order);
-        this.staffDriversService.updateDriverLocally((socketData.driver as Driver));
-    } else
-    if (socketData.action === 'CREATE') {
-     // this.staffService.addOrderLocally(socketData.order as Order)
-     // .subscribe(result => console.log(result));
-     this.staffDriversService.addDriverLocally((socketData.driver as Driver));
-    }
+//     if (socketData.action === 'UPDATE') {
+//         // this.staffService.updateOrderLocally(socketData.order as Order);
+//         this.staffDriversService.updateDriverLocally((socketData.driver as Driver));
+//     } else
+//     if (socketData.action === 'CREATE') {
+//      // this.staffService.addOrderLocally(socketData.order as Order)
+//      // .subscribe(result => console.log(result));
+//      this.staffDriversService.addDriverLocally((socketData.driver as Driver));
+//     }
 
- });
+//  });
   }
 
   ngOnDestroy() {
@@ -264,7 +265,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
   }
 
   updateDriversMarkers() {
-    
+
     console.log('updateDriversMarkers', this.driverMarkers);
     this.driverMarkers.forEach((driverMarker, index) => {
       driverMarker.setLatLng([this.drivers[index].locationGeo.lat, this.drivers[index].locationGeo.lng]);
@@ -299,7 +300,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
       this.driverMarkers[index].unbindPopup();
       // + ' - ' +this.drivers[index].delay + ' ago'
       this.driverMarkers[index].bindPopup(this.drivers[index].user.name, this.driverPopupOptions).openPopup();
-   
+
       // display the map to fit all markers, drivers and restaurant
           // @ts-ignore
       this.map.fitBounds( [...this.drivers.map(d =>  [d.locationGeo.lat, d.locationGeo.lng]), [this.restaurant.locationGeo.lat,
@@ -330,7 +331,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
       } else if (jours === 0) {
         driver.delay =  hours + 'h' + minutes + 'm';
       } else {
-        driver.delay = jours + 'j' + hours + 'h' + minutes + 'm';
+        driver.delay = jours + 'd' + hours + 'h' + minutes + 'm';
       }
     });
 
@@ -340,32 +341,29 @@ export class DriversPopupPage implements OnInit, OnDestroy {
 
   }
 
-  doRefresh(event) {
-    console.log('Begin async operation');
+   onClickConfirm() {
+    console.log('onClickConfirm');
+    const selectedDriver = this.drivers.find(driver => driver.isSelected === true);
+    console.log('selected driver', selectedDriver, this.order._id );
+    this.orderService.askDriverToTakeOrder(selectedDriver._id, this.order._id)
+    .pipe(
+      switchMap(order =>  {
+        console.log('updated order', order);
+        return this.staffService.completeOrderStep(this.order._id, this.order.currentStepIndex);
+      })
+    )
+    .subscribe( order => {
+      console.log('Step updated order', order);
+      this.modalCtrl.getTop().then(modal => {
+        modal.dismiss(JSON.parse(JSON.stringify(order)));
+      });
 
-    // this.orderService.fetchOrders_afterReset();
-
-    this.staffDriversService.fetchDrivers_afterReset('ALL')
-    .subscribe( drivers => event.target.complete());
-
-    // this.staffService.fetchOrders_afterReset('').pipe(
-    //   take(1)
-    // )
-    // .subscribe(orders => {
-    //   console.log('doRefresh');
-    //   event.target.complete();
-    //   this.orders = orders as ExtendedOrder[];
-    //   this.orders = this.calculateDelay(new Date(), [...this.orders]);
-    // //   this.orders.forEach( order => {
-    // //     order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
-    // //   }
-    // // );
-    // });
-
+    });
   }
 
-
-
-
-
+  // doRefresh(event) {
+  //   console.log('Begin async operation');
+  //   this.staffDriversService.fetchDrivers_afterReset('ALL')
+  //   .subscribe( drivers => event.target.complete());
+  // }
 }

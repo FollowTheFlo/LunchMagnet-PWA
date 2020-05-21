@@ -22,7 +22,10 @@ import { from, BehaviorSubject } from 'rxjs';
 
     fetchDrivers(filter: string) {
         return this.graphqlService.getDrivers(filter).pipe(
-            map(response => response.data.getDrivers),
+            map(response => {
+                console.log('graphqlService.getDrivers', response.data.getDrivers);
+                return response.data.getDrivers;
+            }),
             tap(drivers => {
                 this.drivers = drivers;
                 this._drivers.next(JSON.parse(JSON.stringify(this.drivers)));

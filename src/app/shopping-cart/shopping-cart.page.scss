@@ -28,6 +28,14 @@ ion-chip {
     --color: black;
 }
 
+.addressFilled {
+    color: black;
+}
+
+.addressEmpty {
+    color: red;
+}
+
 .paymentKO {
     color: red;
     justify-content: center;

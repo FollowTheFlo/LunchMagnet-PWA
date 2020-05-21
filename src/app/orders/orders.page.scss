@@ -21,11 +21,10 @@ ion-card ion-card-content {
     border-bottom: 5px solid black;
     background: rgb(99, 95, 95);
     color: white;
+    text-align: left;
+    padding-top: 5px;
   }
 
-ion-card ion-card-content {
-    text-align: left;
-}
 
 ion-card {
     text-align: center;

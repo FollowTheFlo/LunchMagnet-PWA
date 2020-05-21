@@ -39,10 +39,12 @@
     margin-bottom: 3px;
     text-align: center;
   }
-// .topToolbar ion-icon {
-//     font-size: 30px;
-//   }
 
+.driverToolbar ion-toolbar{
+    --background: red;
+   // margin-bottom: 70%;
+    text-align: center;
+}
 ion-icon {
     font-size: 26px; //Preferred size here
 }

@@ -86,6 +86,22 @@ export class OrderService {
             );
         }
 
+        askDriverToTakeOrder(driverId: string, orderId: string) {
+            console.log('askDriverToTakeOrder', driverId, orderId);
+            return this.graphqlService.askDriverToTakeOrder(driverId, orderId)
+            .pipe(
+                 map(response => response.data.askDriverToTakeOrder),
+            );
+        }
+
+        assignDriverToOrder(driverId: string, orderId: string) {
+            console.log('assignDriverToOrder', driverId, orderId);
+            return this.graphqlService.assignDriverToOrder(driverId, orderId)
+            .pipe(
+                 map(response => response.data.assignDriverToOrder),
+            );
+        }
+
         addOrderLocally(order: Order) {
             // check if the order is not already in list
             // we do that because race condition with socket ADD ORDER feedback

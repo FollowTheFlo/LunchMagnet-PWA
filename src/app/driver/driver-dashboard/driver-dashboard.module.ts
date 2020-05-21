@@ -8,12 +8,15 @@ import { DriverDashboardPageRoutingModule } from './driver-dashboard-routing.mod
 
 import { DriverDashboardPage } from './driver-dashboard.page';
 
+import { OrderDetailsPageModule } from './../../shared-components/order-details/order-details.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    DriverDashboardPageRoutingModule
+    DriverDashboardPageRoutingModule,
+    OrderDetailsPageModule
   ],
   declarations: [DriverDashboardPage]
 })

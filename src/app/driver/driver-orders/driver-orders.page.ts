@@ -11,10 +11,13 @@ import { environment } from 'src/environments/environment';
 import { Plugins } from '@capacitor/core';
 import { of, from } from 'rxjs';
 import { Driver } from 'src/app/models/driver.model';
-//import { User } from 'src/app/models/user.model';
+// import { User } from 'src/app/models/user.model';
 import { switchMap } from 'rxjs/operators';
 import { Restaurant } from 'src/app/models/restaurant.model';
 import { Order } from 'src/app/models/order.model';
+import { ModalController } from '@ionic/angular';
+import { OrderDetailsPage } from 'src/app/shared-components/order-details/order-details.page';
+
 const { Geolocation } = Plugins;
 
 @Component({
@@ -56,36 +59,32 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
     private geolocationService: GeolocationService,
     private driverService: DriverService,
     private authService: AuthService,
-    private restaurantService: RestaurantService
+    private restaurantService: RestaurantService,
+    private modalCtrl: ModalController,
   ) { }
 
   ngOnInit() {
 
     this.authService.user$.pipe(
       switchMap(user =>  {
+        return this.driverService.fetchDriver(user._id); }
+        ),
+      switchMap(driver =>  {
+        if (!driver) {
+          console.log('no driver associated with this user');
+          return;
+        }
+        this.driver = driver;
+        return this.driverService.getDriverOrders(this.driver._id);
 
-        return this.driverService.fetchDriver(user._id)}
-        )
+      }),
+      switchMap(orders => this.driverService.orders$)
     )
-    .subscribe(driver => {
-      console.log('ngOnInit driver', driver);
-      this.driver = driver;
-      this.driverService.getDriverOrders(this.driver._id)
-      .subscribe(orders => this.orders = orders);
-
-    });
+    .subscribe(orders => this.orders = orders);
 
     this.restaurantService.fetchRestaurant()
     .subscribe(restaurant => this.restaurant = restaurant);
 
-    
-
-
-    // this.driverService.fetchDriver('5e8f3fd01986990acb872db9')
-    // .subscribe(driver => {
-    //   console.log('driver', driver);
-    //   this.driver = driver;
-    // });
   }
 
   ngOnDestroy() {
@@ -95,14 +94,38 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
 
 
 
-  onRefresh() {
+  onRefresh(event) {
     console.log('onRefresh');
 
-    this.driverService.getDriverOrders(this.driver._id)
+    this.driverService.fetchDriverOrders_afterReset(this.driver._id)
     .subscribe(orders => {
-      console.log('driver orders', orders);
+      event.target.complete();
+      console.log('fetchDrivers_afterReset orders', orders);
       this.orders = orders;
     });
+  }
+
+  async onClickOrder(orderId: string) {
+    console.log('onClickOrder', orderId);
+    console.log('presentModal');
+    const modal = await this.modalCtrl.create({
+        component: OrderDetailsPage,
+        componentProps: {
+          orderId
+        },
+
+      });
+    // modal.style.cssText = '--min-height: 120px; --max-height: 500px;';
+
+    modal.onDidDismiss()
+    .then( data => {
+      if ( data.data) {
+        console.log('dismiss order', data.data);
+        const order = data.data;
+        this.driverService.updateOrderLocally(order);
+    }
+    });
+    return await modal.present();
   }
 
 

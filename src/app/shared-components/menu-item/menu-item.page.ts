@@ -44,7 +44,7 @@ export class MenuItemPage implements OnInit {
       .subscribe( item => {
         this.menuItem = item;
         this.isLoading = false;
-        // fill selection count to incliude the deault selected toppings
+        // fill selection count to incliude the default selected toppings
 
         this.menuItem.options.forEach( option => {
           option.selectionCount = this.updateOptionSelectionCount(option);

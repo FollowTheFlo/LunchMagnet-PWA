@@ -7,6 +7,7 @@ import { MenuService } from './../services/menu.service';
 import { AuthService } from '../services/auth.service';
 import { OrderService } from './../services/order.service';
 import { RestaurantService } from './../services/restaurant.service';
+import { GeolocationService } from './../services/geolocation.service';
 import { NavigationService } from './../services/navigation.service';
 import { SocketService } from './../services/socket.service';
 import { ModalController } from '@ionic/angular';
@@ -16,6 +17,7 @@ import { Router } from '@angular/router';
 import { Restaurant } from '../models/restaurant.model';
 import { AddressSearchPage } from './../shared-components/address-search/address-search.page';
 import { LoadingController } from '@ionic/angular';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -39,7 +41,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   selectedTips: ConfigItem;
   paymentMethodList: ConfigItem[] = [];
   selectedPaymentMethod: ConfigItem;
-  
+
 
 
   constructor(
@@ -52,6 +54,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     private modalCtrl: ModalController,
     private router: Router,
     private loadingCtrl: LoadingController,
+    private geolocationService: GeolocationService
     ) { }
 
   ngOnInit() {
@@ -86,7 +89,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
           console.log('not undefined', tip);
           this.selectedTips = tip;
           // set price of tips with floatValue field
-          //this.selectedTips.floatValue = Math.round(this.subTotal * (tip.intValue)) / 100;
+          // this.selectedTips.floatValue = Math.round(this.subTotal * (tip.intValue)) / 100;
           console.log('in Test', this.selectedTips);
           this.grandTotal = this.getGrandTotal_UpdateTipsTaxes();
         }
@@ -182,8 +185,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     });
     let price = 0;
     // add tips price
-    if (this.selectedTips)
-    {
+    if (this.selectedTips) {
       this.selectedTips.amount = Math.round(this.subTotal * (this.selectedTips.intValue)) / 100;
       console.log('getGrandTotal2', this.selectedTips.intValue);
       price = Math.round(this.subTotal * (100 + this.selectedTips.intValue)) / 100;
@@ -196,7 +198,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     console.log('selectedTips', this.selectedTips);
 
     return Math.round(price * 100) / 100;
-    //return this.subTotal / 100;
+    // return this.subTotal / 100;
   }
 
   onAddTips(tip: ConfigItem) {
@@ -214,9 +216,9 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
 
   onCheckoutStep() {
     this.checkoutStep = !this.checkoutStep;
-    
+
     this.headerTitle = this.checkoutStep === true ? 'Checkout' : 'Shopping Cart';
-    //this.navigationService.setNavLink('Checkout');
+    // this.navigationService.setNavLink('Checkout');
   }
 
   onSeeSubTotalDetails() {
@@ -233,7 +235,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   onSelectPaymentMethod(paymentMethod: ConfigItem) {
     console.log('paymentMethod', paymentMethod);
    // this.order.paymentMethod = paymentMethod.value;
-    
+
   }
 
   async onOpenMap() {
@@ -242,14 +244,14 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
         component: AddressSearchPage,
         componentProps: {
-          action: "SHOW",
+          action: 'SHOW',
           lat: this.restaurant.locationGeo.lat,
           lng: this.restaurant.locationGeo.lng,
           address: this.restaurant.address
         },
 
       });
-   await modal.present();
+    await modal.present();
     }
 
     async openSearchAddressModal() {
@@ -274,7 +276,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
 
 onCheckout() {
 
-  //initiate empty order then filling it
+  // initiate empty order then filling it
   const order: Order = {
     _id: '',
     customer: null,
@@ -301,8 +303,12 @@ onCheckout() {
     currentStep: null,
     currentStepIndex: 0,
     driver: null,
+    pendingDriver: null,
+    distanceToDestination: 0,
+    timeToDestination: 0,
+    restaurant: null
   };
-  
+
   order.selectedMenuItems = JSON.parse(JSON.stringify(this.selectedMenuItems));
   order.tips = JSON.parse(JSON.stringify(this.selectedTips));
   order.taxes = JSON.parse(JSON.stringify(this.taxList));
@@ -314,40 +320,110 @@ onCheckout() {
   order.customer = {...this.currentUser};
   order.deliveryAddress = this.currentUser.deliveryAddress;
   order.deliveryLocationGeo = this.currentUser.deliveryLocationGeo;
-  //this.order.history = [null];
+  order.restaurant = this.restaurant;
+
+  // get distance and time from customer address to Restaurant
+  if (order.collectionMethod === 'DELIVERY') {
+
+    this.geolocationService.getDistance(
+      this.restaurant.locationGeo.lat,
+      this.restaurant.locationGeo.lng,
+      this.currentUser.deliveryLocationGeo.lat,
+      this.currentUser.deliveryLocationGeo.lng
+      ).pipe(
+        map(response => {
+          if (response.success) {
+            console.log('mapbox call successfull', response);
+            order.distanceToDestination = response.distance;
+            order.timeToDestination = response.duration;
+          }
+          console.log('order.distanceToDestination', order.distanceToDestination);
+          return order;
+        }),
+        switchMap(order =>  this.orderService.createOrder(order))
+      );
+
+   }
+
+  // this.order.history = [null];
 
   console.log('onCheckout()', order);
-  //this.orderService.CurrentOrder = this.order;
-  //this.menuService.clearSelectedMenuItems();
+  // this.orderService.CurrentOrder = this.order;
+  // this.menuService.clearSelectedMenuItems();
 
   this.loadingCtrl.create({ keyboardClose: true, message: 'Creating the order...' }).then((loadingEl) => {
     loadingEl.present();
 
-    this.orderService.createOrder(order)
-    .subscribe( response => {
-      console.log('Order created succesfully', response);
+    ///////////
+    if (order.collectionMethod === 'DELIVERY') {
+      console.log('DELIVERY');
+      this.geolocationService.getDistance(
+        this.restaurant.locationGeo.lat,
+        this.restaurant.locationGeo.lng,
+        this.currentUser.deliveryLocationGeo.lat,
+        this.currentUser.deliveryLocationGeo.lng
+        ).pipe(
+          map(response => {
+            if (response.success) {
+              console.log('mapbox call successfull', response);
+              order.distanceToDestination = response.distance;
+              order.timeToDestination = response.duration;
+            }
+            console.log('order.distanceToDestination', order.distanceToDestination);
+            return order;
+          }),
+          switchMap(order =>  this.orderService.createOrder(order)),
+          take(1)
+        )
+        .subscribe( response => {
+          console.log('Order created succesfully', response);
 
-      // clear the Cart as the order has been succesfully created
-      this.menuService.clearSelectedMenuItems();
-      loadingEl.dismiss();
-      this.router.navigate(['tabs/orders']);
-    },
-    error => {
-      console.log(error);
-      loadingEl.dismiss();
-    }
-    );
+          // clear the Cart as the order has been succesfully created
+          this.menuService.clearSelectedMenuItems();
+          loadingEl.dismiss();
+          this.router.navigate(['tabs/orders']);
+        },
+        error => {
+          console.log(error);
+          loadingEl.dismiss();
+        }
+        );
+
+     } else {
+      console.log('PICKUP');
+      this.orderService.createOrder(order).pipe(
+        take(1)
+      )
+      .subscribe( response => {
+        console.log('Order created succesfully', response);
+
+        // clear the Cart as the order has been succesfully created
+        this.menuService.clearSelectedMenuItems();
+        loadingEl.dismiss();
+        this.router.navigate(['tabs/orders']);
+      },
+      error => {
+        console.log(error);
+        loadingEl.dismiss();
+      }
+      );
+
+     }
+    ///////////
+
+    this.orderService.createOrder(order);
+
 
 });
-  console.log('flo');
-  
+
+
 }
 
 onConfirmOrder() {
   console.log('onConfirmOrder');
-  //this.socketService.sendMessage('Order has been sent');
+  // this.socketService.sendMessage('Order has been sent');
 
-  
+
 }
 
 

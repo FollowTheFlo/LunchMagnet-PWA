@@ -99,11 +99,7 @@ export class StaffDriversPage implements OnInit, OnDestroy {
       // file the isSelected property to false as initial state, no driver selected
       // if one was previously selected, set true at slected Index
       this.drivers.forEach((driver, index) => {
-        if ( index === this.selectedDriverIndex ) {
-          driver.isSelected = true;
-        } else {
-          driver.isSelected = false;
-        }
+        driver.isSelected = index === this.selectedDriverIndex ? true : false;
       });
 
       const countChanged = driversCount !== this.drivers.length ? true : false;
@@ -120,7 +116,7 @@ export class StaffDriversPage implements OnInit, OnDestroy {
         } else {
           this.updateDriversMarkers();
         }
-        
+
       }
   });
 
@@ -265,7 +261,7 @@ export class StaffDriversPage implements OnInit, OnDestroy {
   }
 
   updateDriversMarkers() {
-    
+
     console.log('updateDriversMarkers', this.driverMarkers);
     this.driverMarkers.forEach((driverMarker, index) => {
       driverMarker.setLatLng([this.drivers[index].locationGeo.lat, this.drivers[index].locationGeo.lng]);
@@ -300,7 +296,7 @@ export class StaffDriversPage implements OnInit, OnDestroy {
       this.driverMarkers[index].unbindPopup();
       // + ' - ' +this.drivers[index].delay + ' ago'
       this.driverMarkers[index].bindPopup(this.drivers[index].user.name, this.driverPopupOptions).openPopup();
-   
+
       // display the map to fit all markers, drivers and restaurant
           // @ts-ignore
       this.map.fitBounds( [...this.drivers.map(d =>  [d.locationGeo.lat, d.locationGeo.lng]), [this.restaurant.locationGeo.lat,
@@ -347,23 +343,36 @@ export class StaffDriversPage implements OnInit, OnDestroy {
     // this.orderService.fetchOrders_afterReset();
 
     this.staffDriversService.fetchDrivers_afterReset('ALL')
-    .subscribe( drivers => event.target.complete());
+    .subscribe( drivers => {
+      event.target.complete();
 
-    // this.staffService.fetchOrders_afterReset('').pipe(
-    //   take(1)
-    // )
-    // .subscribe(orders => {
-    //   console.log('doRefresh');
-    //   event.target.complete();
-    //   this.orders = orders as ExtendedOrder[];
-    //   this.orders = this.calculateDelay(new Date(), [...this.orders]);
-    // //   this.orders.forEach( order => {
-    // //     order.delay = Math.abs((new Date().getTime() - new Date(order.createdAt).getTime()));
-    // //   }
-    // // );
-    // });
+      console.log('drivers ', drivers);
 
-  }
+    
+      this.drivers = drivers as ExtendedDriver[];
+
+      this.drivers = this.calculateDelay(new Date(), [...this.drivers]);
+    // file the isSelected property to false as initial state, no driver selected
+    // if one was previously selected, set true at slected Index
+      this.drivers.forEach((driver, index) => {
+      driver.isSelected = index === this.selectedDriverIndex ? true : false;
+    });
+
+    
+    // this.drivers = drivers.filter(driver => driver.locationGeo.lat !== 0 );
+
+
+      if (this.map) {
+      // if there are added or removed drivers, add all markers to map again
+      // otherwise just update their coordinates
+        this.removeMarkers();
+        this.fillDriverMarkers();
+        this.displayDriversOnMap();
+
+    }
+  });
+
+  };
 
 
 

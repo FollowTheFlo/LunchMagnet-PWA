@@ -36,12 +36,18 @@ export class AuthService {
     getIsAuth() {
         return true;
       }
+    logout() {
+       
+        return from(this.graphqlService.resetStore());
+    }
 
     fetchUser(email: string) {
         return this.graphqlService.getUser(email).pipe(
             map(response => response.data.getUser),
             tap(user => {
                 this.user = user;
+                // set the view flag as admin by default, View is only used by admin, view only exists on client side.
+                this.user.view = this.user.role === 'ADMIN' ? 'ADMIN' : '' ;
                 this._user.next({...this.user});
             })
         );

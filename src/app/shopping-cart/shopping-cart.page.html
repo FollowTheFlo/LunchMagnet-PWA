@@ -92,7 +92,9 @@
     *ngIf="currentUser.collectionMethod === 'DELIVERY'"
     >
   <ion-item (click)="openSearchAddressModal()">
-    <ion-label *ngIf="currentUser.deliveryAddress === '' ">Search your Address</ion-label>
+    <ion-label 
+    [ngClass]="{'addressEmpty':(currentUser.collectionMethod === 'DELIVERY')}"
+    *ngIf="currentUser.deliveryAddress === '' ">Search your Address</ion-label>
     <ion-label *ngIf="currentUser.deliveryAddress !== '' ">{{currentUser.deliveryAddress}}</ion-label>
     <ion-buttons slot="end">
     <ion-button >
@@ -181,7 +183,8 @@
     </div>
     <ion-button expand="block" fill="solid" (click)="onCheckoutStep()">Back to Shopping Cart</ion-button>
     
-    <ion-button *ngIf="selectedPaymentMethod" expand="block" fill="solid" (click)="onCheckout()">Confirm Order</ion-button>
+    <ion-button *ngIf="selectedPaymentMethod && !(currentUser.collectionMethod === 'DELIVERY' && currentUser.deliveryAddress==='')" 
+    expand="block" fill="solid" (click)="onCheckout()">Confirm Order</ion-button>
     </div>
 
 </ion-content>

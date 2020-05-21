@@ -8,28 +8,50 @@
   <ion-spinner *ngIf="!driver"></ion-spinner>
 <div *ngIf="driver">
   <ion-item lines="full">
-    <ion-label *ngIf="driver.active">Online</ion-label>
-    <ion-label *ngIf="!driver.active">Offline</ion-label>
+    <ion-label *ngIf="driver.active" class="onlineStyle" >Online</ion-label>
+    <ion-label *ngIf="!driver.active" class="offlineStyle" >Offline</ion-label>
     <ion-toggle 
    
     [(ngModel)]="driver.active"
     (ionChange)="onToggleChange($event)"></ion-toggle>
   </ion-item>
+  <ion-item lines="full" *ngIf="driver.active">
+    <ion-label>In Restaurant</ion-label>
+      <ion-toggle 
+     
+     [(ngModel)]="driver.inRestaurant"
+    (ionChange)="onToggleInRestaurantChange($event)"></ion-toggle>
+  </ion-item>
   <ion-item lines="full">
     <ion-label>Status</ion-label>
-    <ion-button slot="end">{{driver.status}}</ion-button>
+    
+    <ion-chip slot="end" 
+      *ngIf="driver.status === 'WAITING_NEW_ORDER'">
+      AVAILABLE</ion-chip>
+    <ion-chip slot="end" 
+    *ngIf="driver.status === 'ON_WAY_TO_CUSTOMER' || driver.status === 'ON_WAY_TO_RESTAURANT'">
+    BUSY</ion-chip>
+    <ion-chip slot="end" 
+    *ngIf="driver.status === 'OFFLINE'">
+    OFFLINE</ion-chip>
   </ion-item>
   <ion-item lines="full">
     <ion-label>Orders</ion-label>
-    <ion-button slot="end" *ngIf="orders">{{orders.length}} orders assigned</ion-button>
-    <ion-button slot="end" *ngIf="!orders">No orders assigned</ion-button>
+    <ion-chip slot="end" *ngIf="orders">{{orders.length}} orders assigned</ion-chip>
+    <ion-chip slot="end" *ngIf="!orders">No orders assigned</ion-chip>
   </ion-item>
-  
-</div>
-  <ion-fab vertical="center" horizontal="end" slot="fixed">
+  <ion-fab vertical="center" horizontal="end" slot="fixed"
+  *ngIf="!driver.inRestaurant"
+  >
     <ion-fab-button (click)="drawCurrentPosition()">
       <ion-icon name="locate-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+</div>
+
   <div id="driverMapId"></div>
+  <ion-item *ngIf="selectedOrder">
+    <ion-button slot="end" expand="full" (click)="onClickOrder(selectedOrder._id)">See Order</ion-button>
+    <ion-button slot="end" expand="full">Google Map</ion-button>
+  </ion-item>
 </ion-content>
