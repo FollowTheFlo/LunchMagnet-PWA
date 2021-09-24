@@ -11,7 +11,9 @@ export const environment = {
   mapbox: {
     accessToken: 'pk.eyJ1IjoiZmxldGVuZHJlIiwiYSI6ImNrMm1yazc5YTBreW8zYm05YW1rajhyNmUifQ.cjgG6XNX--iACz0-5sp1Jg'
   },
-  socketServer: 'http://localhost:3000'
+  //socketServer: 'https://lunchmagnet.herokuapp.com'
+  socketServer: 'http://localhost:3000',
+  apolloSocketServer: 'ws://localhost:3000/graphql'
 };
 
 /*

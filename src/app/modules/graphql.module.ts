@@ -7,10 +7,9 @@ import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { environment } from '../../environments/environment';
-//import { createUploadLink } from 'apollo-upload-client';
-//import { createLink } from "apollo-absinthe-upload-link";
+//import { WebSocketLink } from 'apollo-link-ws';
+//import { getOperationAST } from 'graphql';
 
-//const uri = 'http://localhost:3000/graphql'; // <-- add the URL of the GraphQL server here
 const uri = environment.serverUrl;
 
 const authMiddleware = new ApolloLink((operation, forward) => {
@@ -46,6 +45,16 @@ const afterwareLink = new ApolloLink((operation, forward) => {
   });
 });
 
+// const ws = new WebSocketLink({
+//   uri: environment.apolloSocketServer,
+//   options: {
+//     reconnect: true,
+//     connectionParams: {
+//       authToken: localStorage.getItem('token'),
+//     }
+//   }
+// });
+
 export function provideApollo(httpLink: HttpLink) {
   //console.log('miidleware provideApollo');
   const ErrorCapturelink = onError(({ graphQLErrors, networkError }) => {
@@ -60,6 +69,15 @@ export function provideApollo(httpLink: HttpLink) {
     }
   });
 
+  // implement Socket Subscriptions
+  // const linkFull = ApolloLink.split(
+  //   operation => {
+  //     const operationAST = getOperationAST(operation.query, operation.operationName);
+  //     return !!operationAST && operationAST.operation === 'subscription';
+  //   },
+  //   ws,
+  //   httpLink.create({ uri })
+  // );
 
   const link = ApolloLink.from([
     authMiddleware,
@@ -84,27 +102,6 @@ export function provideApollo(httpLink: HttpLink) {
     },
   };
 }
-
-// export function createApollo(httpLink: HttpLink) {
-//   return {
-//     link: httpLink.create({uri}),
-//     cache: new InMemoryCache(),
-//     defaultOptions: {
-//       watchQuery: {
-//           fetchPolicy: 'network-only',
-//           errorPolicy: 'all',
-//       },
-//       query: {
-//           fetchPolicy: 'network-only',
-//           errorPolicy: 'all',
-//       },
-//       mutate: {
-//           fetchPolicy: 'network-only',
-//           errorPolicy: 'all'
-//       }
-//   }
-//   };
-// }
 
 @NgModule({
   exports: [ApolloModule, HttpLinkModule],

@@ -1,37 +1,18 @@
-.driverStyle ion-item ion-title{
-    font-size: 15px;
+.driverStyle ion-item ion-title {
+  font-size: 15px;
 }
 
 #staffDriversMapId {
-    height: 400px;
+  height: 400px;
 }
-
 
 ::ng-deep.selectStyle .leaflet-popup-content-wrapper {
-    background: yellow;
+  background: yellow;
 }
 ::ng-deep.selectStyle .leaflet-popup-tip-container .leaflet-popup-tip {
-    background: yellow;
+  background: yellow;
 }
 
 .driverSelectStyle ion-item {
-    --background: yellow;
+  --background: yellow;
 }
-
-@media (prefers-color-scheme: dark) {
-
-    ::ng-deep.selectStyle .leaflet-popup-content-wrapper {
-        background: yellow;
-        color: black
-    }
-    ::ng-deep.selectStyle .leaflet-popup-tip-container .leaflet-popup-tip {
-        background: yellow;
-        color: black;
-    }
-    
-    .driverSelectStyle ion-item {
-        --background: yellow;
-        color: black;
-    }
-    
-  }

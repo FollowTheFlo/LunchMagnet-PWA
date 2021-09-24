@@ -49,6 +49,8 @@ export class OrderService {
                 })
             );
 
+       
+
 
             // return this.graphqlService.getOrders(userId).pipe(
             //         map(response => response.data.getOrders),
@@ -62,6 +64,10 @@ export class OrderService {
 
 
 
+        }
+
+        getSubscriptionOrderCreated() {
+            return this.graphqlService.getSubscriptionOrderCreated();
         }
 
         getOneOrder(orderId: string) {

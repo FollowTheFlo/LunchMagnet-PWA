@@ -11,59 +11,58 @@
 //     --border: pink;
 //     //--color: grey;
 // }
-
+ion-img {
+  max-width: 32px;
+}
 .topButton {
-    font-size: 34px; 
-    margin-left:5%;
+  font-size: 34px;
+  margin-left: 5%;
 }
 
-.topToolbar ion-toolbar  {
-
---min-height:1%!important;
-//--background: red;
+.topToolbar ion-toolbar {
+  --min-height: 1% !important;
+  //--background: red;
 }
 
 .topToolbar ion-toolbar ion-buttons ion-button p {
-    border-style: solid;
-    border-width: 1px;
-    padding: 4px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 4px;
 }
 
 .tab-selected {
-    --background: rgb(20, 20, 20); // Or whatever you want to set it to.
-    //--background: rgba(0, 0, 255, 0.815);
-  }
+  --background: #004030; // Or whatever you want to set it to.
+  //--background: rgba(0, 0, 255, 0.815);
+}
 
 .cartTab ion-toolbar {
-    --background: red;
-    margin-bottom: 3px;
-    text-align: center;
-  }
+  --background: red;
+  margin-bottom: 3px;
+  text-align: center;
+}
 
-.driverToolbar ion-toolbar{
-    --background: red;
-   // margin-bottom: 70%;
-    text-align: center;
+.driverToolbar ion-toolbar {
+  --background: red;
+  // margin-bottom: 70%;
+  text-align: center;
 }
 ion-icon {
-    font-size: 26px; //Preferred size here
+  font-size: 26px; //Preferred size here
 }
 
 .topButton {
-    font-size: 24px; 
-    margin-left:5%;
+  font-size: 24px;
+  margin-left: 5%;
 }
 
 ion-badge {
-    font-size: 15px;
-    
+  font-size: 15px;
 }
 
 .styleRed ion-icon {
-    color:red !important;
+  color: red !important;
 }
 
 .styleRed ion-icon {
-    color:white !important;
+  color: white !important;
 }
-

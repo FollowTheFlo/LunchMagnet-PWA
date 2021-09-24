@@ -94,7 +94,12 @@
         <div>Order#{{order._id}}</div>
      
         <div>{{order.collectionMethod}}</div>
-        <div>{{order.paymentMethod}}</div>
+        <div *ngIf="order.collectionMethod === 'DELIVERY'">
+          Address: {{order.deliveryAddress}}
+        </div>
+        <div>
+          Payment method: {{order.paymentMethod}}
+        </div>
               
         <div>Time target: ASAP</div>
       </ion-card-title>

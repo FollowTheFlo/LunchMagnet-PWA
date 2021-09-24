@@ -34,6 +34,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
   drivers: ExtendedDriver[] = [];
   restaurant: Restaurant;
   restaurantMarker: L.Marker;
+  targetOrderMarker: L.Marker;
   map: L.Map;
   order: Order;
   // control: L.Routing.Control;
@@ -73,13 +74,18 @@ export class DriversPopupPage implements OnInit, OnDestroy {
     popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
   });
 
+  houseIcon = L.icon({
+    iconUrl: 'assets/markers/home-sharp.png',
+    iconSize:     [25, 25], // size of the icon
+     popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
+});
+
 
 
   constructor(
     private staffDriversService: StaffDriversService,
     private staffService: StaffService,
     private modalCtrl: ModalController,
-    private socketService: SocketService,
     private restaurantService: RestaurantService,
     private orderService: OrderService,
     private navParams: NavParams
@@ -113,38 +119,19 @@ export class DriversPopupPage implements OnInit, OnDestroy {
 
 
       if (this.map) {
-        // if there are added or removed drivers, add all markers to map again
-        // otherwise just update their coordinates
-        // if (countChanged) {
+
           this.fillDriverMarkers();
           this.displayDriversOnMap();
-        // } else {
-        //   this.updateDriversMarkers();
-        // }
-        // this.map.fitBounds(this.drivers.map(d => [d.locationGeo.lat, d.locationGeo.lng]));
+
       }
   });
 
-//     this.socketSub = this.socketService.getMessages('STAFF_DRIVERS')
-//   .subscribe(socketData => {
 
-//     console.log('socket', socketData );
-
-//     if (socketData.action === 'UPDATE') {
-//         // this.staffService.updateOrderLocally(socketData.order as Order);
-//         this.staffDriversService.updateDriverLocally((socketData.driver as Driver));
-//     } else
-//     if (socketData.action === 'CREATE') {
-//      // this.staffService.addOrderLocally(socketData.order as Order)
-//      // .subscribe(result => console.log(result));
-//      this.staffDriversService.addDriverLocally((socketData.driver as Driver));
-//     }
-
-//  });
   }
 
   ngOnDestroy() {
     this.removeMarkers();
+
     if (this.socketSub) {
       this.socketSub.unsubscribe();
     }
@@ -156,11 +143,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
   ionViewDidLeave() {
     console.log('ionViewDidLeave');
     this.removeMarkers();
-    // if (this.driverMarkers.length > 0) {
-    //   this.driverMarkers.forEach(driverMarker => {
-    //     driverMarker.removeFrom(this.map);
-    //   });
-    // }
+
   }
 
   ionViewDidEnter() {
@@ -184,6 +167,7 @@ export class DriversPopupPage implements OnInit, OnDestroy {
     }).addTo(this.map);
 
     this.drawRestaurantMarker();
+    this.drawTargetOrderMarker(this.order);
     this.fillDriverMarkers();
     this.displayDriversOnMap();
 
@@ -202,6 +186,21 @@ export class DriversPopupPage implements OnInit, OnDestroy {
         draggable: false
       }).addTo(this.map);
       this.restaurantMarker.bindPopup(this.restaurant.name, this.driverPopupOptions);
+    }
+  }
+
+  drawTargetOrderMarker(order: Order) {
+    console.log('drawTargetOrderMarker', order.deliveryAddress);
+    if (this.targetOrderMarker) {
+      this.targetOrderMarker.removeFrom(this.map);
+    }
+    if (this.order) {
+     
+      this.targetOrderMarker = marker([order.deliveryLocationGeo.lat, order.deliveryLocationGeo.lng], {
+        icon: this.houseIcon,
+        draggable: false
+      }).addTo(this.map);
+      this.targetOrderMarker.bindPopup(order.deliveryAddress, this.driverPopupOptions);
     }
   }
 
@@ -224,29 +223,11 @@ export class DriversPopupPage implements OnInit, OnDestroy {
 
   displayDriversOnMap() {
 
-     // let r : L.LatLngBoundsExpression ;//= [this.restaurant.locationGeo.lat, this.restaurant.locationGeo.lng];
-     const l = new L.LatLng(this.restaurant.locationGeo.lat, this.restaurant.locationGeo.lng);
-
-     let yo: L.LatLng[];
-
-    // yo = this.drivers.map(d =>  { lat: d.locationGeo.lat, lng:d.locationGeo.lng} );
-     // yo.push([1, 2]);
-     const test =  [...this.drivers.map(d =>  [d.locationGeo.lat, d.locationGeo.lng]), [this.restaurant.locationGeo.lat,
-   this.restaurant.locationGeo.lng] ];
-     console.log('test1', test);
-
-     const test1 =  this.drivers.map(d =>  [d.locationGeo.lat, d.locationGeo.lng]);
-     console.log('test2', test1);
-
-     // display the map to fit all markers, drivers and restaurant
+     // display the map to fit all markers, drivers, restaurant and target order
      // @ts-ignore
      this.map.fitBounds( [...this.drivers.map(d =>  [d.locationGeo.lat, d.locationGeo.lng]), [this.restaurant.locationGeo.lat,
-      this.restaurant.locationGeo.lng]]  );
-     // .push()
-   // .concat(l)
-// );
-    // .push([this.restaurant.locationGeo.lat, this.restaurant.locationGeo.lng])
-    // );
+      this.restaurant.locationGeo.lng], [this.order.deliveryLocationGeo.lat, this.order.deliveryLocationGeo.lng]]  );
+
      console.log('displayDriversOnMap', this.driverMarkers);
      this.driverMarkers.forEach(driverMarker => {
       driverMarker.addTo(this.map);

@@ -247,6 +247,104 @@ export class GraphqlService {
       `} );
     }
 
+    getSubscriptionOrderCreated(): Observable<FetchResult<any, Record<string, any>, Record<string, any>>> {
+      return this.apollo.subscribe<any>({
+      query: gql`
+      subscription{
+      orderCreated
+      {
+        _id
+        rawPrice
+        status
+        paymentMethod
+        tipsPercentage
+        subTotalPrice
+        finished
+        totalPrice
+        collectionMethod
+        createdAt
+        updatedAt
+        distanceToDestination
+        timeToDestination
+        driver {
+          _id
+          user {
+            _id
+            name
+          }
+        }
+        pendingDriver {
+          _id
+          user {
+            _id
+            name
+          }
+        }
+        currentStep {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+        }
+        currentStepIndex
+        selectedItems {
+          name
+          price
+          optionsText
+          optionsText_fr
+          menuItemId
+          quantity
+          notes
+          totalPrice
+
+         }
+         deliveryAddress
+         deliveryLocationGeo {
+          lat
+          lng
+         }
+         steps {
+          code
+          name
+          name_fr
+          startedAt
+          targetTeam
+          assignee
+          inProgress
+          completed
+          completedDate
+          completionAction
+          completionAction_fr
+          completedBy
+          showMap
+          canceled
+          canceledDate
+          canceledBy
+          index
+          btnOK
+          btnKO
+         }
+
+      }
+   }
+      `} );
+    }
+
     getOrders(userId: string): Observable<ApolloQueryResult<any>> {
       return this.apollo.query<any>({
       query: gql`

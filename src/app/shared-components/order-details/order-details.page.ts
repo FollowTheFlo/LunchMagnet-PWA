@@ -89,9 +89,11 @@ export class OrderDetailsPage implements OnInit {
     console.log('closeModal');
     //await this.toastCtrl.dismiss();
     const modal = await this.modalCtrl.getTop();
-    if(this.isModified) {
+    if (this.isModified) {
+      console.log('isModified true');
       modal.dismiss(this.order);
-    } else{
+    } else {
+      console.log('isModified false');
       modal.dismiss(null);
     }
    
@@ -110,7 +112,7 @@ export class OrderDetailsPage implements OnInit {
 
     modal.onDidDismiss()
       .then((data) => {
-        if(data){
+        if(data['data']){
           console.log('dismiss order', data['data']);
           this.order = data['data'];
           this.stepsSlides.slideTo(this.order.currentStepIndex, 500);

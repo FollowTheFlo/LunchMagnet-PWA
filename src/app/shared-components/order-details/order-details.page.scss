@@ -9,118 +9,85 @@
 // }
 
 ion-card ion-card-header ion-card-title {
-    color:black;
-    font-size: 15px;
+  color: black;
+  font-size: 15px;
 }
 
 .stepsSlides {
-    --bullet-background:black;
-    --bullet-background-active: black;
- }
-
- .styleComplete ion-card ion-card-header {
-     background-color: green;
-     --color: white;
- }
- .styleComplete ion-card ion-card-header ion-card-subtitle{
-    background-color: green;
-    color: white;
+  --bullet-background: black;
+  --bullet-background-active: black;
 }
 
- .styleInProgress ion-card ion-card-header {
-    background-color: yellow;
-    color: black
-    }
+.styleComplete ion-card ion-card-header {
+  background-color: green;
+  --color: white;
+}
+.styleComplete ion-card ion-card-header ion-card-subtitle {
+  background-color: green;
+  color: white;
+}
 
-    .styleInProgress ion-card ion-card-header ion-card-subtitle {
-        background-color: yellow;
-        color: black
-        }   
+.styleInProgress ion-card ion-card-header {
+  background-color: yellow;
+  color: black;
+}
+
+.styleInProgress ion-card ion-card-header ion-card-subtitle {
+  background-color: yellow;
+  color: black;
+}
 .styleCanceled ion-card ion-card-header {
-    background-color: red;
+  background-color: red;
 }
 
 ion-spinner {
-    text-align: center;
-    margin-top: 10%;
-    margin-bottom: 10%;
-    margin-left: 48%;
+  text-align: center;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  margin-left: 48%;
 }
 
- .stepsSlides ion-card {
-    position: relative;
-    text-align: center;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0%;
-    //margin: 5% !important;
-    //margin-right: 30px;
-    //border-style: solid;
-    //box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
-    
-   }
-
- .stepsSlides ion-card ion-card-header  {
-    border-bottom-style: solid;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    height: 110px !important;
-    //border-bottom: black;
-   }
-   
-   .stepsSlides ion-card ion-card-content  {
-       padding-bottom: 5px;
-       padding-top: 5px;
-   }
-
-   .stepsSlides ion-card ion-card-content ion-button {
-    // margin-left: 5px;
-    // margin-right: 5px;
+.stepsSlides ion-card {
+  position: relative;
+  text-align: center;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0%;
+  //margin: 5% !important;
+  //margin-right: 30px;
+  //border-style: solid;
+  //box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-   .menuDetails ion-card{
-    position: relative;
-    text-align: center;
-  
-    height: 50% !important;
-
-   }
-
-   .btnOK ion-button {
-       --background: green;
-   }
-
-   .btnKO ion-button {
-        --background: red;
+.stepsSlides ion-card ion-card-header {
+  border-bottom-style: solid;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  height: 110px !important;
+  //border-bottom: black;
 }
 
-
-@media (prefers-color-scheme: dark) {
-
-    ion-card ion-card-header ion-card-title {
-        color:white;
-        font-size: 15px;
-    }
-
-    ion-card ion-card-content {
-        padding-top: 5px;
-        background:darkslategray;
-        color: white;
-    }
-
-    .styleInProgress ion-card ion-card-header ion-title{
-        
-        background-color: yellow;
-        color: black
-        }
-    .styleInProgress ion-card ion-card-header {
-        background-color: yellow;
-        color: black
-        }
-    
-    .styleInProgress ion-card ion-card-header ion-card-subtitle {
-        background-color: yellow;
-        color: black
-        } 
+.stepsSlides ion-card ion-card-content {
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
-  
+
+.stepsSlides ion-card ion-card-content ion-button {
+  // margin-left: 5px;
+  // margin-right: 5px;
+}
+
+.menuDetails ion-card {
+  position: relative;
+  text-align: center;
+
+  height: 50% !important;
+}
+
+.btnOK ion-button {
+  --background: green;
+}
+
+.btnKO ion-button {
+  --background: red;
+}

@@ -39,6 +39,11 @@ export class OrdersPage implements OnInit {
   ngOnInit() {
     console.log('in ngOnInit');
 
+    this.orderService.getSubscriptionOrderCreated()
+    .subscribe(data => {
+      console.log('in getSubscriptionOrderCreated', data);
+    });
+
     this.authService.user$.pipe(
       switchMap( user => {
         this.user = user;

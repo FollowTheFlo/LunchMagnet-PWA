@@ -1,69 +1,65 @@
 <ion-header>
   <div class="homeToolbar">
     <ion-toolbar>
-   Home
-      
+      Home
     </ion-toolbar>
   </div>
-</ion-header>  
+</ion-header>
 
-<ion-content >
+<ion-content>
+  <div class="collectingMethodSegment">
+    <ion-segment
+      (ionChange)="onChangeCollectingMethod($event)"
+      value="this.currentUser.collectionMethod"
+      [(ngModel)]="this.currentUser.collectionMethod"
+    >
+      <ion-segment-button value="DELIVERY">
+        <ion-label>Delivery</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="PICKUP">
+        <ion-label>Pick-up</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
 
-
-<div class="collectingMethodSegment">
-  <ion-segment (ionChange)="onChangeCollectingMethod($event)" value="this.currentUser.collectionMethod" [(ngModel)]="this.currentUser.collectionMethod">
-    <ion-segment-button value="DELIVERY">
-      <ion-label>Delivery</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="PICKUP">
-      <ion-label>Pick-up</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-</div>
-
-<div class="delivery" 
-  *ngIf="currentUser.collectionMethod === 'DELIVERY'"
-  >
-<ion-item (click)="openSearchAddressModal()" lines="none">
-  <ion-label *ngIf="currentUser.deliveryAddress === '' ">Search your Address</ion-label>
-  <ion-label *ngIf="currentUser.deliveryAddress !== '' ">{{currentUser.deliveryAddress}}</ion-label>
-  <ion-buttons slot="end">
-  <ion-button >
-    <ion-icon name="search"  ></ion-icon>
- </ion-button>
-</ion-buttons>
-
-</ion-item>
-</div>
-<div *ngIf="currentUser.collectionMethod === 'PICKUP'"
-class="pickup"
->
-  <ion-item (click)= "onOpenMap()">
-    <ion-label >{{ restaurant.address}}</ion-label>
-    <!-- <ion-buttons slot="end">
+  <div class="delivery" *ngIf="currentUser.collectionMethod === 'DELIVERY'">
+    <ion-item (click)="openSearchAddressModal()" lines="none">
+      <ion-label *ngIf="currentUser.deliveryAddress === '' "
+        >Search your Address</ion-label
+      >
+      <ion-label *ngIf="currentUser.deliveryAddress !== '' "
+        >{{currentUser.deliveryAddress}}</ion-label
+      >
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon name="search"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </div>
+  <div *ngIf="currentUser.collectionMethod === 'PICKUP'" class="pickup">
+    <ion-item (click)="onOpenMap()">
+      <ion-label>{{ restaurant.address}}</ion-label>
+      <!-- <ion-buttons slot="end">
       <ion-button >
         <ion-icon name="navigate-circle-outline"  ></ion-icon>
      </ion-button>
     </ion-buttons> -->
- 
-  </ion-item>
-</div>
-  <div *ngIf="menuByCategories.length > 0" class="catSlides">
-  <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">
-    <ion-slide *ngFor="let menuCategory of menuByCategories">
-
-<div (click)="scrollTo(menuCategory._id)">
-      <ion-card>
-        <img src="{{menuCategory.imageUrl}}"/>
-        <div class="card-title">{{ menuCategory.name}}</div>
-        <!-- <div class="card-subtitle">41 Listings</div> -->
-    </ion-card>
+    </ion-item>
   </div>
-      
-    </ion-slide>
-  </ion-slides>
-</div>
-
+  <div *ngIf="menuByCategories.length > 0" class="catSlides">
+    <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">
+      <ion-slide *ngFor="let menuCategory of menuByCategories">
+        <div (click)="scrollTo(menuCategory._id)" class="global-pointer">
+          <ion-card>
+            <img src="{{menuCategory.imageUrl}}" />
+            <div class="card-title">{{ menuCategory.name}}</div>
+            <!-- <div class="card-subtitle">41 Listings</div> -->
+          </ion-card>
+        </div>
+      </ion-slide>
+    </ion-slides>
+  </div>
 
   <!-- <ion-card *ngIf="restaurant">
     
@@ -88,45 +84,43 @@ class="pickup"
 
   <div *ngIf="menuByCategories.length > 0">
     <div *ngFor="let menuCategory of menuByCategories">
-      
-        <div class="bigCard">
-    <ion-card >
-      
-        <img id="{{menuCategory._id}}" src="{{menuCategory.imageUrl}}" alt="ion">
-     
-      <ion-card-header>
-        <ion-card-title>{{ menuCategory.name}}</ion-card-title>
-        <ion-card-subtitle>{{ menuCategory.description}}</ion-card-subtitle>
-      </ion-card-header>
-        <ion-card-content>
-          <div *ngIf="menuCategory.menuItems.length > 0">
-            <div class="itemsList">
-          <!-- <ion-list > -->
-            
-            <ion-item 
-            lines="full"
-            *ngFor="let menuItem of menuCategory.menuItems" (click)="onSelectItem(menuItem._id)">
-            
-              <p>{{ menuItem.name}}</p>
-              <ion-note slot="end" >{{ menuItem.price}}$CA</ion-note>
-            
-            </ion-item>
-          
-          <!-- </ion-list> -->
-        </div>
-        </div>
-        </ion-card-content>
-     
+      <div class="bigCard">
+        <ion-card>
+          <img
+            id="{{menuCategory._id}}"
+            src="{{menuCategory.imageUrl}}"
+            alt="ion"
+          />
 
-    </ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ menuCategory.name}}</ion-card-title>
+            <ion-card-subtitle>{{ menuCategory.description}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="menuCategory.menuItems.length > 0">
+              <div class="itemsList">
+                <!-- <ion-list > -->
+
+                <ion-item
+                  class="global-pointer"
+                  lines="full"
+                  *ngFor="let menuItem of menuCategory.menuItems"
+                  (click)="onSelectItem(menuItem._id)"
+                >
+                  <p>{{ menuItem.name}}</p>
+                  <ion-note slot="end">{{ menuItem.price}}$CA</ion-note>
+                </ion-item>
+
+                <!-- </ion-list> -->
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
   </div>
-  
-</div>
-  </div>
 
-
-
-<!-- <div *ngIf="menuByCategories.length > 0">
+  <!-- <div *ngIf="menuByCategories.length > 0">
   <div *ngFor="let menuCategory of menuByCategories">
     <h1>{{menuCategory.value}} ({{menuCategory.menuItems.length}})</h1>
    
@@ -152,5 +146,4 @@ class="pickup"
     </div>
   </div>
 </div> -->
-
 </ion-content>
