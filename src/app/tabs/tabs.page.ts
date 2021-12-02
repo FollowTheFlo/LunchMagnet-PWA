@@ -94,14 +94,8 @@ export class TabsPage implements OnInit, OnDestroy {
       .fetchUser("ouech.ouech@ouech.com")
       .pipe(
         switchMap((user) => {
-          // this.user = user;
           return this.authService.user$;
         })
-        // ,
-        // switchMap(user => {
-        //   return this.authService.logout();
-
-        // })
       )
       .subscribe((user) => {
         this.emptyLists();
@@ -175,20 +169,6 @@ export class TabsPage implements OnInit, OnDestroy {
               this.driverService
                 .fetchDriverOrders_afterReset(currentDriver._id)
                 .subscribe();
-              // if (socketData.action === 'DRIVER_ASK') {
-
-              //   console.log('Driver socket order3', this.driverOrders);
-              //   if ( this.driverOrders.findIndex(o => o._id === socketData.order._id) === -1) {
-
-              //     this.driverService.addOrderLocally(socketData.order as Order);
-
-              //   }
-              // } else if (socketData.action === 'DRIVER_ASSIGN') {
-
-              //   this.driverService.updateOrderLocally(socketData.order as Order);
-              // } else if (socketData.action === 'DRIVER_PENDING_UNASSIGN') {
-              //   this.driverService.removeOrderLocally(socketData.order as Order);
-              // }
             });
 
           this.driverOrdersSub = this.driverService.orders$.subscribe(
@@ -202,7 +182,7 @@ export class TabsPage implements OnInit, OnDestroy {
 
     this.restaurantService.fetchRestaurant().subscribe((restaurant) => {
       const today = new Date();
-      // today.setHours(today.getHours() + 4);
+
       this.currentSlot = this.restaurantService.checkIfOpen(today);
     });
   }
