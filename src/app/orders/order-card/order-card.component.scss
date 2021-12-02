@@ -1,0 +1,90 @@
+ion-chip {
+  --background: lightgray;
+  --color: black;
+}
+
+.selectedChip {
+  --background: green;
+  --color: white;
+}
+
+.chip {
+  --color: black;
+}
+
+// ion-card {
+//     --background: red;
+//     --color: white;
+// }
+
+ion-card ion-card-content {
+  border-bottom: 5px solid black;
+  background: rgb(99, 95, 95);
+  color: white;
+  text-align: left;
+  padding-top: 5px;
+}
+
+ion-card {
+  text-align: center;
+}
+
+ion-card ion-card-header ion-card-title {
+  font-size: 20px;
+}
+
+.styleKO {
+  color: red;
+  // text-align: center;
+}
+
+.styleOK {
+  color: green;
+  // text-align: center;
+}
+
+.stepsSlides {
+  --bullet-background: black;
+  --bullet-background-active: black;
+}
+
+.styleComplete ion-card ion-card-header {
+  background-color: green;
+  --color: white;
+}
+.styleComplete ion-card ion-card-header ion-card-subtitle {
+  background-color: green;
+  color: white;
+}
+
+.styleInProgress ion-card ion-card-header {
+  background-color: yellow;
+}
+.styleCanceled ion-card ion-card-header {
+  background-color: red;
+}
+
+.stepsSlides ion-card {
+  position: relative;
+  text-align: center;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0%;
+  //margin: 5% !important;
+  //margin-right: 30px;
+  //border-style: solid;
+  //box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.stepsSlides ion-card ion-card-header {
+  border-bottom-style: solid;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  height: 110px !important;
+  //border-bottom: black;
+}
+
+.stepsSlides ion-card ion-card-content {
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
