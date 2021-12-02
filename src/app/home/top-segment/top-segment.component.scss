@@ -1,0 +1,56 @@
+.collectingMethodSegment {
+  margin: 15px;
+}
+
+.collectingMethodSegment ion-segment ion-segment-button {
+  --color-checked: white;
+  --border-color: var(--ion-color-primary);
+  --background-checked: #004030;
+  --background: #004030;
+  --color-checked: var(--ion-color-primary);
+  --color: white;
+}
+
+.collectingMethodSegment ion-segment {
+  --background: #004030;
+  --color-checked: darkgreen;
+  --color: black;
+}
+
+.delivery ion-item {
+  box-shadow: none;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  text-align: left;
+  --background: none;
+  border-style: solid;
+  color: var(--ion-color-primary);
+  border-radius: 5px;
+  border-color: var(--ion-color-primary);
+}
+
+.pickup ion-item ion-label {
+  font-size: 15px;
+  color: black;
+  font-weight: bold;
+  --background: var(--ion-background-color);
+}
+.pickup ion-item {
+  margin-top: 0px;
+  padding-top: 0px;
+
+  --background: var(--ion-background-color);
+}
+
+ion-item {
+  color: var(--ion-color-primary);
+  text-align: center;
+  --background: white;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  margin-left: 8%;
+  margin-right: 8%;
+  --min-height: 35px;
+  border-color: grey;
+  --border-radius: 1px;
+}

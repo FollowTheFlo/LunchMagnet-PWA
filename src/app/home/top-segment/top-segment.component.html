@@ -1,0 +1,34 @@
+<div class="collectingMethodSegment">
+  <ion-segment
+    (ionChange)="onChangeSegment($event)"
+    value="collectionMethod"
+    [(ngModel)]="user.collectionMethod"
+  >
+    <ion-segment-button value="DELIVERY">
+      <ion-label>Delivery</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="PICKUP">
+      <ion-label>Pick-up</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</div>
+<div class="delivery" *ngIf="user.collectionMethod === 'DELIVERY'">
+  <ion-item (click)="onSearchAddress()" lines="none">
+    <ion-label *ngIf="user.deliveryAddress === ''"
+      >Search your Address</ion-label
+    >
+    <ion-label *ngIf="user.deliveryAddress !== ''">{{
+      user.deliveryAddress
+    }}</ion-label>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+</div>
+<div *ngIf="user.collectionMethod === 'PICKUP'" class="pickup">
+  <ion-item (click)="onOpenMap()">
+    <ion-label>{{ restaurant.address }}</ion-label>
+  </ion-item>
+</div>
