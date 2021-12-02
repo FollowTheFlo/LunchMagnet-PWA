@@ -1,0 +1,35 @@
+.bigCard ion-card ion-card-header {
+  font-size: 16px;
+}
+
+.bigCard ion-card {
+  //padding:none;
+  text-align: left;
+}
+
+.bigCard ion-item {
+  text-align: left;
+  color: green;
+}
+
+ion-card {
+  position: relative;
+  text-align: center;
+}
+
+.card-title {
+  position: absolute;
+  top: 60%;
+  font-size: 1.2em;
+  width: 100%;
+  font-weight: bold;
+  color: white;
+}
+
+.itemsList ion-item {
+  box-shadow: none;
+  width: 100%;
+  text-align: left;
+  --padding-start: 0;
+  color: var(--ion-color-primary);
+}

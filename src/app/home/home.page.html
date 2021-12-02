@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content>
-  <div class="collectingMethodSegment">
+  <!-- <div class="collectingMethodSegment">
     <ion-segment
       (ionChange)="onChangeCollectingMethod($event)"
       value="this.currentUser.collectionMethod"
@@ -20,33 +20,16 @@
         <ion-label>Pick-up</ion-label>
       </ion-segment-button>
     </ion-segment>
-  </div>
+  </div> -->
+  <app-top-segment
+    [user]="this.currentUser"
+    [restaurant]="this.restaurant"
+    (onChangeCollectingMethod)="onChangeCollectingMethod($event)"
+    (onOpenSearchAddress)="openSearchAddressModal()"
+    (onOpenMapHandler)="onOpenMap()"
+  >
+  </app-top-segment>
 
-  <div class="delivery" *ngIf="currentUser.collectionMethod === 'DELIVERY'">
-    <ion-item (click)="openSearchAddressModal()" lines="none">
-      <ion-label *ngIf="currentUser.deliveryAddress === '' "
-        >Search your Address</ion-label
-      >
-      <ion-label *ngIf="currentUser.deliveryAddress !== '' "
-        >{{currentUser.deliveryAddress}}</ion-label
-      >
-      <ion-buttons slot="end">
-        <ion-button>
-          <ion-icon name="search"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </div>
-  <div *ngIf="currentUser.collectionMethod === 'PICKUP'" class="pickup">
-    <ion-item (click)="onOpenMap()">
-      <ion-label>{{ restaurant.address}}</ion-label>
-      <!-- <ion-buttons slot="end">
-      <ion-button >
-        <ion-icon name="navigate-circle-outline"  ></ion-icon>
-     </ion-button>
-    </ion-buttons> -->
-    </ion-item>
-  </div>
   <div *ngIf="menuByCategories.length > 0" class="catSlides">
     <ion-slides [options]="slideOpts" #categorySlide class="categorySlide">
       <ion-slide *ngFor="let menuCategory of menuByCategories">
@@ -54,37 +37,20 @@
           <ion-card>
             <img src="{{menuCategory.imageUrl}}" />
             <div class="card-title">{{ menuCategory.name}}</div>
-            <!-- <div class="card-subtitle">41 Listings</div> -->
           </ion-card>
         </div>
       </ion-slide>
     </ion-slides>
   </div>
 
-  <!-- <ion-card *ngIf="restaurant">
-    
-    <ion-card-header>
-      <img src="{{restaurant.mainImageUrl}}" alt="ion">
-      <ion-card-title>{{ restaurant.name}}</ion-card-title>
-      <ion-card-subtitle>{{ restaurant.address}}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <h2 *ngIf="isRestaurantOpened">Restaurant is opened</h2>
-      <h2 *ngIf="!isRestaurantOpened">Restaurant is closed</h2>
-      <ion-button (click)="reload()">Reload</ion-button>
-      <h2>Opening Hours</h2>
-     <div *ngIf="restaurant.openingHours.length > 0">
-      <div *ngFor="let slot of restaurant.openingHours">
-        <p>{{slot.day}}</p>
-        <p>{{slot.openTime}} - {{slot.closeTime}}</p>
-        </div>
-    </div>
-    </ion-card-content>
-  </ion-card> -->
-
   <div *ngIf="menuByCategories.length > 0">
     <div *ngFor="let menuCategory of menuByCategories">
-      <div class="bigCard">
+      <app-menu-card
+        [menuCategory]="menuCategory"
+        (onSelectItemHandle)="onSelectItem($event)"
+      >
+      </app-menu-card>
+      <!-- <div class="bigCard">
         <ion-card>
           <img
             id="{{menuCategory._id}}"
@@ -98,9 +64,7 @@
           </ion-card-header>
           <ion-card-content>
             <div *ngIf="menuCategory.menuItems.length > 0">
-              <div class="itemsList">
-                <!-- <ion-list > -->
-
+              <div class="itemsList">              
                 <ion-item
                   class="global-pointer"
                   lines="full"
@@ -109,14 +73,12 @@
                 >
                   <p>{{ menuItem.name}}</p>
                   <ion-note slot="end">{{ menuItem.price}}$CA</ion-note>
-                </ion-item>
-
-                <!-- </ion-list> -->
+                </ion-item>               
               </div>
             </div>
           </ion-card-content>
         </ion-card>
-      </div>
+      </div> -->
     </div>
   </div>
 
