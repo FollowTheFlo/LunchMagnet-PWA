@@ -1,9 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Drivers List</ion-title>
-    <ion-button fill="clear" color="light" (click)="closeModal()">
-      <ion-icon name="close-circle"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="closeModal()">
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -19,40 +21,47 @@
   <div class="driverStyle">
     <ion-button (click)="onClickConfirm()">Confirm Selection</ion-button>
     <div *ngFor="let driver of drivers; let driverIndex = index">
-      <div [ngClass]="{'driverSelectStyle': (driver.isSelected === true)}" >
+      <div [ngClass]="{'driverSelectStyle': (driver.isSelected === true)}">
         <!-- <ion-item (click)="onSelectDriver(driverIndex)" lines='full'>
           <ion-label>{{ driver.user.name }}</ion-label>
           <ion-checkbox slot="end" [(ngModel)]="driver.isSelected"></ion-checkbox>
         </ion-item> -->
-        <ion-item (click)="onSelectDriver(driverIndex)" lines='full'>
-        <b>{{ driver.user.name }}</b>
-        <ion-button slot="end" 
-          *ngIf="driver.inRestaurant">
-          IN RESTAURANT</ion-button>
-        <ion-button slot="end" 
-          *ngIf="driver.status === 'WAITING_NEW_ORDER'">
-          AVAILABLE</ion-button>
-        <ion-button slot="end" 
-          *ngIf="driver.status === 'ON_WAY_TO_CUSTOMER' || driver.status === 'ON_WAY_TO_RESTAURANT'">
-          BUSY</ion-button>
-          <ion-button slot="end" 
-          *ngIf="driver.status === 'OFFLINE'">
-          OFFLINE</ion-button>
-          <ion-checkbox slot="end" [(ngModel)]="driver.isSelected"></ion-checkbox>
-        <!-- <ion-button slot="end">{{driver.status}}</ion-button> -->
-      </ion-item>
-   
-      <div *ngIf="driver.isSelected">
-        <ion-item>
-          Restaurant : {{ driver.distanceToRestaurant}}Km ({{ driver.timeToRestaurant }}min)
+        <ion-item (click)="onSelectDriver(driverIndex)" lines="full">
+          <b>{{ driver.user.name }}</b>
+          <ion-button slot="end" *ngIf="driver.inRestaurant">
+            IN RESTAURANT</ion-button
+          >
+          <ion-button slot="end" *ngIf="driver.status === 'WAITING_NEW_ORDER'">
+            AVAILABLE</ion-button
+          >
+          <ion-button
+            slot="end"
+            *ngIf="driver.status === 'ON_WAY_TO_CUSTOMER' || driver.status === 'ON_WAY_TO_RESTAURANT'"
+          >
+            BUSY</ion-button
+          >
+          <ion-button slot="end" *ngIf="driver.status === 'OFFLINE'">
+            OFFLINE</ion-button
+          >
+          <ion-checkbox
+            slot="end"
+            [(ngModel)]="driver.isSelected"
+          ></ion-checkbox>
+          <!-- <ion-button slot="end">{{driver.status}}</ion-button> -->
         </ion-item>
-        <ion-item>
-          Last Signal : {{driver.delay}} ago
-        </ion-item>
+
+        <div *ngIf="driver.isSelected">
+          <ion-item>
+            Restaurant : {{ driver.distanceToRestaurant}}Km ({{
+            driver.timeToRestaurant }}min)
+          </ion-item>
+          <ion-item>
+            Last Signal : {{driver.delay}} ago
+          </ion-item>
+        </div>
       </div>
-     </div>
     </div>
   </div>
-  <div id="driversMapId" ></div>
+  <div id="driversMapId"></div>
   <ion-button (click)="onDisplayMarkers()">Display</ion-button>
 </ion-content>

@@ -5,11 +5,6 @@
 </ion-header>
 
 <ion-content>
-  <!-- <ion-fab vertical="top" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="onClickDriversFab()">
-      <ion-icon name="car-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab> -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -30,63 +25,11 @@
   </div>
   <div *ngIf="orders.length > 0">
     <div *ngFor="let order of orders;let orderIndex = index">
-      <div
-        [ngClass]="{'styleComplete':(order.status === 'COMPLETED'), 'styleInProgress': (order.status === 'ON PROGRESS'),
-     'styleNotStarted': (order.status === 'NOT STARTED'), 'styleCanceled': (order.status === 'CANCELED')}"
-      >
-        <ion-card>
-          <ion-card-header>
-            <!-- <ion-card-title (click)="order.showDetails = !order.showDetails"> -->
-            <ion-card-title
-              (click)="onClickOrder(order._id)"
-              class="global-pointer"
-            >
-              <div class="global-pointer">
-                <!-- <div *ngIf="order.delay">Received since: {{ order.delay | date:'HH:mm:ss':'+0000'}} </div> -->
-                <div>Order#{{order._id}}</div>
-                <div *ngIf="order.delay">Received since {{ order.delay }}</div>
-                <div>{{order.collectionMethod}}</div>
-
-                <div *ngIf="!order.finished">
-                  <div>
-                    Current Step: {{order.currentStep.name}}
-                    ({{order.currentStepIndex + 1}}/{{order.steps.length}})
-                  </div>
-                  <div>Time target: ASAP</div>
-                </div>
-                <div
-                  *ngIf="order.currentStep.code == 'DRIVER_SELECTION_CONFIRMATION' && order.pendingDriver"
-                >
-                  Pending Driver: {{order.pendingDriver.user.name}}
-                </div>
-                <div
-                  *ngIf="order.currentStep.targetTeam == 'DRIVER' && order.driver"
-                >
-                  Currently with Driver: {{order.driver.user.name}}
-                </div>
-
-                <div *ngIf="order.finished && order.status === 'COMPLETED'">
-                  COMPLETED at {{order.currentStep.completedDate |
-                  date:'H:mm:ss':'+0000'}}
-                  <div>by {{order.currentStep.completedBy}}</div>
-                </div>
-                <div *ngIf="order.finished && order.status === 'CANCELED'">
-                  CANCELED at {{order.currentStep.canceledDate |
-                  date:'H:mm:ss':'+0000'}}
-                  <div>by {{order.currentStep.canceledBy}}</div>
-                </div>
-              </div>
-            </ion-card-title>
-          </ion-card-header>
-          <ion-card-content
-            *ngIf="order.status !== 'CANCELED' && order.currentStep.code === 'DRIVER_SELECTION_MANUAL'"
-          >
-            <ion-button (click)="onClickDrivers(order)"
-              >Select Driver</ion-button
-            >
-          </ion-card-content>
-        </ion-card>
-      </div>
+      <app-staff-order-card
+        [order]="order"
+        (onClickDriversHandle)="onClickDrivers($event)"
+        (onClickOrderHandle)="onClickOrder($event)"
+      ></app-staff-order-card>
     </div>
   </div>
 </ion-content>
