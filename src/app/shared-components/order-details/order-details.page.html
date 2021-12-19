@@ -59,11 +59,11 @@
             </ion-card-header>
             <ion-card-content>
               <div
-                *ngIf="step.code == 'DRIVER_SELECTION_CONFIRMATION' && order.pendingDriver"
+                *ngIf="step.code == 'DRIVER_SELECTION_CONFIRMATION' && order?.pendingDriver?.user"
               >
                 Pending Driver: {{order.pendingDriver.user.name}}
               </div>
-              <div *ngIf="step.targetTeam == 'DRIVER' && order.driver">
+              <div *ngIf="step?.targetTeam == 'DRIVER' && order?.driver?.name">
                 Driver: {{order.driver.user.name}}
               </div>
               <ion-card-content
@@ -77,8 +77,8 @@
               </ion-card-content>
               <span
                 class="btnOK"
-                *ngIf="user && (user.role === step.targetTeam || user.role === 'ADMIN') 
-           && step.code !== 'DRIVER_SELECTION_MANUAL'"
+                *ngIf="user && (user?.role === step?.targetTeam || user?.role === 'ADMIN') 
+           && step?.code !== 'DRIVER_SELECTION_MANUAL'"
               >
                 <ion-button
                   size="default"
@@ -94,7 +94,7 @@
               >
                 <ion-button
                   size="default"
-                  disabled="{{!step.inProgress}}"
+                  disabled="{{!step?.inProgress}}"
                   (click)="onCancelStep(step,stepIndex)"
                   >{{step.btnKO}}
                 </ion-button>

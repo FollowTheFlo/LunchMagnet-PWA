@@ -15,6 +15,7 @@ import {
 import { take, map, tap, delay, switchMap, catchError } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
+import Utils from "../utils";
 
 @Injectable({ providedIn: "root" })
 export class MenuService {
@@ -39,19 +40,25 @@ export class MenuService {
 
   addSelectedMenuItem(menuItem: MenuItem) {
     console.log("MenuService addSelectedMenuItem");
-    this.selectedMenuItems.push(menuItem);
-    this._selectedMenuItems.next([...this.selectedMenuItems]);
+    this.selectedMenuItems.push(Utils.deepCopyMenuItem(menuItem));
+    this._selectedMenuItems.next(
+      Utils.deepCopyMenuItemsList(this.selectedMenuItems)
+    );
   }
 
   editSelectedMenuItem(itemIndex: number, menuItem: MenuItem) {
     console.log("MenuService addSelectedMenuItem");
-    this.selectedMenuItems[itemIndex] = menuItem;
-    this._selectedMenuItems.next([...this.selectedMenuItems]);
+    this.selectedMenuItems[itemIndex] = Utils.deepCopyMenuItem(menuItem);
+    this._selectedMenuItems.next(
+      Utils.deepCopyMenuItemsList(this.selectedMenuItems)
+    );
   }
 
   removeSelectedMenuItem(itemIndex: number) {
     this.selectedMenuItems.splice(itemIndex, 1);
-    this._selectedMenuItems.next([...this.selectedMenuItems]);
+    this._selectedMenuItems.next(
+      Utils.deepCopyMenuItemsList(this.selectedMenuItems)
+    );
   }
 
   clearSelectedMenuItems() {
@@ -63,9 +70,9 @@ export class MenuService {
     console.log("fetchMenuItems");
     return this.graphqlService.getMenuItems().pipe(
       map((response) => response.data.getMenuItems),
-      tap((menuItems) => {
-        this._menuItems.next(menuItems);
-        this.menuItems = menuItems;
+      tap((menuItems: MenuItem[]) => {
+        this._menuItems.next(Utils.deepCopyMenuItemsList(menuItems));
+        this.menuItems = Utils.deepCopyMenuItemsList(menuItems);
         console.log("in Tap", this.menuItems);
       })
     );
@@ -97,7 +104,7 @@ export class MenuService {
         const menuItem = this.selectedMenuItems[itemIndex];
         if (menuItem !== undefined) {
           console.log("resolve", menuItem);
-          resolve(JSON.parse(JSON.stringify(menuItem)));
+          resolve(Utils.deepCopyMenuItem(menuItem));
         } else {
           reject("selectedItem not found locally");
         }
@@ -112,7 +119,7 @@ export class MenuService {
         const menuItem = this.menuItems.find((item) => item._id === menuItemId);
         if (menuItem !== undefined) {
           console.log("resolve", menuItem);
-          resolve(JSON.parse(JSON.stringify(menuItem)));
+          resolve(Utils.deepCopyMenuItem(menuItem));
         } else {
           reject("menuItem not found locally");
         }

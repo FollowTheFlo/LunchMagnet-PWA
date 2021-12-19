@@ -14,11 +14,11 @@ import { Order } from "./../models/order.model";
 import { AuthService } from "../services/auth.service";
 import { NavigationService } from "./../services/navigation.service";
 import { Subscription } from "rxjs";
-import { switchMap, map, tap } from "rxjs/operators";
-import { AccountPopupPage } from "./../shared-components/account-popup/account-popup.page";
+import { switchMap, map } from "rxjs/operators";
 import { PopoverController } from "@ionic/angular";
 import { OrderDetailsPage } from "../shared-components/order-details/order-details.page";
 import { Router } from "@angular/router";
+import Utils from "../utils";
 
 // interface DriverOrder {
 //   order: Order;
@@ -73,9 +73,6 @@ export class TabsPage implements OnInit, OnDestroy {
     this.navSub = this.navigationService.getNavListener().subscribe((link) => {
       console.log("getNavListener", link);
       this.labelCode = link;
-      // this.translationService.getTranslation(link).subscribe((label) => {
-      //   this.topTitle = label;
-      // });
     });
 
     this.menSub = this.menuService.selectedMenuItems$.subscribe(
@@ -105,9 +102,9 @@ export class TabsPage implements OnInit, OnDestroy {
           this.userOrdersSub = this.orderService
             .fetchOrders(this.user._id)
             .pipe(switchMap((data) => this.orderService.orders$))
-            .subscribe((userOrders) => {
+            .subscribe((userOrders: Order[]) => {
               console.log("Tabs in UserOrders$", userOrders);
-              this.userOrders = userOrders;
+              this.userOrders = Utils.deepCopyOrdersList(userOrders);
             });
         }
         if (this.user.role === "STAFF" || this.user.role === "ADMIN") {
@@ -122,7 +119,7 @@ export class TabsPage implements OnInit, OnDestroy {
             )
             .subscribe((staffOrders) => {
               console.log("Tabs in Stafforders$");
-              this.staffOrders = staffOrders;
+              this.staffOrders = Utils.deepCopyOrdersList(staffOrders);
             });
 
           this.socketStaffOrderSub = this.socketService
@@ -174,7 +171,7 @@ export class TabsPage implements OnInit, OnDestroy {
           this.driverOrdersSub = this.driverService.orders$.subscribe(
             (orders) => {
               console.log("Driver orders");
-              this.driverOrders = orders;
+              this.driverOrders = Utils.deepCopyOrdersList(orders);
             }
           );
         }

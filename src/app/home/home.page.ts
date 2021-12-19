@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import {
   RestaurantService,
   CurrentSlot,
@@ -9,14 +9,14 @@ import { NavigationService } from "./../services/navigation.service";
 import { Restaurant } from "./../models/restaurant.model";
 import { MenuItem } from "./../models/menuItem.model";
 import { User } from "./../models/user.model";
-import { MenuByCategory, MenuCategory } from "./../models/menuCategory.model";
+import { MenuByCategory } from "./../models/menuCategory.model";
 import { OpeningSlot } from "./../models/openingSlot.model";
-import { take, map, tap, delay, switchMap, catchError } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { LoadingController } from "@ionic/angular";
-import { ModalController, NavParams } from "@ionic/angular";
+import { ModalController } from "@ionic/angular";
 import { AddressSearchPage } from "./../shared-components/address-search/address-search.page";
 import { MenuItemPage } from "./../shared-components/menu-item/menu-item.page";
+import Utils from "../utils";
 
 // interface CurrentSlot {
 //   isOpen: boolean;
@@ -86,7 +86,7 @@ export class HomePage implements OnInit {
           this.currentUser.deliveryLocationGeo.lat = data.data.lat;
           this.currentUser.deliveryLocationGeo.lng = data.data.lng;
           this.authService
-            .updateUser({ ...this.currentUser })
+            .updateUser(this.currentUser)
             .subscribe((updatedUser) =>
               console.log("back from sub", updatedUser)
             );
@@ -139,7 +139,9 @@ export class HomePage implements OnInit {
           this.menuService
             .fetchMenuCategories("index")
             .subscribe((categories) => {
-              this.menuByCategories = categories;
+              this.menuByCategories = Utils.deepCopyMenuByCategoriesList(
+                categories
+              );
               // console.log('this.menuCategories1', thBy);
               // thBy.sort((a: Category, b: Category) => {
               //   return (a.index > b.index) ? 1 : -1;

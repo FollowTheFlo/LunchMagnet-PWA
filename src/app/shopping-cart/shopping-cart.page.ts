@@ -217,7 +217,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
   onChangeCollectingMethod(ev: any) {
     console.log("Segment changed", ev.detail.value);
     this.currentUser.collectionMethod = ev.detail.value;
-    this.authService.updateUser({ ...this.currentUser });
+    this.authService.updateUser(this.currentUser);
     // this.paymentMethod = 'No Selection';
   }
 
@@ -253,7 +253,7 @@ export class ShoppingCartPage implements OnInit, OnDestroy {
         this.currentUser.deliveryAddress = data.data.address;
         this.currentUser.deliveryLocationGeo.lat = data.data.lat;
         this.currentUser.deliveryLocationGeo.lng = data.data.lng;
-        this.authService.updateUser({ ...this.currentUser }).subscribe();
+        this.authService.updateUser(this.currentUser).subscribe();
       }
     });
     return await modal.present();

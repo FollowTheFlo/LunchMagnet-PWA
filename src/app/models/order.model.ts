@@ -8,6 +8,11 @@ import { Restaurant } from "./restaurant.model";
 import { LocationGeo } from "../models/locationGeo.model";
 import { Driver } from "./driver.model";
 
+export interface HistoryItem {
+  action: string;
+  date: Date;
+  userId: string;
+}
 export interface Order {
   _id: string;
   customer: User;
@@ -24,7 +29,7 @@ export interface Order {
   totalPrice: number;
   paymentMethod: string;
   collectionMethod: string;
-  history: [{ action: string; date: Date; userId: string }];
+  history: HistoryItem[];
   finished: boolean;
   createdAt: string;
   updatedAt: string;
