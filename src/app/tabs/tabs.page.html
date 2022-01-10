@@ -44,18 +44,18 @@
     <ion-label>Cart</ion-label> -->
     </ion-toolbar>
   </div>
-  <!-- <div *ngIf="driverOrders && driverOrders.length>0" class="driverToolbar">
+  <div *ngIf="driverOrders && driverOrders.length>0" class="driverToolbar">
     <div *ngFor="let driverOrder of driverOrders">
       <ion-toolbar
-        slot="bottom"
-        *ngIf="driverOrder.pendingDriver"
+        slot="top"
+        *ngIf="driverOrder && driverOrder?.pendingDriver?.user !== null"
         (click)="onClickQuestionOrder(driverOrder._id)"
       >
         Pending Order
         <ion-icon name="car-outline" slot="start"></ion-icon>
       </ion-toolbar>
     </div>
-  </div> -->
+  </div>
   <ion-tab-bar slot="bottom">
     <ion-tab-button
       tab="home"
