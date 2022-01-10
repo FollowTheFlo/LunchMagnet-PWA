@@ -14,7 +14,7 @@ import { User } from "./models/user.model";
 
 export default class Utils {
   static deepCopyOrdersList(l: Order[]): Order[] {
-    return l.map((o) => this.deepCopyOrder(o));
+    return l?.map((o) => this.deepCopyOrder(o)) ?? null;
   }
   static deepCopyOrder(o: Order): Order {
     return {
