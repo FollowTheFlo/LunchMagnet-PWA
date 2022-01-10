@@ -29,11 +29,12 @@ export class StaffService {
   fetchAllOrders() {
     console.log("fetchOrders()");
     return this.graphqlService.getOrders("").pipe(
-      map((response) => response.data.getOrders),
-      tap((orders) => {
+      map((response) => response.data.getOrders as Order[]),
+      tap((orders: Order[]) => {
         this.orders = orders;
         this._orders.next(JSON.parse(JSON.stringify(this.orders)));
-      })
+      }),
+      map((orders: Order[]) => (orders !== null ? true : false))
     );
   }
 

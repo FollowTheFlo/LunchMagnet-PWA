@@ -60,7 +60,6 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
   restaurant: Restaurant;
 
   constructor(
-    private geolocationService: GeolocationService,
     private driverService: DriverService,
     private authService: AuthService,
     private restaurantService: RestaurantService,
@@ -97,13 +96,17 @@ export class DriverOrdersPage implements OnInit, OnDestroy {
   onRefresh(event) {
     console.log("onRefresh");
 
-    this.driverService
-      .fetchDriverOrders_afterReset(this.driver._id)
-      .subscribe((orders) => {
+    this.driverService.fetchDriverOrders_afterReset(this.driver._id).subscribe(
+      (orders) => {
         event.target.complete();
         console.log("fetchDrivers_afterReset orders", orders);
         this.orders = Utils.deepCopyOrdersList(orders);
-      });
+      },
+      (error) => {
+        console.log("error", error);
+        event.target.complete();
+      }
+    );
   }
 
   async onClickOrder(orderId: string) {

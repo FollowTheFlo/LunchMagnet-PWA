@@ -23,7 +23,7 @@ export class DriverService {
 
   fetchDriver(userId: string) {
     return this.graphqlService.getDriver(userId).pipe(
-      map((response) => response.data.getDriver),
+      map((response) => response.data.getDriver as Driver),
       tap((driver) => (this.driver = driver))
     );
   }
