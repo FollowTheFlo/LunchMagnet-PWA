@@ -13,12 +13,13 @@ import { User } from "./../models/user.model";
 import { Order } from "./../models/order.model";
 import { AuthService } from "../services/auth.service";
 import { NavigationService } from "./../services/navigation.service";
-import { Subscription } from "rxjs";
-import { switchMap, map } from "rxjs/operators";
+import { Subject, Subscription } from "rxjs";
+import { switchMap, map, take, takeUntil } from "rxjs/operators";
 import { PopoverController } from "@ionic/angular";
 import { OrderDetailsPage } from "../shared-components/order-details/order-details.page";
 import { Router } from "@angular/router";
 import Utils from "../utils";
+import { Driver } from "../models/driver.model";
 
 // interface DriverOrder {
 //   order: Order;
@@ -44,9 +45,7 @@ export class TabsPage implements OnInit, OnDestroy {
   };
   driverQuestion = false;
   driverOrders: Order[] = [];
-  private menSub: Subscription;
-  private authSub: Subscription;
-  private navSub: Subscription;
+  private destroy$ = new Subject<boolean>(); // unsbscibe observables in onDestroy Hook
   private staffOrdersSub: Subscription;
   private userOrdersSub: Subscription;
   private socketStaffOrderSub: Subscription;
@@ -63,124 +62,150 @@ export class TabsPage implements OnInit, OnDestroy {
     private socketService: SocketService,
     private orderService: OrderService,
     private restaurantService: RestaurantService,
-    private popoverCtrl: PopoverController,
     private modalCtrl: ModalController,
     public router: Router
   ) {}
 
   ngOnInit() {
     console.log("TabsPage");
-    this.navSub = this.navigationService.getNavListener().subscribe((link) => {
-      console.log("getNavListener", link);
-      this.labelCode = link;
-    });
+    this.navigationService
+      .getNavListener()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((link) => {
+        console.log("getNavListener", link);
+        this.labelCode = link;
+      });
 
-    this.menSub = this.menuService.selectedMenuItems$.subscribe(
-      (selectedItems) => {
+    this.menuService.selectedMenuItems$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((selectedItems) => {
         console.log("Tabs selectedItems", selectedItems);
         this.selectedMenuItems = selectedItems;
-      }
-    );
+      });
 
     ////// role handling for order and listener
     // staff: listen staff orders only
     // admin: listen staff orders and personal orders
     // user and visitor: listen personal order
 
-    this.authSub = this.authService
+    this.authService
       .fetchUser("ouech.ouech@ouech.com")
       .pipe(
         switchMap((user) => {
           return this.authService.user$;
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((user) => {
         this.emptyLists();
         this.user = user;
         this.unsubscribeRolesObservables();
         if (this.user.role === "USER" || this.user.role === "ADMIN") {
-          this.userOrdersSub = this.orderService
-            .fetchOrders(this.user._id)
-            .pipe(switchMap((data) => this.orderService.orders$))
-            .subscribe((userOrders: Order[]) => {
-              console.log("Tabs in UserOrders$", userOrders);
-              this.userOrders = Utils.deepCopyOrdersList(userOrders);
-            });
+          this.setupUserOrders();
         }
         if (this.user.role === "STAFF" || this.user.role === "ADMIN") {
           console.log("in STAFF condition");
-          this.staffOrdersSub = this.staffService
-            .fetchAllOrders()
-            .pipe(
-              switchMap((data) => this.staffService.orders$),
-              map((staffOrders) =>
-                staffOrders.filter((o) => o.finished === false)
-              )
-            )
-            .subscribe((staffOrders) => {
-              console.log("Tabs in Stafforders$");
-              this.staffOrders = Utils.deepCopyOrdersList(staffOrders);
-            });
-
-          this.socketStaffOrderSub = this.socketService
-            .getMessages("STAFF_ORDER")
-            .subscribe((socketData) => {
-              console.log("socket", socketData);
-
-              if (socketData.action === "UPDATE") {
-                this.staffService.updateOrderLocally(socketData.order as Order);
-              } else if (socketData.action === "CREATE") {
-                this.staffService
-                  .addOrderLocally(socketData.order as Order)
-                  .subscribe((result) => console.log(result));
-              }
-            });
+          this.setupStaffOrders();
         }
         if (this.user.role === "DRIVER" || this.user.role === "ADMIN") {
           console.log("Driver socket");
-          let currentDriver;
-          this.driverInitOrderSub = this.driverService
-            .fetchDriver(this.user._id)
-            .pipe(
-              switchMap((driver) => {
-                currentDriver = driver;
-                return this.driverService.getDriverOrders(driver._id);
-              })
-            )
-            .subscribe((orders) => {
-              console.log("Driver socket order1", orders);
-              this.driverOrders = orders !== null ? orders : this.driverOrders;
-              console.log("Driver socket order2", this.driverOrders);
-            });
-
-          this.driverService
-            .fetchDriver(this.user._id)
-            .pipe(
-              switchMap((driver) => {
-                currentDriver = driver;
-                return this.socketService.getMessages(driver._id);
-              })
-            )
-            .subscribe((socketData) => {
-              console.log("socket DRIVER", socketData);
-              this.driverService
-                .fetchDriverOrders_afterReset(currentDriver._id)
-                .subscribe();
-            });
-
-          this.driverOrdersSub = this.driverService.orders$.subscribe(
-            (orders) => {
-              console.log("Driver orders");
-              this.driverOrders = Utils.deepCopyOrdersList(orders);
-            }
-          );
+          this.setupDriverdata();
         }
       });
 
-    this.restaurantService.fetchRestaurant().subscribe((restaurant) => {
-      const today = new Date();
+    this.restaurantService
+      .fetchRestaurant()
+      .pipe(take(1))
+      .subscribe((restaurant) => {
+        const today = new Date();
+        // fetch restaurant data first to make sure restaurant class var is updated in restaurantService
+        this.currentSlot = this.restaurantService.checkIfOpen(today);
+      });
+  }
 
-      this.currentSlot = this.restaurantService.checkIfOpen(today);
+  ngOnDestroy() {
+    this.destroy$.next(true); // unsunscribe all observable that have takeUntil(destroy$)
+    this.destroy$.complete();
+    this.unsubscribeRolesObservables();
+  }
+
+  setupUserOrders() {
+    this.userOrdersSub = this.orderService
+      .fetchOrders(this.user._id)
+      .pipe(switchMap((data) => this.orderService.orders$))
+      .subscribe((userOrders: Order[]) => {
+        console.log("Tabs in UserOrders$", userOrders);
+        this.userOrders = Utils.deepCopyOrdersList(userOrders);
+      });
+  }
+
+  setupStaffOrders() {
+    this.staffOrdersSub = this.staffService
+      .fetchAllOrders()
+      .pipe(
+        switchMap((success: boolean) => {
+          console.log("fetchAllorders success", success);
+          // staff order listener stream
+          return this.staffService.orders$;
+        }),
+        map((staffOrders) => staffOrders.filter((o) => o.finished === false))
+      )
+      .subscribe((staffOrders) => {
+        console.log("Tabs in Stafforders$");
+        this.staffOrders = Utils.deepCopyOrdersList(staffOrders);
+      });
+
+    // setup socket listener
+    this.socketStaffOrderSub = this.socketService
+      .getMessages("STAFF_ORDER")
+      .subscribe((socketData) => {
+        console.log("socket", socketData);
+
+        if (socketData.action === "UPDATE") {
+          this.staffService.updateOrderLocally(socketData.order as Order);
+        } else if (socketData.action === "CREATE") {
+          this.staffService
+            .addOrderLocally(socketData.order as Order)
+            .pipe(take(1))
+            .subscribe((result) => console.log(result));
+        }
+      });
+  }
+
+  setupDriverdata() {
+    let currentDriver;
+    this.driverInitOrderSub = this.driverService
+      .fetchDriver(this.user._id)
+      .pipe(
+        switchMap((driver) => {
+          currentDriver = driver;
+          return this.driverService.getDriverOrders(driver._id);
+        })
+      )
+      .subscribe((orders) => {
+        console.log("Driver  order1", orders);
+        this.driverOrders = orders !== null ? orders : this.driverOrders;
+        console.log("Driver  order2", this.driverOrders);
+      });
+
+    this.driverService
+      .fetchDriver(this.user._id)
+      .pipe(
+        switchMap((driver: Driver) => {
+          currentDriver = driver;
+          return this.socketService.getMessages(driver._id);
+        })
+      )
+      .subscribe((socketData) => {
+        console.log("socket DRIVER", socketData);
+        this.driverService
+          .fetchDriverOrders_afterReset(currentDriver._id)
+          .subscribe(); // no need to unsubscribe as take(1)
+      });
+
+    this.driverOrdersSub = this.driverService.orders$.subscribe((orders) => {
+      console.log("Driver orders incoming", orders);
+      this.driverOrders = Utils.deepCopyOrdersList(orders);
     });
   }
 
@@ -203,18 +228,6 @@ export class TabsPage implements OnInit, OnDestroy {
     }
     if (this.driverInitOrderSub) {
       this.driverInitOrderSub.unsubscribe();
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.authSub) {
-      this.authSub.unsubscribe();
-    }
-    if (this.navSub) {
-      this.navSub.unsubscribe();
-    }
-    if (this.menSub) {
-      this.menSub.unsubscribe();
     }
   }
 
